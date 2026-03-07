@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3: Multi-Server Architecture</title>
+<style>
+  :root {
+    --bg: #0a0f1a; --surface: #111827; --card: #1a2332;
+    --border: #2a3a4e; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #3b82f6; --green: #22c55e; --amber: #f59e0b; --red: #ef4444; --purple: #a78bfa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .subtitle { color: var(--muted); margin-bottom: 2rem; }
+
+  /* Architecture Diagram */
+  .arch-diagram {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 180px 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    gap: 1rem;
+    margin: 2rem 0;
+    min-height: 600px;
+  }
+
+  /* AI Client at top center */
+  .ai-client {
+    grid-column: 2; grid-row: 1;
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(167,139,250,0.2));
+    border: 2px solid var(--accent);
+    border-radius: 16px; padding: 1.25rem;
+    text-align: center; cursor: pointer;
+    transition: all 0.3s;
+    z-index: 2;
+  }
+  .ai-client:hover { transform: scale(1.03); box-shadow: 0 0 20px rgba(59,130,246,0.3); }
+  .ai-client .icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+  .ai-client .name { font-weight: 700; font-size: 1rem; }
+  .ai-client .desc { font-size: 0.75rem; color: var(--muted); }
+
+  /* Server cards */
+  .server {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.25rem; cursor: pointer; transition: all 0.3s;
+    position: relative;
+  }
+  .server:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+  .server.active { border-color: var(--accent); background: rgba(59,130,246,0.05); }
+  .server .s-icon { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .server .s-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+  .server .s-mode {
+    display: inline-block; font-size: 0.65rem; font-weight: 600;
+    padding: 0.15rem 0.5rem; border-radius: 10px; margin-bottom: 0.5rem;
+  }
+  .mode-read { background: rgba(34,197,94,0.15); color: var(--green); }
+  .mode-write { background: rgba(239,68,68,0.15); color: var(--red); }
+  .mode-both { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .server .s-tools { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+  /* Position servers in grid */
+  .srv-signal { grid-column: 1; grid-row: 2; }
+  .srv-risk { grid-column: 3; grid-row: 2; }
+  .srv-research { grid-column: 1; grid-row: 3; }
+  .srv-execution { grid-column: 3; grid-row: 3; }
+
+  /* Shared library */
+  .shared-lib {
+    grid-column: 1 / 4; grid-row: 4;
+    background: var(--surface); border: 1px dashed var(--border); border-radius: 14px;
+    padding: 1.25rem; text-align: center; cursor: pointer; transition: all 0.3s;
+  }
+  .shared-lib:hover { border-color: var(--purple); }
+  .shared-lib.active { border-color: var(--purple); background: rgba(167,139,250,0.05); }
+  .shared-lib .sl-name { font-weight: 700; color: var(--purple); margin-bottom: 0.5rem; }
+  .shared-lib .sl-modules {
+    display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;
+  }
+  .sl-mod {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.35rem 0.75rem; font-size: 0.78rem; color: var(--muted);
+  }
+
+  /* Connection lines via SVG */
+  .connections {
+    grid-column: 2; grid-row: 2 / 4;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; color: var(--muted);
+  }
+  .conn-label { text-align: center; padding: 0.5rem; }
+  .conn-arrow { color: var(--accent); font-size: 1.5rem; }
+
+  /* Detail Panel */
+  .detail-panel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 2rem; margin-top: 2rem; display: none;
+  }
+  .detail-panel.show { display: block; }
+  .detail-panel h2 { font-size: 1.2rem; margin-bottom: 0.75rem; }
+  .detail-panel .tools-list { list-style: none; }
+  .detail-panel .tools-list li {
+    padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .detail-panel .tools-list li:last-child { border: none; }
+  .tool-fn { color: var(--accent); font-family: monospace; font-weight: 600; }
+  .tool-desc { color: var(--muted); font-size: 0.85rem; }
+  .rationale {
+    background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 8px; padding: 1rem; margin-top: 1rem; font-size: 0.9rem;
+  }
+  .rationale strong { color: var(--accent); }
+
+  /* Monolith vs Multi comparison */
+  .arch-compare {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem;
+  }
+  @media (max-width: 640px) { .arch-compare { grid-template-columns: 1fr; } }
+  .arch-opt {
+    background: var(--card); border-radius: 12px; padding: 1.5rem;
+    border: 1px solid var(--border);
+  }
+  .arch-opt.bad { border-color: rgba(239,68,68,0.3); }
+  .arch-opt.good { border-color: rgba(34,197,94,0.3); }
+  .arch-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.75rem; }
+  .arch-opt.bad .arch-label { color: var(--red); }
+  .arch-opt.good .arch-label { color: var(--green); }
+  .arch-item { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.4rem; display: flex; gap: 0.5rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Week 3: Multi-Server Architecture</h1>
+  <p class="subtitle">Click each component to explore its responsibilities, tools, and why it's separated.</p>
+
+  <div class="arch-diagram">
+    <!-- AI Client -->
+    <div class="ai-client" onclick="showDetail('client')">
+      <div class="icon">🤖</div>
+      <div class="name">Claude Desktop</div>
+      <div class="desc">Connects to all servers simultaneously</div>
+    </div>
+
+    <!-- Servers -->
+    <div class="server srv-signal" onclick="showDetail('signal')">
+      <div class="s-icon">📊</div>
+      <div class="s-name">Signal Server</div>
+      <span class="s-mode mode-read">Read-Only</span>
+      <div class="s-tools">Regime detection, technicals, trade plans, pattern analysis</div>
+    </div>
+
+    <div class="connections">
+      <div class="conn-label">
+        <div class="conn-arrow">⬍</div>
+        <div>MCP Protocol</div>
+        <div style="font-size:0.7rem;margin-top:0.25rem;">stdio (local) or<br>streamable-http (cloud)</div>
+      </div>
+    </div>
+
+    <div class="server srv-risk" onclick="showDetail('risk')">
+      <div class="s-icon">🛡️</div>
+      <div class="s-name">Risk Server</div>
+      <span class="s-mode mode-read">Read-Only</span>
+      <div class="s-tools">Position limits, sector exposure, drawdown monitoring, sizing</div>
+    </div>
+
+    <div class="server srv-research" onclick="showDetail('research')">
+      <div class="s-icon">📄</div>
+      <div class="s-name">Research / RAG Server</div>
+      <span class="s-mode mode-both">Read + Index</span>
+      <div class="s-tools">SEC filing search, document Q&A, citation generation</div>
+    </div>
+
+    <div class="server srv-execution" onclick="showDetail('execution')">
+      <div class="s-icon">⚡</div>
+      <div class="s-name">Execution Server</div>
+      <span class="s-mode mode-write">Write-Only</span>
+      <div class="s-tools">Order submission, fill tracking, trade journal, notifications</div>
+    </div>
+
+    <!-- Shared Library -->
+    <div class="shared-lib" onclick="showDetail('shared')">
+      <div class="sl-name">Shared Library (trading-core)</div>
+      <div class="sl-modules">
+        <span class="sl-mod">brokers/</span>
+        <span class="sl-mod">data/</span>
+        <span class="sl-mod">risk/</span>
+        <span class="sl-mod">auth/</span>
+        <span class="sl-mod">transport.py</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Panel -->
+  <div class="detail-panel" id="detail-panel"></div>
+
+  <!-- Monolith vs Multi -->
+  <h2 style="font-size:1.3rem; margin-top:3rem; margin-bottom:0.5rem;">Why Separate Servers?</h2>
+  <p style="color:var(--muted); margin-bottom:1rem;">The same code, two architectures. The difference is operational resilience.</p>
+
+  <div class="arch-compare">
+    <div class="arch-opt bad">
+      <div class="arch-label">Monolithic Server</div>
+      <div class="arch-item"><span style="color:var(--red)">✗</span> Deploy risk fix → break signal computation</div>
+      <div class="arch-item"><span style="color:var(--red)">✗</span> Research intern → gets trade execution tools</div>
+      <div class="arch-item"><span style="color:var(--red)">✗</span> Signal needs real-time → research only needs daily</div>
+      <div class="arch-item"><span style="color:var(--red)">✗</span> One crash → everything down</div>
+    </div>
+    <div class="arch-opt good">
+      <div class="arch-label">Multi-Server</div>
+      <div class="arch-item"><span style="color:var(--green)">✓</span> Deploy independently — risk fix doesn't touch signals</div>
+      <div class="arch-item"><span style="color:var(--green)">✓</span> Permission per server — research gets RAG only</div>
+      <div class="arch-item"><span style="color:var(--green)">✓</span> Scale independently — signal server gets more resources</div>
+      <div class="arch-item"><span style="color:var(--green)">✓</span> Fault isolation — research crash doesn't affect trading</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DETAILS = {
+  client: {
+    title: "Claude Desktop — The AI Client",
+    tools: [],
+    rationale: "Claude connects to all MCP servers simultaneously. When you ask 'what should I do today?', it calls the signal server for the regime, the risk server for exposure limits, the research server for filing insights, and synthesizes a coherent recommendation. The AI is the integration layer — no custom glue code needed."
+  },
+  signal: {
+    title: "Signal Server (Read-Only)",
+    tools: [
+      { fn: "get_current_signal()", desc: "Today's regime color, signal tier, and target exposure" },
+      { fn: "get_es_levels()", desc: "Native ES futures pivots, VWAP, overnight range, ATR" },
+      { fn: "get_trade_plan(direction)", desc: "Signal-calibrated entry/stop/target with R:R ratios" },
+      { fn: "get_directional_bias()", desc: "Composite signal combining long + short + technicals" },
+      { fn: "get_trade_briefing()", desc: "Pre-formatted markdown briefing (Python inserts all numbers)" },
+    ],
+    rationale: "Signal servers are strictly read-only. They return data and analysis but NEVER place orders. If the signal server has a bug, it returns bad data — but it can't execute trades. This limits the blast radius of any single component failure."
+  },
+  risk: {
+    title: "Risk Server (Read-Only)",
+    tools: [
+      { fn: "get_risk_report()", desc: "Current exposure, position sizes, risk posture" },
+      { fn: "get_position_size(symbol, stop)", desc: "Risk-based position sizing calculation" },
+      { fn: "check_risk_limits()", desc: "Verify positions against concentration and sector limits" },
+    ],
+    rationale: "Risk checking is separated from signal generation. The risk server enforces constraints independent of what the signal server recommends. This creates a natural check-and-balance: signals propose, risk validates."
+  },
+  research: {
+    title: "Research / RAG Server (Read + Index)",
+    tools: [
+      { fn: "search_with_citations(query)", desc: "Search indexed SEC filings with doc_id + node_id citations" },
+      { fn: "get_document_overview(doc_id)", desc: "Table-of-contents view of a filing's structure" },
+      { fn: "get_document_section(doc_id, node)", desc: "Full raw text of a specific filing section" },
+      { fn: "fetch_company_filings(ticker)", desc: "Download and index new filings from EDGAR" },
+    ],
+    rationale: "Research uses different data (documents vs. market prices), different update cadence (daily vs. real-time), and different access patterns (batch indexing vs. streaming quotes). Separating it means you can rebuild the search index without affecting live trading."
+  },
+  execution: {
+    title: "Execution Server (Write-Only)",
+    tools: [
+      { fn: "submit_order(symbol, side, qty)", desc: "Send order to broker — requires prior approval" },
+      { fn: "get_fill_status(order_id)", desc: "Check if an order has been filled" },
+      { fn: "cancel_order(order_id)", desc: "Cancel a pending order" },
+      { fn: "log_trade(details)", desc: "Record trade to the audit journal" },
+    ],
+    rationale: "The execution layer is write-only and has the strictest access controls. It NEVER computes signals — it only acts on approved proposals. Separating execution means the most dangerous capability (placing real orders) is isolated behind its own authentication and approval gates."
+  },
+  shared: {
+    title: "Shared Library (trading-core)",
+    tools: [
+      { fn: "brokers/", desc: "Data provider clients (tastytrade, yfinance) — shared connection management" },
+      { fn: "data/", desc: "CSV I/O, bar merging, staleness detection — consistent across all servers" },
+      { fn: "risk/", desc: "Position sizing formulas — same math everywhere" },
+      { fn: "auth/", desc: "OAuth provider, user management — one auth system for all servers" },
+      { fn: "transport.py", desc: "MCP server configuration (stdio vs HTTP) — standardized startup" },
+    ],
+    rationale: "Separate servers doesn't mean duplicated code. The shared library provides common infrastructure. When you fix a bug in the data layer, all servers benefit. When you add a new signal type, only the signal server changes. This is the DRY principle applied to an AI tool ecosystem."
+  },
+};
+
+function showDetail(key) {
+  const d = DETAILS[key];
+  const panel = document.getElementById('detail-panel');
+  document.querySelectorAll('.server, .ai-client, .shared-lib').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  let html = `<h2>${d.title}</h2>`;
+  if (d.tools.length) {
+    html += '<ul class="tools-list">';
+    d.tools.forEach(t => {
+      html += `<li><span class="tool-fn">${t.fn}</span><br><span class="tool-desc">${t.desc}</span></li>`;
+    });
+    html += '</ul>';
+  }
+  html += `<div class="rationale"><strong>Why this design:</strong> ${d.rationale}</div>`;
+  panel.innerHTML = html;
+  panel.classList.add('show');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+</body>
+</html>

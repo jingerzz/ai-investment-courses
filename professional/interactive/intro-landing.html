@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Powered Investment Management — Why This Matters</title>
+<style>
+  :root {
+    --bg: #0a0f1a;
+    --surface: #111827;
+    --card: #1a2332;
+    --border: #2a3a4e;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.3);
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 50%);
+    animation: pulse 8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero .subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero .cta-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .cta-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .cta-primary:hover { background: #2563eb; transform: translateY(-1px); }
+  .cta-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .cta-secondary:hover { background: rgba(59, 130, 246, 0.1); }
+
+  /* Sections */
+  section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+  .section-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+  section p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+    max-width: 700px;
+  }
+
+  /* Autonomy Levels */
+  .levels-container {
+    margin-top: 3rem;
+  }
+  .level-row {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.4s;
+  }
+  .level-row.active { opacity: 1; }
+  .level-indicator {
+    width: 4px;
+    border-radius: 4px;
+    background: var(--border);
+    transition: background 0.4s;
+    flex-shrink: 0;
+  }
+  .level-row.active .level-indicator { background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .level-card {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  .level-row.active .level-card {
+    border-color: var(--accent);
+    background: rgba(59, 130, 246, 0.05);
+  }
+  .level-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+  .level-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .level-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .level-tag {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .tag-current { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-target { background: rgba(59,130,246,0.15); color: var(--accent); }
+  .tag-risky { background: rgba(239,68,68,0.15); color: var(--red); }
+
+  /* Stats Strip */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+  }
+
+  /* Week Cards */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  .week-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .week-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .week-num {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .week-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .week-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Contrast Section */
+  .contrast-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  @media (max-width: 640px) { .contrast-grid { grid-template-columns: 1fr; } }
+  .contrast-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+  }
+  .contrast-card.bad { border-color: rgba(239,68,68,0.3); }
+  .contrast-card.good { border-color: rgba(34,197,94,0.3); }
+  .contrast-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .contrast-card.bad .contrast-label { color: var(--red); }
+  .contrast-card.good .contrast-label { color: var(--green); }
+  .contrast-card code {
+    display: block;
+    background: var(--bg);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    color: var(--text-muted);
+  }
+
+  /* Footer CTA */
+  .footer-cta {
+    text-align: center;
+    padding: 6rem 2rem;
+    background: linear-gradient(to top, rgba(59,130,246,0.05), transparent);
+  }
+  .footer-cta h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .footer-cta p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+  }
+
+  /* Scroll animations */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>Build AI Tools for Investment Management — <span>No Coding Required</span></h1>
+    <p class="subtitle">Finance professionals learn to build AI-powered tools that connect to real market data, include production-grade guardrails, and work after the course ends.</p>
+    <div class="cta-row">
+      <button class="cta-btn cta-primary" onclick="document.getElementById('journey').scrollIntoView({behavior:'smooth'})">See What You'll Build</button>
+      <button class="cta-btn cta-secondary" onclick="document.getElementById('levels').scrollIntoView({behavior:'smooth'})">The AI Autonomy Spectrum</button>
+    </div>
+  </div>
+</div>
+
+<!-- The Problem -->
+<section class="fade-in">
+  <div class="section-label">The Problem</div>
+  <h2>AI is powerful. But it's cut off from your data.</h2>
+  <p>Today's AI models are remarkably good at reasoning, synthesis, and pattern recognition. But they don't have access to your watchlist, your risk parameters, your firm's documents, or even current market prices.</p>
+  <p>Without that connection, AI is just a very articulate colleague who hasn't read the briefing materials.</p>
+
+  <div class="contrast-grid">
+    <div class="contrast-card bad">
+      <div class="contrast-label">What most people do</div>
+      <code>User: "What stocks should I buy?"
+
+AI: "Based on my training data from
+2024, here are some considerations..."
+
+→ Confident. Generic. Stale.</code>
+    </div>
+    <div class="contrast-card good">
+      <div class="contrast-label">What this course teaches</div>
+      <code>AI calls: get_current_signal()
+AI calls: get_es_levels()
+AI calls: get_risk_report()
+
+→ "Blue regime. ES pivot 5420.
+   Mean-reversion entry at S1.
+   Risk: 0.45% of account."</code>
+    </div>
+  </div>
+</section>
+
+<!-- Autonomy Levels -->
+<section class="fade-in" id="levels">
+  <div class="section-label">The AI Autonomy Spectrum</div>
+  <h2>Where does your firm sit?</h2>
+  <p>AI capability isn't binary. There's a spectrum from dashboards to autonomous agents — and the right level depends on your risk tolerance and regulatory environment.</p>
+
+  <div class="levels-container">
+    <div class="level-row" data-level="0" onclick="setLevel(0)">
+      <div class="level-indicator"></div>
+      <div class="level-card">
+        <div class="level-num">Level 0</div>
+        <div class="level-title">Dashboard</div>
+        <div class="level-desc">Human reads data, makes all decisions. No AI involvement.</div>
+        <span class="level-tag tag-current">Where most firms are</span>
+      </div>
+    </div>
+    <div class="level-row" data-level="1" onclick="setLevel(1)">
+      <div class="level-indicator"></div>
+      <div class="level-card">
+        <div class="level-num">Level 1</div>
+        <div class="level-title">Tool-Assisted</div>
+        <div class="level-desc">Human asks AI questions. AI calls tools, returns data. Human decides.</div>
+        <span class="level-tag tag-target">Week 1-2</span>
+      </div>
+    </div>
+    <div class="level-row active" data-level="2" onclick="setLevel(2)">
+      <div class="level-indicator"></div>
+      <div class="level-card">
+        <div class="level-num">Level 2</div>
+        <div class="level-title">Proactive</div>
+        <div class="level-desc">AI monitors signals, proposes actions with reasoning. Human approves or rejects.</div>
+        <span class="level-tag tag-target">Week 3-4 — Sweet spot</span>
+      </div>
+    </div>
+    <div class="level-row" data-level="3" onclick="setLevel(3)">
+      <div class="level-indicator"></div>
+      <div class="level-card">
+        <div class="level-num">Level 3</div>
+        <div class="level-title">Semi-Autonomous</div>
+        <div class="level-desc">AI executes routine actions automatically. Escalates unusual situations to humans.</div>
+        <span class="level-tag tag-target">Month 3+</span>
+      </div>
+    </div>
+    <div class="level-row" data-level="4" onclick="setLevel(4)">
+      <div class="level-indicator"></div>
+      <div class="level-card">
+        <div class="level-num">Level 4</div>
+        <div class="level-title">Fully Autonomous</div>
+        <div class="level-desc">AI executes independently. No human oversight.</div>
+        <span class="level-tag tag-risky">Not recommended for finance</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="fade-in">
+  <div class="stats-strip">
+    <div class="stat-card">
+      <div class="stat-value">30</div>
+      <div class="stat-label">minutes from idea to working tool</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">0</div>
+      <div class="stat-label">lines of code you write</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">$30-50</div>
+      <div class="stat-label">monthly cost for 4 production servers</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">98.7%</div>
+      <div class="stat-label">accuracy on FinanceBench (structure-first RAG)</div>
+    </div>
+  </div>
+</section>
+
+<!-- The Journey -->
+<section class="fade-in" id="journey">
+  <div class="section-label">4 Weeks. 60 Minutes Each.</div>
+  <h2>What you'll build</h2>
+  <p>Each week produces a working tool connected to real market data. The weeks build on each other into a complete system.</p>
+
+  <div class="week-grid">
+    <div class="week-card">
+      <div class="week-num">Week 1</div>
+      <h3>Making Data AI-Accessible</h3>
+      <p>Build an MCP server that gives Claude access to your stock watchlist with live prices, fundamentals, and comparisons.</p>
+    </div>
+    <div class="week-card">
+      <div class="week-num">Week 2</div>
+      <h3>Reasoning & Guardrails</h3>
+      <p>Add guardrails that prevent hallucinated prices. Build a morning briefing that cross-references multiple data sources.</p>
+    </div>
+    <div class="week-card">
+      <div class="week-num">Week 3</div>
+      <h3>System Architecture</h3>
+      <p>Design a multi-server system with separated concerns, shared libraries, and cloud deployment for your organization.</p>
+    </div>
+    <div class="week-card">
+      <div class="week-num">Week 4</div>
+      <h3>Autonomous Agents</h3>
+      <p>Build an agent that monitors, proposes, and logs — with human approval at every consequential step and a full audit trail.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer CTA -->
+<div class="footer-cta fade-in">
+  <h2>The people who learn this will have an unfair advantage.</h2>
+  <p>And the window is still open.</p>
+  <button class="cta-btn cta-primary">Start Building</button>
+</div>
+
+<script>
+  // Autonomy level toggle
+  function setLevel(n) {
+    document.querySelectorAll('.level-row').forEach(r => {
+      r.classList.toggle('active', parseInt(r.dataset.level) === n);
+    });
+  }
+
+  // Scroll animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

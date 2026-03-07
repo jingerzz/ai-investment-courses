@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2: Morning Briefing Simulator</title>
+<style>
+  :root {
+    --bg: #0a0f1a; --surface: #111827; --card: #1a2332;
+    --border: #2a3a4e; --text: #e2e8f0; --muted: #94a3b8;
+    --accent: #3b82f6; --green: #22c55e; --amber: #f59e0b; --red: #ef4444;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+  h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .subtitle { color: var(--muted); margin-bottom: 2rem; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 0.75rem 1.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;
+    color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover { color: var(--text); }
+
+  /* Tool Call Panel */
+  .tool-panel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 1.5rem; overflow: hidden; transition: all 0.3s;
+  }
+  .tool-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 1.25rem; cursor: pointer;
+  }
+  .tool-header:hover { background: rgba(59,130,246,0.05); }
+  .tool-name { font-weight: 600; font-size: 0.95rem; }
+  .tool-status {
+    font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: 600;
+  }
+  .status-pending { background: rgba(148,163,184,0.2); color: var(--muted); }
+  .status-running { background: rgba(59,130,246,0.2); color: var(--accent); }
+  .status-done { background: rgba(34,197,94,0.2); color: var(--green); }
+
+  .tool-body {
+    padding: 0 1.25rem 1.25rem;
+    max-height: 0; overflow: hidden; transition: max-height 0.4s;
+  }
+  .tool-body.open { max-height: 600px; }
+
+  pre {
+    background: var(--bg); border-radius: 8px; padding: 1rem;
+    font-size: 0.82rem; line-height: 1.6; overflow-x: auto;
+    white-space: pre-wrap; color: var(--muted);
+  }
+  .key { color: #7dd3fc; }
+  .str { color: #86efac; }
+  .num { color: #fbbf24; }
+
+  /* Briefing Output */
+  .briefing {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 2rem; margin-top: 1.5rem;
+  }
+  .briefing h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+  .briefing .signal-badge {
+    display: inline-block; padding: 0.3rem 0.9rem; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;
+  }
+  .badge-blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .levels-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  .levels-table th, .levels-table td {
+    padding: 0.5rem 1rem; text-align: left; font-size: 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .levels-table th { color: var(--muted); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .plan-item { margin-bottom: 0.5rem; font-size: 0.9rem; }
+  .plan-label { color: var(--accent); font-weight: 600; }
+
+  /* Bad vs Good */
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+  @media (max-width: 640px) { .comparison { grid-template-columns: 1fr; } }
+  .comp-card { background: var(--card); border-radius: 12px; padding: 1.5rem; border: 1px solid var(--border); }
+  .comp-card.bad { border-color: rgba(239,68,68,0.3); }
+  .comp-card.good { border-color: rgba(34,197,94,0.3); }
+  .comp-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.75rem; }
+  .comp-card.bad .comp-label { color: var(--red); }
+  .comp-card.good .comp-label { color: var(--green); }
+
+  /* Controls */
+  .controls { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .btn {
+    padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.9rem;
+    font-weight: 600; cursor: pointer; border: none; transition: all 0.2s;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-outline:hover { background: rgba(59,130,246,0.1); }
+
+  .hidden { display: none; }
+
+  /* Callout */
+  .callout {
+    background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 10px; padding: 1.25rem; margin-top: 2rem; font-size: 0.9rem;
+  }
+  .callout strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Week 2: Morning Briefing Simulator</h1>
+  <p class="subtitle">See how AI synthesizes across multiple data sources — and why guardrails matter.</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('synthesis')">Synthesis Flow</div>
+    <div class="tab" onclick="switchTab('guardrails')">Guardrails Comparison</div>
+  </div>
+
+  <!-- SYNTHESIS TAB -->
+  <div id="tab-synthesis">
+    <div class="controls">
+      <button class="btn btn-primary" onclick="runBriefing()">▶ Run Morning Briefing</button>
+      <button class="btn btn-outline" onclick="resetBriefing()">Reset</button>
+    </div>
+
+    <!-- Tool Call 1 -->
+    <div class="tool-panel" id="tool1">
+      <div class="tool-header" onclick="toggleTool('tool1')">
+        <span class="tool-name">get_current_signal()</span>
+        <span class="tool-status status-pending" id="tool1-status">Pending</span>
+      </div>
+      <div class="tool-body" id="tool1-body">
+        <pre>{
+  <span class="key">"color"</span>: <span class="str">"Blue"</span>,
+  <span class="key">"signal"</span>: <span class="str">"T2_STRONG_BLUE"</span>,
+  <span class="key">"tier"</span>: <span class="num">2</span>,
+  <span class="key">"exposure"</span>: <span class="num">1.5</span>,
+  <span class="key">"danger_state"</span>: <span class="num">false</span>,
+  <span class="key">"data_source"</span>: <span class="str">"live_feed"</span>,
+  <span class="key">"as_of"</span>: <span class="str">"2026-03-07T16:00:00Z"</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- Tool Call 2 -->
+    <div class="tool-panel" id="tool2">
+      <div class="tool-header" onclick="toggleTool('tool2')">
+        <span class="tool-name">get_es_levels()</span>
+        <span class="tool-status status-pending" id="tool2-status">Pending</span>
+      </div>
+      <div class="tool-body" id="tool2-body">
+        <pre>{
+  <span class="key">"pivot"</span>: <span class="num">5420.25</span>,
+  <span class="key">"r1"</span>: <span class="num">5455.50</span>,
+  <span class="key">"r2"</span>: <span class="num">5478.75</span>,
+  <span class="key">"s1"</span>: <span class="num">5385.00</span>,
+  <span class="key">"s2"</span>: <span class="num">5362.25</span>,
+  <span class="key">"atr14"</span>: <span class="num">45.3</span>,
+  <span class="key">"last"</span>: <span class="num">5398.50</span>,
+  <span class="key">"data_source"</span>: <span class="str">"live_feed"</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- Tool Call 3 -->
+    <div class="tool-panel" id="tool3">
+      <div class="tool-header" onclick="toggleTool('tool3')">
+        <span class="tool-name">get_risk_report()</span>
+        <span class="tool-status status-pending" id="tool3-status">Pending</span>
+      </div>
+      <div class="tool-body" id="tool3-body">
+        <pre>{
+  <span class="key">"risk_posture"</span>: <span class="str">"HEDGED"</span>,
+  <span class="key">"es_contracts"</span>: <span class="num">2</span>,
+  <span class="key">"bond_position"</span>: <span class="str">"LONG"</span>,
+  <span class="key">"account_risk_pct"</span>: <span class="num">0.85</span>,
+  <span class="key">"available_risk_pct"</span>: <span class="num">1.15</span>,
+  <span class="key">"data_source"</span>: <span class="str">"live_feed"</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- Synthesized Briefing -->
+    <div class="briefing hidden" id="briefing-output">
+      <h2>Trade Briefing — 2026-03-07</h2>
+      <span class="signal-badge badge-blue">Blue Regime — T2_STRONG_BLUE — 1.5x Exposure</span>
+
+      <p style="color: var(--muted); margin: 1rem 0; font-size: 0.95rem;">
+        We're in a <strong style="color:#60a5fa">Blue regime</strong> (flight-to-safety) with a Tier 2 signal suggesting
+        1.5x exposure. ES last traded at 5398.50, below the pivot at 5420.25. Current posture is
+        <strong>HEDGED</strong> with 2 ES contracts and a long bond position — the bond leg is providing
+        the expected hedge. Account risk is 0.85% with 1.15% available.
+      </p>
+
+      <table class="levels-table">
+        <thead><tr><th>Level</th><th>Price</th><th>Distance</th></tr></thead>
+        <tbody>
+          <tr><td>R2</td><td>5478.75</td><td style="color:var(--green)">+80.25 pts</td></tr>
+          <tr><td>R1</td><td>5455.50</td><td style="color:var(--green)">+57.00 pts</td></tr>
+          <tr><td>Pivot</td><td style="font-weight:600">5420.25</td><td style="color:var(--green)">+21.75 pts</td></tr>
+          <tr><td style="font-weight:600">Current</td><td style="font-weight:600;color:var(--accent)">5398.50</td><td>—</td></tr>
+          <tr><td>S1</td><td>5385.00</td><td style="color:var(--red)">-13.50 pts</td></tr>
+          <tr><td>S2</td><td>5362.25</td><td style="color:var(--red)">-36.25 pts</td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:1.25rem">
+        <div class="plan-item"><span class="plan-label">Entry zone:</span> 5385.00 - 5420.25 (mean-reversion dip)</div>
+        <div class="plan-item"><span class="plan-label">Stop:</span> 5362.25 (36.25 pts risk)</div>
+        <div class="plan-item"><span class="plan-label">Target 1:</span> 5455.50 (1:1.6 R:R)</div>
+        <div class="plan-item"><span class="plan-label">Target 2:</span> 5478.75 (1:2.2 R:R)</div>
+      </div>
+
+      <div class="callout">
+        <strong>Key insight:</strong> A dashboard shows these three data points side by side. AI tells you
+        "the bond leg is providing the expected hedge" — because it understands that Blue regimes imply TLT
+        should rise, and a HEDGED posture with long bonds is <em>consistent</em> with the signal. That
+        cross-referencing is where AI reasoning adds genuine value.
+      </div>
+    </div>
+  </div>
+
+  <!-- GUARDRAILS TAB -->
+  <div id="tab-guardrails" class="hidden">
+    <p style="color:var(--muted); margin-bottom: 1.5rem;">The difference between AI that's useful and AI that's dangerous comes down to guardrails.</p>
+
+    <div class="comparison">
+      <div class="comp-card bad">
+        <div class="comp-label">Without Guardrails</div>
+        <pre style="font-size:0.82rem;">User: "What's the ES trade plan?"
+
+AI: "ES is currently at 5,423.50.
+I'd suggest buying at 5,400 with a
+stop at 5,370 and target at 5,480."
+
+⚠ Problems:
+• 5,423.50 — where did this come from?
+  (AI hallucinated the price)
+• "I'd suggest" — AI is giving advice
+• No data source or timestamp
+• No risk sizing
+• Not based on any actual signal</pre>
+      </div>
+      <div class="comp-card good">
+        <div class="comp-label">With Guardrails</div>
+        <pre style="font-size:0.82rem;">Python pre-computes everything:
+
+briefing = f"""
+Signal: {signal.name} (Tier {signal.tier})
+ES Last: {levels.last:.2f}
+Entry: {levels.s1:.2f} - {levels.pivot:.2f}
+Stop: {levels.s2:.2f}
+Risk: ${dollar_risk:.0f} ({risk_pct:.1f}%)
+Data: {data_source} as of {as_of}
+"""
+
+✓ Every number comes from Python
+✓ AI presents — never calculates
+✓ Data source + timestamp included
+✓ Risk is pre-sized</pre>
+      </div>
+    </div>
+
+    <div class="comparison" style="margin-top:1.5rem;">
+      <div class="comp-card bad">
+        <div class="comp-label">Stale data (no detection)</div>
+        <pre style="font-size:0.82rem;">AI: "Current ES price is 5,398.50,
+suggesting a buying opportunity near
+support."
+
+Reality: This price is from Friday.
+It's Monday morning. The market
+could be anywhere right now.
+
+The user has no idea they're making
+decisions on 3-day-old data.</pre>
+      </div>
+      <div class="comp-card good">
+        <div class="comp-label">Stale data (with detection)</div>
+        <pre style="font-size:0.82rem;">Tool returns:
+{
+  "last": 5398.50,
+  "data_source": "end_of_day",
+  "as_of": "2026-03-06T16:00:00Z",
+  "stale_data_warning":
+    "Data is from Friday close"
+}
+
+AI: "Note: this analysis uses Friday's
+close data. Live prices may differ
+significantly after the weekend."</pre>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>The rule:</strong> Python does math. AI does interpretation. Every tool return includes
+      <code style="background:var(--bg);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.85rem;">data_source</code>
+      and freshness metadata. The AI never states a number it didn't receive from a tool.
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-synthesis').classList.toggle('hidden', tab !== 'synthesis');
+    document.getElementById('tab-guardrails').classList.toggle('hidden', tab !== 'guardrails');
+    event.target.classList.add('active');
+  }
+
+  function toggleTool(id) {
+    document.getElementById(id + '-body').classList.toggle('open');
+  }
+
+  function runBriefing() {
+    const tools = ['tool1', 'tool2', 'tool3'];
+    tools.forEach((id, i) => {
+      setTimeout(() => {
+        document.getElementById(id + '-status').className = 'tool-status status-running';
+        document.getElementById(id + '-status').textContent = 'Running...';
+        document.getElementById(id + '-body').classList.add('open');
+      }, i * 800);
+      setTimeout(() => {
+        document.getElementById(id + '-status').className = 'tool-status status-done';
+        document.getElementById(id + '-status').textContent = 'Done';
+      }, i * 800 + 600);
+    });
+    setTimeout(() => {
+      document.getElementById('briefing-output').classList.remove('hidden');
+      document.getElementById('briefing-output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 3000);
+  }
+
+  function resetBriefing() {
+    ['tool1','tool2','tool3'].forEach(id => {
+      document.getElementById(id + '-status').className = 'tool-status status-pending';
+      document.getElementById(id + '-status').textContent = 'Pending';
+      document.getElementById(id + '-body').classList.remove('open');
+    });
+    document.getElementById('briefing-output').classList.add('hidden');
+  }
+</script>
+</body>
+</html>
