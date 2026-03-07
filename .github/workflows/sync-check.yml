@@ -1,0 +1,76 @@
+name: Course Sync Check
+
+on:
+  push:
+    paths:
+      - 'professional/**'
+      - 'juniors/**'
+  pull_request:
+    paths:
+      - 'professional/**'
+      - 'juniors/**'
+
+jobs:
+  sync-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check file structure sync
+        run: |
+          echo "Comparing file structures between professional/ and juniors/..."
+          echo ""
+
+          # Get relative file paths from each course, excluding course-specific
+          # top-level files that might legitimately differ
+          pro_files=$(cd professional && find . -type f -name '*.md' | sort)
+          jr_files=$(cd juniors && find . -type f -name '*.md' | sort)
+
+          # Files in professional but not in juniors
+          missing_in_juniors=$(comm -23 <(echo "$pro_files") <(echo "$jr_files"))
+          # Files in juniors but not in professional
+          missing_in_professional=$(comm -13 <(echo "$pro_files") <(echo "$jr_files"))
+
+          has_drift=false
+
+          if [ -n "$missing_in_juniors" ]; then
+            echo "::warning::Files in professional/ missing from juniors/:"
+            echo "$missing_in_juniors" | while read -r f; do
+              echo "  - $f"
+              echo "::warning file=professional/$f::Missing counterpart in juniors/"
+            done
+            has_drift=true
+          fi
+
+          if [ -n "$missing_in_professional" ]; then
+            echo "::warning::Files in juniors/ missing from professional/:"
+            echo "$missing_in_professional" | while read -r f; do
+              echo "  - $f"
+              echo "::warning file=juniors/$f::Missing counterpart in professional/"
+            done
+            has_drift=true
+          fi
+
+          if [ "$has_drift" = true ]; then
+            echo ""
+            echo "Structure drift detected. See SYNC_GUIDE.md for how to resolve."
+            echo "If the difference is intentional, update this workflow to exclude the file."
+            exit 1
+          else
+            echo "File structures are in sync. Both courses have the same files."
+          fi
+
+      - name: List changed files for review
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Changed course files in this PR:"
+          echo ""
+
+          # Show which course files changed so reviewers know what to cross-check
+          git diff --name-only ${{ github.event.pull_request.base.sha }}..HEAD \
+            -- 'professional/**/*.md' 'juniors/**/*.md' | while read -r f; do
+            echo "  $f"
+          done
+
+          echo ""
+          echo "Review SYNC_GUIDE.md to determine if changes need propagation."
