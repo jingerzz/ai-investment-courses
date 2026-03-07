@@ -3,3 +3,7 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Local-only assets (not for public repo)
+**/marketing/
+**/interactive/
