@@ -2,9 +2,11 @@
 
 ## 3.1 Multi-Server Architecture
 
-In Weeks 1-2, you built a single MCP server with a few tools. In production,
-you'll have multiple domains — each with its own data sources, update cadence,
-and access requirements. The question is: one big server or several small ones?
+You already have three MCP servers running: a strategy server (SPY/TLT),
+a watchlist server (your Week 2 build), and a research server (page-index-rag).
+Each has its own tools, data sources, and purpose. That's not an accident —
+it's the right architecture. The question this week is: why, and how do you
+scale it?
 
 ### Why Separate Servers
 

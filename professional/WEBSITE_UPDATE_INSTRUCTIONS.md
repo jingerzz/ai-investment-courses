@@ -97,22 +97,63 @@ Key sections to render:
 6. Exercise Part A: build watchlist server (step-by-step prompts)
 7. Exercise Part B: install Ollama + page-index-rag (4 steps)
 
+### Week 3 page (exercise rewritten, reading lightly updated)
+
+**Reading:** Minor update to opening paragraph — now references the
+three servers students already have instead of "In Weeks 1-2, you
+built a single MCP server." Rest of reading unchanged.
+
+**Exercise (rewritten):** Instead of designing a hypothetical system,
+students connect their three existing servers to Claude Desktop and
+experience cross-server queries:
+1. Connect all 3 servers simultaneously
+2. Cross-server queries (strategy + watchlist, strategy + research, all three)
+3. Identify architecture patterns (shared data, shared library candidates)
+4. Build a shared data pattern (watchlist reads SPY CSV from spy-tlt-course)
+5. Design a 4th server (risk management) — design only, not built
+
+Key sections to render:
+1. Exercise steps with specific Claude Desktop prompts for cross-server queries
+2. Architecture principles list (5 items)
+3. Troubleshooting section
+
+### Week 4 page (exercise rewritten, reading lightly updated)
+
+**Reading:** Minor updates — replaced MES/ES futures references with
+SPY equivalents (students don't have futures tools). Concepts unchanged.
+
+**Exercise (rewritten):** Students build a monitoring agent that uses
+their existing SPY/TLT and watchlist servers:
+1. Design monitoring rules with Claude Desktop
+2. Build monitor.py that calls spy-tlt-course tools + yfinance
+3. Classify findings: SILENT / ALERT / URGENT / BLOCKED
+4. Add audit trail with full reasoning chain
+5. Expose alerts as MCP tool (get_monitor_alerts)
+6. Test the full agent loop: monitor → alerts in Claude Desktop →
+   cross-server synthesis → proposed actions
+
+Key sections to render:
+1. Step-by-step exercise with Claude Code prompts
+2. Autonomy spectrum diagram (SILENT → ALERT → URGENT → BLOCKED)
+3. "AI Proposes, Humans Decide" section
+4. Troubleshooting section
+
 ### Navigation / Table of Contents
 
 Remove any "Bonus Module" or "Bonus: Local RAG" entries from navigation.
-The course is now strictly 4 weeks with no bonus.
+The course is now strictly 4 weeks with no bonus. Remove "under
+construction" labels from Weeks 3-4.
 
 Update the weekly overview/progression table anywhere it appears:
 - Week 1: "The Tool-Use Pattern" (install and explore pre-built servers)
 - Week 2: "Building Your Own AI Tools" (Claude Code + Ollama + RAG)
-- Week 3: "System Design and Architecture" (unchanged)
-- Week 4: "Autonomous Agents and Controls" (unchanged)
+- Week 3: "System Design and Architecture" (compose multi-server system)
+- Week 4: "Autonomous Agents and Controls" (monitoring agent with audit trail)
 
 ---
 
 ## What NOT to Change
 
-- Week 3 and Week 4 content is unchanged
 - The glossary is unchanged
 - Prerequisites content is unchanged (though Week 1 now only needs
   uv + Claude Desktop, not Claude Code — Claude Code is first needed

@@ -2,9 +2,9 @@
 
 ## 4.1 The Agent Loop
 
-In Weeks 1-3, you built tools that AI uses when a human asks a question. The
-AI is reactive — it waits for you, calls tools, and responds. This week, we
-go further: AI that *proactively* monitors, reasons, and proposes actions.
+So far, your AI tools are reactive — Claude waits for you to ask a question,
+calls tools, and responds. This week, we go further: AI that *proactively*
+monitors, reasons, and proposes actions.
 
 ### From Tool-Use to Autonomy
 
@@ -49,10 +49,10 @@ Each step has a clear boundary:
 
 - **Gather:** The agent is an MCP *client* — it connects to your signal,
   risk, and research servers the same way a human analyst would.
-- **Reason:** The AI synthesizes tool results. "Blue regime + ES near S1 +
+- **Reason:** The AI synthesizes tool results. "Blue regime + SPY near S1 +
   risk is below limits → this is a buying opportunity."
-- **Propose:** The agent formats a specific proposal: "Buy 2 MES contracts
-  at 5385, stop at 5340, target 5420. Risk: $225."
+- **Propose:** The agent formats a specific proposal: "Add SPY exposure
+  to 1.5x at next open. Stop at S2 (571.20). Risk: $225."
 - **Approve:** A human (via Telegram, Slack, email, or dashboard) reviews
   and approves or rejects. The agent does NOT proceed without approval.
 - **Execute:** Only after approval, the agent calls the broker API.
@@ -108,15 +108,16 @@ The approval mechanism should match your team's communication patterns:
 **Telegram/Slack integration:**
 
 ```
-Bot: 🔔 Trade Proposal
+Bot: Trade Proposal
      Signal: T2_STRONG_BLUE (Tier 2)
-     Action: BUY 2 MES @ 5385
-     Stop: 5340 (45 pts, $225 risk)
-     Target: 5420 (35 pts, $175 reward)
-     R:R = 1:0.78
+     Action: Add SPY to 1.5x at next open
+     Entry: ~578.30 (current close)
+     Stop: S2 at 571.20 (7.1 pts risk)
+     Target: R1 at 584.50 (6.2 pts reward)
+     R:R = 1:0.87
      Account risk: 0.45%
 
-     [✅ Approve]  [❌ Reject]  [📝 Modify]
+     [Approve]  [Reject]  [Modify]
 ```
 
 The proposal includes everything the PM needs to decide:
@@ -246,9 +247,9 @@ Agent systems need tests that go beyond unit tests:
 ```python
 async def test_blue_regime_proposes_long():
     """Agent should propose a long trade in Blue regime near support."""
-    # Mock tools to return Blue regime + ES near S1
+    # Mock tools to return Blue regime + SPY near S1
     mock_signal = {"color": "Blue", "signal": "T2_STRONG_BLUE", "exposure": 1.5}
-    mock_levels = {"pivot": 5420, "s1": 5385, "current": 5390}
+    mock_levels = {"pivot": 578.30, "s1": 574.50, "current": 575.10}
     mock_risk = {"status": "OK", "available_risk_pct": 2.0}
 
     proposal = await agent.reason(mock_signal, mock_levels, mock_risk)
