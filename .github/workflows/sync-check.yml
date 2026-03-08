@@ -21,10 +21,16 @@ jobs:
           echo "Comparing file structures between professional/ and juniors/..."
           echo ""
 
-          # Get relative file paths from each course, excluding course-specific
-          # top-level files that might legitimately differ
-          pro_files=$(cd professional && find . -type f -name '*.md' | sort)
-          jr_files=$(cd juniors && find . -type f -name '*.md' | sort)
+          # Get relative file paths from each course, excluding non-content
+          # files (tooling config, operational docs) that legitimately differ
+          find_md() {
+            find . -type f -name '*.md' \
+              ! -name 'CLAUDE.md' \
+              ! -name 'WEBSITE_UPDATE_INSTRUCTIONS.md' \
+              | sort
+          }
+          pro_files=$(cd professional && find_md)
+          jr_files=$(cd juniors && find_md)
 
           # Files in professional but not in juniors
           missing_in_juniors=$(comm -23 <(echo "$pro_files") <(echo "$jr_files"))
