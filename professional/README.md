@@ -8,29 +8,25 @@ how to code. You'll describe what you want in plain English, and Claude will
 build it for you.
 
 **Audience:** Investment analysts, portfolio managers, IT managers at investment firms
-**Format:** 30 min reading + 30 min hands-on with Claude per week (4 weeks)
-**Prerequisites:** Claude Desktop and Claude Code installed (see Week 1 setup guide)
+**Format:** 30 min reading + 30 min hands-on per week (4 weeks)
+**Prerequisites:** Claude Desktop installed (see Week 1 setup guide)
 
 ## What You'll Learn
 
 This is NOT a coding course. You'll learn to:
+- **Experience** what good AI tools feel like — before building your own
 - **Describe** financial workflows to Claude in a way that produces useful tools
 - **Evaluate** whether what Claude built is correct and complete
-- **Iterate** when the first version isn't quite right
 - **Connect** your tools to Claude Desktop so AI has access to real market data
 
 ## Weekly Progression
 
-| Week | Focus | What You'll Build |
-|------|-------|-------------------|
-| 1 | Getting started with Claude Code | An MCP server that gives Claude access to your stock watchlist data |
-| 2 | AI reasoning and guardrails | A morning briefing tool that cross-references multiple data sources |
-| **Bonus** | **Local RAG with Ollama (optional)** | **A private document Q&A system for SEC filings using local AI models** |
-| 3 | System design and architecture | A multi-server system design for your organization |
-| 4 | Autonomous agents and controls | An agent workflow with approval rules and audit trail |
-
-The bonus module is optional and recommended after Week 2. It works on any
-Mac or PC — model recommendations are tiered by RAM (8GB / 16GB / 32GB+).
+| Week | Focus | What You'll Do |
+|------|-------|----------------|
+| 1 | The tool-use pattern | Install a pre-built SPY/TLT strategy server. Experience AI answering questions backed by real market data. Learn MCP, design principles, and guardrail patterns. |
+| 2 | Building your own AI tools | Use Claude Code to build a watchlist server from scratch. Set up Ollama and a private document Q&A system for SEC filings. |
+| 3 | System design and architecture | Design a multi-server system for your organization. Learn separation of concerns, shared libraries, and deployment. |
+| 4 | Autonomous agents and controls | Build an agent workflow with approval rules and audit trail. |
 
 ## Prerequisites
 
@@ -39,34 +35,56 @@ hardware requirements, and troubleshooting).
 
 Quick version — install these before Week 1:
 1. **Claude Desktop** — [claude.ai/download](https://claude.ai/download)
-2. **Claude Code** — See `week-1/exercise/setup.md` for step-by-step instructions
+2. **A terminal application** — Terminal (Mac) or PowerShell (Windows)
+
+Week 2 additionally requires:
+3. **Claude Code** — `npm install -g @anthropic-ai/claude-code`
+4. **Ollama** — `brew install ollama` (Mac) or [ollama.com/download](https://ollama.com/download)
+
+## Included Servers
+
+The course includes pre-built MCP servers in the `servers/` directory:
+
+| Server | Used In | Description |
+|--------|---------|-------------|
+| `spy-tlt-course` | Week 1 | SPY/TLT color strategy with 14 tools (signals, levels, patterns, briefings) |
+| `page-index-rag-course` | Week 2 | SEC filing Q&A with 14 tools. Includes 7 pre-indexed BLK and HOOD filings. |
+| `my-watchlist` | Week 2 | Students build this themselves with Claude Code |
 
 ## Data Sources
 
 This course uses free data sources with no paid subscriptions required:
-- **Yahoo Finance** (via yfinance library) — stock prices, fundamentals, options
-- **StockAnalysis.com** — financial statements, screener, analyst ratings
-- **FRED** (Federal Reserve Economic Data) — macro indicators, interest rates
+- **Yahoo Finance** (via yfinance library) — stock prices, technicals
 - **SEC EDGAR** — public company filings (10-K, 10-Q, 8-K)
+- **Ollama** — local AI models for document search (free, open-source)
 
 ## Structure
 
-Each week contains:
 ```
-week-N/
-├── reading.md                      # Concepts (30 min read)
-└── exercise/
-    ├── README.md                   # Step-by-step exercise guide
-    ├── conversation_guide.md       # Example prompts for Claude Code
-    ├── checklist.md                # How to evaluate what Claude built
-    └── reference_solution.md       # Annotated walkthrough of a good result
+professional/
+├── introduction.md                 # Opening chapter
+├── conclusion.md                   # Closing chapter
+├── prerequisites.md                # Setup guide
+├── glossary.md                     # Technical terms defined
+├── COURSE_BRIEF.md                 # Metadata for book production
+├── week-1/
+│   ├── reading.md                  # SPY/TLT strategy, MCP, design principles
+│   └── exercise/
+│       └── README.md               # Install and explore pre-built servers
+├── week-2/
+│   ├── reading.md                  # Claude Code, guardrails, Ollama, RAG
+│   └── exercise/
+│       └── README.md               # Part A: build server; Part B: set up RAG
+├── week-3/
+│   ├── reading.md                  # System design and architecture
+│   └── exercise/
+│       └── README.md               # Architecture design exercise
+├── week-4/
+│   ├── reading.md                  # Autonomous agents and controls
+│   └── exercise/
+│       └── README.md               # Agent workflow exercise
+└── servers/
+    ├── spy-tlt-course/             # Pre-built strategy server (Week 1)
+    ├── page-index-rag-course/      # Pre-built RAG server (Week 2)
+    └── my-watchlist/               # Built by student (Week 2)
 ```
-
-Special files:
-- `introduction.md` — Why this course matters (opening chapter)
-- `conclusion.md` — What you've built and what's next (closing chapter)
-- `prerequisites.md` — Complete setup guide with troubleshooting
-- `glossary.md` — All technical terms defined for a non-technical audience
-- `COURSE_BRIEF.md` — Metadata and design direction for book production
-- `week-1/exercise/setup.md` — First-time installation guide (terminal, Claude Code, uv)
-- `bonus-local-rag/exercise/ollama_quickstart.md` — Ollama CLI reference and model setup

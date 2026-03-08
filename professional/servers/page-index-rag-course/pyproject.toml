@@ -1,0 +1,35 @@
+[project]
+name = "page-index-rag-course"
+version = "1.0.0"
+description = "PageIndex RAG engine for SEC EDGAR filings and long documents"
+requires-python = ">=3.13"
+dependencies = [
+    "mcp>=1.20.0",
+    "openai>=1.0.0",
+    "tiktoken>=0.5.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "pymupdf>=1.24.0",
+    "PyPDF2>=3.0.0",
+    "pypdf>=4.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+    "rich>=13.0.0",
+    "urllib3>=2.0.0",
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+    "uvicorn>=0.30.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pageindex_rag"]
+
+[project.scripts]
+rag-server = "pageindex_rag.server:main"
+fetch-sec = "pageindex_rag.fetch_sec:main"
+ingest = "pageindex_rag.ingest:main"
+manage-docs = "pageindex_rag.manage_docs:main"

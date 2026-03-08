@@ -1,188 +1,283 @@
-# Week 1 Exercise: Build Your First MCP Server with Claude Code
+# Week 1 Exercise: Install and Explore the SPY/TLT Strategy Server
 
-## What You'll Build
+## What You'll Do
 
-An MCP server that gives Claude Desktop access to real stock market data for
-your personal watchlist. When you're done, you'll be able to open Claude Desktop
-and ask things like:
+You'll install a pre-built MCP server that connects Claude Desktop to a
+real trading strategy with live market data. When you're done, you'll be
+able to open Claude Desktop and have conversations like:
 
-- "How has AAPL performed this month?"
-- "Compare NVDA and MSFT — which has better momentum?"
-- "Show me a summary of my watchlist"
+- "What's today's signal?"
+- "Give me a trade briefing"
+- "What happened the last time we saw three Blue days in a row?"
+- "How has this strategy performed since 2002?"
 
-...and Claude will answer using live data from your tools, not from its
-training data.
+...and Claude will answer using real data computed by real tools — not
+from its training data.
 
 ## Time: 30 minutes
 
 ## What You Need
 
-- Claude Code installed and working (see `setup.md`)
-- Claude Desktop installed
-- No data subscriptions needed — we use free sources
+- A Mac or PC with at least 8GB RAM
+- Claude Desktop installed ([claude.ai/download](https://claude.ai/download))
+- A terminal application (Terminal on Mac, PowerShell on Windows)
 
 ---
 
-## Step 1: Start Claude Code in Your Project Folder (2 min)
+## Step 1: Install the Package Manager (3 min)
 
-Open your terminal and type:
+We use `uv` — a fast Python package manager. You don't need to know
+Python; `uv` just handles the installation plumbing.
+
+**Mac (paste into Terminal):**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows (paste into PowerShell):**
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Close and reopen your terminal after installing. Verify it works:
+```bash
+uv --version
+```
+
+You should see a version number like `uv 0.7.x`. If you get "command
+not found", try opening a new terminal window.
+
+## Step 2: Download the Course Server (3 min)
+
+The SPY/TLT Course Edition server is included in your course materials.
+Navigate to it:
 
 ```bash
-cd ~/ai-finance-tools
-claude
+cd ~/ai-investment-courses/professional/servers/spy-tlt-course
 ```
 
-You're now talking to Claude Code. Everything from here is a conversation.
+Install the server and its dependencies:
 
-## Step 2: Describe What You Want (5 min)
-
-Tell Claude Code what to build. Here's an example — **modify it to match
-your actual workflow and the stocks you follow:**
-
-```
-I want to build an MCP server that helps me track a watchlist of stocks.
-I follow these tickers: AAPL, MSFT, NVDA, JPM, XOM
-
-Please build a FastMCP server in Python that has these tools:
-
-1. get_stock_snapshot - For a given ticker, return current price, daily change,
-   52-week range, volume, and market cap. Pre-compute the daily change
-   percentage so the AI doesn't have to calculate it.
-
-2. get_watchlist_summary - Return a summary of all my watchlist stocks with
-   current prices and daily changes, sorted by daily performance.
-
-3. get_stock_comparison - Compare two tickers side by side: price, YTD return,
-   P/E ratio, market cap.
-
-4. get_strategy_guide - A tool that describes all the other tools and tells
-   the AI when to use each one.
-
-Use yfinance for data (it's free, no API key needed). Every tool should return
-a dict with a "data_source" field and an "as_of" timestamp. If something goes
-wrong, return {"error": "description"} instead of crashing.
-
-Put the server in a file called server.py.
+```bash
+uv sync
 ```
 
-Claude Code will:
-- Create a `server.py` file
-- Install the necessary Python packages (yfinance, mcp, etc.)
-- Write all the tool code for you
+This downloads Python (if needed) and installs four packages: `mcp`,
+`numpy`, `yfinance`, and `pandas`. Takes about 30 seconds.
 
-**Don't worry about understanding the Python code.** Focus on whether Claude
-understood your intent.
-
-## Step 3: Test Your Server (5 min)
-
-Ask Claude Code to test it:
-
-```
-Can you run the MCP inspector so I can test my server?
-Run: uv run mcp dev server.py
+Verify the server works:
+```bash
+uv run spy-tlt-server &
 ```
 
-Claude Code will start the MCP inspector — a web interface where you can
-call each tool and see what it returns. Check:
+You should see the server start without errors. Press `Ctrl+C` to stop
+it (or close the terminal).
 
-- Does `get_stock_snapshot("AAPL")` return real data?
-- Does `get_watchlist_summary()` show all your stocks?
-- Does `get_stock_comparison("AAPL", "MSFT")` compare them correctly?
-- Are all the numbers pre-computed (not raw data the AI would need to calculate)?
+## Step 3: Connect to Claude Desktop (5 min)
 
-Press `Ctrl + C` in the terminal to stop the inspector when done.
+Now tell Claude Desktop where to find your server.
 
-## Step 4: Iterate and Improve (8 min)
+**Find your Claude Desktop config file:**
 
-The first version won't be perfect. Here are common things to fix. Tell Claude
-Code what to change:
+- **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-**If data is missing or wrong:**
-```
-The get_stock_snapshot tool doesn't include the P/E ratio. Can you add that?
-Also add the dividend yield if available.
-```
+If the file doesn't exist, create it. If it already exists and has
+content, you'll add to the existing `mcpServers` section.
 
-**If you want better context for the AI:**
-```
-When a stock is down more than 3% for the day, add a field called "notable"
-with the value "significant daily decline". Same for up more than 3%.
-Do the same if volume is more than 2x the average.
-```
+**Add this to the config file** (replace `YOUR_USERNAME` with your
+actual username):
 
-**If you want a new tool:**
-```
-Add a tool called get_sector_performance that groups my watchlist stocks by
-sector and shows which sectors are up and down today.
-```
-
-**If something broke:**
-```
-The get_stock_comparison tool is crashing with an error about "NoneType".
-Can you fix it? It should return an error dict instead of crashing.
+Mac example:
+```json
+{
+  "mcpServers": {
+    "spy-tlt-course": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/YOUR_USERNAME/ai-investment-courses/professional/servers/spy-tlt-course",
+        "run",
+        "spy-tlt-server"
+      ]
+    }
+  }
+}
 ```
 
-## Step 5: Connect to Claude Desktop (5 min)
-
-Now connect your server to Claude Desktop so you can use it in normal
-conversations.
-
-Ask Claude Code:
-
+Windows example:
+```json
+{
+  "mcpServers": {
+    "spy-tlt-course": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\Users\\YOUR_USERNAME\\ai-investment-courses\\professional\\servers\\spy-tlt-course",
+        "run",
+        "spy-tlt-server"
+      ]
+    }
+  }
+}
 ```
-How do I add this MCP server to Claude Desktop? My server file is at
-~/ai-finance-tools/server.py. Give me the exact JSON to add to
-claude_desktop_config.json and tell me where that file is.
+
+**Restart Claude Desktop** completely (quit and reopen, not just close
+the window). When you start a new conversation, you should see the
+SPY/TLT tools available — look for a hammer icon or a tools indicator.
+
+## Step 4: Your First Conversation (5 min)
+
+Open a new conversation in Claude Desktop and try these prompts. After
+each one, observe what happens — which tools Claude calls, what data
+comes back, how Claude presents it.
+
+**Start with orientation:**
+```
+What tools do you have available from the SPY/TLT strategy server?
 ```
 
-Claude Code will give you:
-1. The path to your Claude Desktop config file
-2. The JSON to add
-3. Instructions to restart Claude Desktop
+Claude should call `get_strategy_guide()` and explain the 14 available
+tools.
 
-After restarting Claude Desktop, you'll see your tools available. You may see
-a hammer icon or the tools listed when you start a new conversation.
+**Get today's signal:**
+```
+Refresh the data, then tell me what today's signal is.
+```
 
-## Step 6: Use It (5 min)
+Watch Claude call `refresh_data()` first (pulling the latest from Yahoo
+Finance), then `get_current_signal()`. It will report the color, any
+active signal, and the recommended exposure.
 
-Open Claude Desktop and try these conversations:
+**Ask for a briefing:**
+```
+Give me a complete trade briefing.
+```
 
-- "How are my watchlist stocks doing today?"
-- "Which of my stocks has the best momentum right now?"
-- "Compare JPM and XOM for me — which looks stronger?"
-- "Give me a quick morning summary of my portfolio"
+Claude calls `get_trade_briefing()` and presents a pre-formatted
+markdown section with pivot levels, support/resistance, and a trade
+plan. Notice: every number was computed by Python. Claude is presenting
+it, not calculating it.
 
-Claude Desktop will call your MCP tools to get real data, then reason over
-the results to give you a natural language answer.
+## Step 5: Explore the Design Principles (7 min)
 
-**This is the payoff:** You described a workflow in English, Claude Code built
-the tools, and now Claude Desktop uses them to give you data-driven answers.
+Now look for the four design principles from the reading. Each prompt
+below highlights a specific principle.
+
+**Principle 1 — Pre-computed results:**
+```
+What are today's key SPY levels?
+```
+
+Claude calls `get_trading_levels()`. Look at the response: pivot points,
+R1-R3, S1-S3, SMAs, ATR — all pre-computed. The AI didn't calculate
+any of this. It received finished numbers and explained what they mean.
+
+**Principle 2 — Context metadata:**
+```
+What's the current signal? (Don't refresh the data first.)
+```
+
+If the data is stale (you haven't refreshed recently, or the market is
+closed), look for the `stale_data_warning` field. Claude should mention
+it: "Note: this data is from [date] and may not reflect current prices."
+
+**Principle 3 — One tool per question:**
+```
+How has the strategy performed since 2020?
+```
+
+Claude calls `get_backtest_summary(start_date="2020-01-01")` — just
+one focused tool for this specific question. It doesn't need to load
+signal history or trading levels.
+
+**Principle 4 — The guide tool:**
+```
+What's the recommended workflow for a morning briefing?
+```
+
+Claude calls `get_strategy_guide(topic="workflow")` and returns the
+exact sequence: refresh → briefing → present verbatim.
+
+## Step 6: Try Real Analysis (7 min)
+
+Now use the tools for actual investment analysis. These prompts go
+beyond single tool calls — they show how the AI synthesizes across
+multiple data sources.
+
+**Pattern analysis:**
+```
+Have we seen a Blue-Red-Blue pattern recently? What usually happens
+after that sequence?
+```
+
+Claude calls `analyze_pattern(sequence="Blue,Red,Blue")` and reports:
+how many times this pattern occurred historically, what percentage of
+the time the market was up the next day, and the average forward return.
+
+**Signal education:**
+```
+Explain the T1_BOTH_STRONG_BLUE signal. When does it fire, why is
+it Tier 1, and what are the risks?
+```
+
+Claude calls `explain_signal("T1_BOTH_STRONG_BLUE")` and returns a
+detailed explanation including the trigger conditions, the sizing
+rationale, the statistical framing, and the risk factors.
+
+**Historical context:**
+```
+Show me SPY's streak patterns. What typically happens after 4+
+consecutive down days?
+```
+
+Claude calls `spy_streaks()` and walks you through winning/losing
+streak data, including "what happens next" analysis.
+
+**Cross-referencing:**
+```
+Given today's signal and the current technical levels, what's the
+risk/reward on this setup? Walk me through the logic.
+```
+
+This is where the AI adds real value. It pulls together the signal
+(from `get_current_signal`), the levels (from `get_trading_levels`),
+and the trade plan — then explains how they connect.
 
 ---
 
 ## What You Learned
 
-- How to describe a tool to Claude Code so it builds what you need
-- How to test an MCP server using the inspector
-- How to iterate when the first version isn't right
-- How to connect your tools to Claude Desktop
-- That Claude Desktop uses YOUR tools (real data) instead of guessing
+- How to install an MCP server and connect it to Claude Desktop
+- How Claude discovers and calls tools automatically based on your questions
+- How pre-computed results prevent the AI from making math errors
+- How stale data warnings help the AI qualify its statements
+- How the guide tool orients Claude in a new session
+- How Claude synthesizes across multiple tools for cross-referenced analysis
 
 ## If You Get Stuck
 
-Tell Claude Code what's happening:
+**"uv: command not found"** — Close your terminal and open a new one.
+The installer added `uv` to your PATH, but the current terminal doesn't
+see it yet.
 
-```
-I'm getting an error when I try to run the server. Here's what I see:
-[paste the error message]
-Can you fix it?
-```
+**"Tools don't appear in Claude Desktop"** — Make sure you restarted
+Claude Desktop completely (quit the app, not just close the window).
+Check that the path in `claude_desktop_config.json` points to the
+correct directory.
 
-Claude Code is very good at debugging its own code. Describe the problem
-and let it fix it.
+**"Tool call failed"** — The most common cause is a wrong path in the
+config file. Double-check that the `--directory` path matches where you
+actually installed the course materials.
+
+**"Data is stale"** — Ask Claude to `refresh_data()`. This fetches the
+latest prices from Yahoo Finance.
 
 ## Next Week
 
-In Week 2, you'll add more tools to this server and build a morning briefing
-that cross-references multiple data points — with guardrails to prevent the
-AI from getting things wrong.
+In Week 2, you'll use Claude Code to **build your own** MCP server —
+a watchlist tracker with a morning briefing and guardrails. You'll also
+set up a private document Q&A system for SEC filings. The SPY/TLT
+server you installed today serves as your reference implementation:
+when you're evaluating what Claude Code built, you can compare it to
+what you've experienced here.

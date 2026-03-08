@@ -3,7 +3,11 @@
 __pycache__/
 *.pyc
 .venv/
+*.egg-info/
 
 # Local-only assets (not for public repo)
 **/marketing/
 **/interactive/
+
+# Site build artifacts
+professional/site/

@@ -25,18 +25,18 @@ Over four weeks, you'll build a suite of AI-powered tools that connect
 Claude to real market data and your own workflows. By the end, you'll
 have:
 
-- A **watchlist server** that gives Claude live access to stock prices,
-  fundamentals, and comparisons across your portfolio
-- A **morning briefing tool** with guardrails that prevent AI from
-  making math errors or presenting stale data as current
+- A working **SPY/TLT strategy server** connected to Claude Desktop —
+  your first experience asking an AI questions backed by real market
+  data and pre-computed analysis
+- A **watchlist server** you built yourself using Claude Code, with
+  guardrails that prevent AI from making math errors or presenting
+  stale data as current
+- A **private document Q&A system** for SEC filings running on your
+  own machine with local AI models — no data leaves your laptop
 - A **system architecture** for deploying multiple AI-connected servers
   across your organization
 - An **agent workflow** with approval rules, escalation logic, and a
   complete audit trail
-
-If you do the optional bonus module, you'll also have a **private
-document Q&A system** that processes SEC filings entirely on your
-machine — no data leaves your laptop.
 
 These aren't toy examples. They use real market data from Yahoo Finance,
 real SEC filings from EDGAR, and real architectural patterns from
@@ -54,9 +54,9 @@ everything. You describe what you want in plain English. Claude writes
 the code, creates the files, installs the dependencies, and runs the
 tests. Your job is to:
 
-1. **Describe** what you need clearly (Week 1 teaches this)
-2. **Evaluate** whether what Claude built is correct (Week 2 teaches this)
-3. **Iterate** when the first version isn't right (every week practices this)
+1. **Experience** what good AI tools feel like (Week 1 teaches this)
+2. **Describe** what you need clearly (Week 2 teaches this)
+3. **Evaluate** whether what Claude built is correct (Week 2 practices this)
 4. **Design** systems that are worth building (Weeks 3-4 teach this)
 
 These are the same skills you'd need to manage a development team
@@ -80,11 +80,13 @@ build. A conversation guide shows you example prompts. A checklist
 helps you evaluate the result. A reference solution shows what good
 output looks like.
 
-The weeks build on each other. Week 1's server becomes the foundation
-for Week 2's guardrails. Week 3 designs a system that uses everything
-you've built. Week 4 adds agent capabilities on top. By the end,
-you've built a complete, connected system — and you understand every
-design decision because you made them.
+The weeks build on each other. Week 1 gives you hands-on experience
+with pre-built AI tools so you understand what good looks like. Week 2
+uses that experience as your guide while you build your own. Week 3
+designs a system that composes multiple servers. Week 4 adds agent
+capabilities with human oversight. By the end, you've built a complete,
+connected system — and you understand every design decision because you
+made them.
 
 ---
 

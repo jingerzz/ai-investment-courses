@@ -1,166 +1,366 @@
-# Week 2 Exercise: Build a Morning Briefing with Guardrails
+# Week 2 Exercise: Build Your Own MCP Server + Set Up Document Q&A
 
-## What You'll Build
+## What You'll Do
 
-You'll expand your Week 1 server with new tools and create a morning briefing
-workflow. When you're done, you'll be able to ask Claude Desktop:
+**Part A** — Use Claude Code to build a working MCP server from scratch.
+You'll describe tools in English and iterate until you have a server
+that answers questions about a stock watchlist with real market data.
 
-- "Give me my morning briefing"
-- "What should I be paying attention to today?"
+**Part B** — Install the page-index-rag server and Ollama to run local
+AI for SEC filing analysis. You'll query pre-indexed BlackRock and
+Robinhood filings from Claude Desktop.
 
-...and get a structured, cross-referenced analysis using real data — with
-guardrails that prevent the AI from making things up.
-
-## Time: 30 minutes
+## Time: 30 minutes (20 + 10)
 
 ## What You Need
 
-- Your working MCP server from Week 1
-- Claude Code and Claude Desktop
+- Claude Code installed (`npm install -g @anthropic-ai/claude-code`)
+- Claude Desktop installed
+- A terminal application
+- `uv` installed (from Week 1)
 
 ---
 
-## Step 1: Open Your Project in Claude Code (1 min)
+# Part A: Build a Watchlist Server with Claude Code (20 min)
+
+## Step 1: Create a New Project (2 min)
 
 ```bash
-cd ~/ai-finance-tools
+mkdir ~/ai-investment-courses/professional/servers/my-watchlist
+cd ~/ai-investment-courses/professional/servers/my-watchlist
+```
+
+Open Claude Code:
+```bash
 claude
 ```
 
-## Step 2: Add Market Context Tools (8 min)
-
-Your Week 1 server knows about individual stocks. Now add tools that provide
-broader market context. Tell Claude Code:
+Tell Claude Code to set up the project:
 
 ```
-I want to add new tools to my server.py to support a morning briefing.
-Please add:
+Create a new MCP server project using FastMCP. I want:
 
-1. get_market_overview - Returns how the major indices are doing today
-   (SPY, QQQ, DIA, IWM). Include daily change %, whether each is above
-   or below its 50-day moving average, and a simple regime label:
-   "risk-on" if SPY is up and above 50-day SMA, "risk-off" if SPY is
-   down and below 50-day SMA, "mixed" otherwise.
+- Python package using uv, named "my-watchlist"
+- Dependencies: mcp>=1.20.0, yfinance>=0.2.0, pandas>=2.0.0
+- Entry point: watchlist-server = "my_watchlist.server:main"
+- A basic server.py that imports FastMCP and creates a server named
+  "my-watchlist"
 
-2. get_sector_heatmap - Returns performance of the 11 S&P sectors today
-   (use the sector ETFs: XLK, XLF, XLE, XLV, etc). Sort from best to
-   worst. Flag any sector up or down more than 1.5%.
-
-3. get_watchlist_movers - Returns my watchlist stocks sorted by today's
-   performance. For each stock, include daily return %, whether it's
-   outperforming or underperforming its sector, and a "notable" field
-   if anything unusual is happening (big move, unusual volume).
-
-Pre-compute everything. The AI should never need to do math.
-Every tool returns a dict with data_source and as_of fields.
+Use the same project structure as the spy-tlt-course server in
+~/ai-investment-courses/professional/servers/spy-tlt-course/ for
+reference.
 ```
 
-Test each new tool in the MCP inspector:
+After Claude Code creates the files, install:
+```bash
+uv sync
 ```
-Can you run the MCP inspector so I can test these new tools?
-```
 
-## Step 3: Add a Pre-Formatted Briefing Tool (7 min)
+## Step 2: Add Your First Tools (5 min)
 
-This is the key guardrail concept: Python builds part of the briefing with
-exact numbers, so the AI can't accidentally change them.
+Now tell Claude Code to add tools. Be specific about what each tool
+returns — this is how you get good docstrings and return contracts.
 
 ```
-Add a tool called get_briefing_formatted that:
+Add these tools to my server. Pre-compute everything — the AI should
+never need to do math. All tools return dicts, never raise. Use an
+"error" field for failures. Include "data_source" and
+"stale_data_warning" fields in every return.
 
-1. Calls the other tools internally to gather data
+1. get_watchlist_prices(tickers: list[str] = None)
+   Returns current price, daily change %, and 50-day SMA for a default
+   watchlist: AAPL, MSFT, NVDA, AMZN, GOOGL.
+   If tickers are provided, use those instead.
+   Flag any stock that moved more than 2% today as "notable".
+   Sort by daily return, worst to best.
+
+2. get_market_overview()
+   Returns how the major indices are doing: SPY, QQQ, DIA, IWM.
+   Include daily change % and whether each is above or below its
+   50-day moving average. Add a simple regime label: "risk-on" if
+   SPY is up and above 50-day SMA, "risk-off" if SPY is down and
+   below 50-day SMA, "mixed" otherwise.
+
+3. get_sector_heatmap()
+   Returns the 11 S&P sectors (XLK, XLF, XLE, XLV, XLI, XLY, XLP,
+   XLU, XLRE, XLC, XLB) with today's performance. Sort best to worst.
+   Flag any sector up or down more than 1.5%.
+
+Use yfinance for all data. Fetch fresh data on each call (no caching
+needed for now).
+```
+
+Test the server:
+```
+Can you run the MCP inspector so I can test these tools?
+```
+
+Try calling each tool in the inspector. Check that:
+- Prices look correct
+- Daily changes are reasonable
+- The regime label makes sense
+- Stale data warnings appear when the market is closed
+
+## Step 3: Add a Pre-Formatted Briefing (5 min)
+
+This is the key guardrail pattern from the reading. Tell Claude Code:
+
+```
+Add a tool called get_morning_briefing() that:
+
+1. Calls the other tools internally to gather all data
 2. Builds a pre-formatted markdown section with exact numbers:
-   - Portfolio summary table (each stock, price, daily change %)
-   - Market regime status
-   - Any notable movers or unusual activity
-3. Returns this formatted markdown in a field called "formatted_section"
-4. Also returns a field called "present_verbatim" set to true
-5. Also returns a field called "ai_interpretation_notes" with a plain
-   English summary of the key points the AI should elaborate on
+   - Market regime status and index performance table
+   - Sector heatmap (sorted, with notable sectors flagged)
+   - Watchlist table: ticker, price, daily change %, above/below 50d SMA
+3. Returns the formatted markdown in a "formatted_section" field
+4. Returns "present_verbatim": true
+5. Returns "ai_interpretation_notes" with plain English key points
+   the AI should elaborate on (e.g., "NVDA is the biggest mover,
+   and Technology is the strongest sector — these are related")
 
-The idea is: the formatted section has exact numbers that the AI presents
-as-is. The interpretation notes give the AI permission to add context and
-cross-reference — but it should never restate the numbers in different
-words where it might round or miscalculate.
+The docstring should say: "Returns a pre-formatted morning briefing.
+Present the formatted_section verbatim — do not reformat, round, or
+recalculate any numbers. Use ai_interpretation_notes for additional
+context."
 ```
 
-## Step 4: Update the Guide Tool (3 min)
+Test in the inspector. The formatted section should be clean markdown
+with exact numbers.
+
+## Step 4: Add a Guide Tool (3 min)
 
 ```
-Update the get_strategy_guide tool to include all the new tools. Add a
-recommended flow for a morning briefing:
-
-1. get_market_overview - understand the macro environment
-2. get_sector_heatmap - see where money is flowing
-3. get_watchlist_movers - how my stocks are doing in context
-4. get_briefing_formatted - get the pre-built summary section
-
-Also add a rule in the guide: "When get_briefing_formatted returns
-present_verbatim=true, present the formatted_section exactly as returned.
-Do not reformat, round, or recalculate any numbers in it."
+Add a get_guide() tool that returns:
+- A list of all tools with one-line descriptions
+- A recommended morning briefing workflow:
+  1. get_market_overview → understand the environment
+  2. get_sector_heatmap → see where money is flowing
+  3. get_watchlist_prices → how my stocks are doing in context
+  4. get_morning_briefing → get the complete pre-formatted summary
+- Rules:
+  - "ALWAYS present formatted_section verbatim when present_verbatim
+    is true. Do not reformat or recalculate numbers."
+  - "If stale_data_warning is not null, display it prominently."
+  - "Do NOT compute aggregate returns by adding individual percentages."
 ```
 
-## Step 5: Test the Briefing in Claude Desktop (6 min)
+## Step 5: Connect to Claude Desktop and Test (5 min)
 
-Restart Claude Desktop if needed (after any config changes), then try:
+Add your new server to Claude Desktop's config. Open:
+
+**Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add your server alongside the SPY/TLT server (keep both):
+
+```json
+{
+  "mcpServers": {
+    "spy-tlt-course": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/YOUR_USERNAME/ai-investment-courses/professional/servers/spy-tlt-course",
+        "run",
+        "spy-tlt-server"
+      ]
+    },
+    "my-watchlist": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/YOUR_USERNAME/ai-investment-courses/professional/servers/my-watchlist",
+        "run",
+        "watchlist-server"
+      ]
+    }
+  }
+}
+```
+
+Restart Claude Desktop completely (quit and reopen). Then try:
 
 ```
 Give me my morning briefing.
 ```
 
-Check the output:
-- Does it include the pre-formatted section with exact numbers?
-- Does it cross-reference data? (e.g., "XOM is your worst performer,
-  and Energy is today's weakest sector — that's consistent")
-- Does it mention the market regime and connect it to your stocks?
+Check the output against the guardrail checklist:
 
-Try intentionally tricky prompts:
+- [ ] Pre-formatted section appears with exact numbers (not rounded)
+- [ ] Market regime is labeled and explained
+- [ ] Cross-references between sector and stock performance
+- [ ] Stale data warning appears if market is closed
+
+Now try a tricky prompt:
+
 ```
 What's my portfolio's total return today?
 ```
 
-If the AI calculates a total by adding up individual returns (which is
-wrong — you can't just add percentages), that's a guardrail gap. Tell
-Claude Code:
+If the AI adds up individual stock returns (mathematically wrong —
+percentages don't add across different position sizes), that's a
+guardrail gap. Tell Claude Code:
 
 ```
-The AI is trying to calculate total portfolio return by adding up
-individual stock returns, which is wrong. Can you add a
-"watchlist_avg_daily_return" field to get_watchlist_movers that
-correctly computes the average daily return? That way the AI uses
-the pre-computed number instead of doing bad math.
+The AI is calculating total return by adding individual stock returns,
+which is wrong. Add an "avg_daily_return" field to get_watchlist_prices
+that computes the equal-weight average return. That way the AI uses the
+pre-computed number.
 ```
 
-## Step 6: Add a Stale Data Warning (5 min)
+Rebuild, restart Claude Desktop, and verify the fix.
 
+---
+
+# Part B: Set Up Page-Index-RAG for SEC Filing Q&A (10 min)
+
+## Step 1: Install Ollama (3 min)
+
+**Mac:**
+```bash
+brew install ollama
 ```
-Add stale data handling to all tools. If the market is closed (weekend,
-holiday, or after hours), every tool should include a field called
-"stale_data_warning" with a message like "Market closed. Prices are from
-the most recent trading session (2026-03-15)." If the market is open,
-set this field to null.
 
-Also update the guide tool: add a rule that says "If any tool returns a
-stale_data_warning, display it prominently at the top of your response."
+**Windows:** Download from [ollama.com/download](https://ollama.com/download)
+
+Start Ollama and pull the course model:
+```bash
+ollama serve &
+ollama pull qwen3.5:0.8b
 ```
 
-Test this by running the briefing outside market hours.
+Verify it works:
+```bash
+ollama run qwen3.5:0.8b "What is a 10-K filing?"
+```
+
+You should get a brief answer. The quality won't match Claude — that's
+expected. The local model handles document search; Claude Desktop does
+the reasoning. Press `Ctrl+D` to exit.
+
+## Step 2: Install the Page-Index-RAG Server (3 min)
+
+The page-index-rag server is included in your course materials with
+pre-indexed SEC filings for BlackRock (BLK) and Robinhood (HOOD).
+
+```bash
+cd ~/ai-investment-courses/professional/servers/page-index-rag-course
+uv sync
+```
+
+The server comes with 7 pre-indexed filings:
+- BLK 10-K (annual report, Feb 2026)
+- BLK 10-Q × 2 (quarterly reports, 2025)
+- HOOD 10-K (annual report, Feb 2026)
+- HOOD 10-Q × 3 (quarterly reports, 2025)
+
+No fetching or indexing needed — you can start querying immediately.
+
+## Step 3: Connect to Claude Desktop (2 min)
+
+Add the page-index-rag server to your Claude Desktop config:
+
+```json
+{
+  "mcpServers": {
+    "spy-tlt-course": { "...": "..." },
+    "my-watchlist": { "...": "..." },
+    "page-index-rag": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/YOUR_USERNAME/ai-investment-courses/professional/servers/page-index-rag-course",
+        "run",
+        "rag-server"
+      ]
+    }
+  }
+}
+```
+
+Restart Claude Desktop.
+
+## Step 4: Query SEC Filings (2 min)
+
+Open a new conversation in Claude Desktop and try these prompts:
+
+**Basic document Q&A:**
+```
+What documents do you have indexed?
+```
+
+Claude calls `list_documents()` and shows the 7 available filings.
+
+**Section navigation:**
+```
+Show me the table of contents for BlackRock's latest 10-K.
+```
+
+Claude calls `get_document_overview()` and displays the filing's
+hierarchical structure — the same tree structure described in the
+reading.
+
+**Targeted question:**
+```
+What are BlackRock's main risk factors related to market volatility?
+```
+
+Claude calls `search_with_citations()` to find the relevant section,
+then `get_document_section()` to read the full text. Notice the
+citation — it tells you exactly which section the answer came from.
+
+**Cross-company comparison:**
+```
+Compare Robinhood's and BlackRock's revenue growth in their most
+recent annual reports.
+```
+
+Claude calls `batch_query()` to search both companies' 10-Ks
+simultaneously, then synthesizes the comparison.
 
 ---
 
 ## What You Learned
 
-- How to add tools to an existing MCP server by describing them to Claude Code
-- The **pre-formatted template** pattern: Python builds sections with exact
-  numbers, the AI presents them verbatim
-- The **stale data warning** pattern: tools tell the AI when data isn't fresh
-- How to **cross-reference** data across tools (market regime + sector + stock)
-- How to **iterate** when you find a guardrail gap (AI doing bad math)
+- How to **build an MCP server from scratch** by describing tools to
+  Claude Code in English
+- The **pre-formatted template** pattern: Python builds the briefing,
+  the AI presents it verbatim
+- The **stale data warning** pattern: tools tell the AI when data isn't
+  fresh
+- How to **find and fix guardrail gaps** through iterative testing
+- How to **install Ollama** and run local AI models for document search
+- How **structure-first RAG** preserves document hierarchy for
+  citation-grade answers on SEC filings
+- The **hybrid approach**: local models for search, cloud models for
+  reasoning
 
 ## If You Get Stuck
 
-- "The new tool is crashing" → Paste the error to Claude Code
-- "The briefing looks weird in Claude Desktop" → Ask Claude Code to adjust
-  the formatting of the `formatted_section`
-- "The AI is ignoring my pre-formatted section" → Make sure the guide tool
-  mentions the `present_verbatim` rule
+**Claude Code isn't generating working code:**
+- Paste the error message back to Claude Code — it can usually fix it
+- Make sure you ran `uv sync` after the initial project setup
+
+**"Tool call failed" in Claude Desktop:**
+- Check the path in `claude_desktop_config.json` — most errors are
+  wrong paths
+- Verify the server starts: `cd` into the directory and run
+  `uv run watchlist-server`
+
+**Ollama is slow or not responding:**
+- Make sure `ollama serve` is running in the background
+- The `qwen3.5:0.8b` model should respond in 2-5 seconds. If it's
+  much slower, your machine may need the even smaller model or more RAM
+
+**page-index-rag errors:**
+- Make sure Ollama is running (`ollama serve`)
+- Check that the model is downloaded: `ollama list` should show
+  `qwen3.5:0.8b`
+
+## Next Week
+
+In Week 3, you'll learn about **system design** — how MCP servers
+compose into larger systems, how to handle state across conversations,
+and how to design multi-server architectures. You'll also explore
+testing strategies and deployment patterns for production use.

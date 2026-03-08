@@ -6,15 +6,16 @@
 
 Over four weeks, you built a complete AI-powered investment toolkit:
 
-**Week 1** — You connected Claude to live market data. Your MCP server
-gives Claude access to stock prices, fundamentals, and watchlist
-summaries. You learned the tool-use pattern: AI doesn't access data
-directly; it calls structured tools that you define.
+**Week 1** — You installed a pre-built strategy server and experienced
+what it feels like to have AI answer questions backed by real market
+data. You learned the tool-use pattern, MCP fundamentals, and four
+design principles — by using tools, not just reading about them.
 
-**Week 2** — You added guardrails that make AI output trustworthy.
-Pre-formatted templates prevent math errors. Stale data warnings
-prevent misrepresentation. Your morning briefing tool cross-references
-multiple data sources and presents results the way you want them.
+**Week 2** — You built your own MCP server with Claude Code and added
+guardrails that make AI output trustworthy. Pre-formatted templates
+prevent math errors. Stale data warnings prevent misrepresentation.
+You also set up local AI with Ollama and a structure-first RAG system
+for SEC filing analysis — with citation-grade answers.
 
 **Week 3** — You designed a multi-server architecture. You learned why
 separation of concerns matters, how shared libraries prevent
@@ -26,11 +27,6 @@ escalates — with human approval at every consequential step. Your
 audit trail logs every decision. Your approval levels match the
 risk of each action. This is how AI earns trust in regulated
 environments.
-
-If you completed the bonus module, you also built a private document
-Q&A system that processes SEC filings entirely on your machine. You
-understand when local processing matters and when cloud capabilities
-add value.
 
 None of this required writing code. You described what you wanted,
 evaluated what Claude built, and iterated until it was right. That
