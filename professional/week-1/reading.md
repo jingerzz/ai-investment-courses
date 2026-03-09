@@ -20,6 +20,12 @@ you see *why* the AI tools are designed the way they are.
 
 ## 1.2 The SPY/TLT Color Strategy
 
+> **You don't need to memorize any of this.** The server handles all the
+> signal logic automatically. You're reading this so you can understand
+> what the tools are doing under the hood — and so you can evaluate
+> AI tool design when you build your own in Week 2. Skim the signal
+> details; focus on the overall structure.
+
 ### The Core Idea
 
 The strategy classifies every trading day into one of four **colors**
@@ -175,6 +181,11 @@ Think of MCP as USB-C for AI. Just as USB-C lets any device connect to
 any charger or display, MCP lets any AI model connect to any tool.
 
 ### Anatomy of a Tool
+
+> **You'll see Python code in this section.** You don't need to
+> understand it — it shows how the tools work internally. You won't
+> write or edit this code. Focus on the four labeled components
+> (name, parameters, docstring, return value) and what each one does.
 
 Every MCP tool has four components. Here's a real tool from the
 SPY/TLT server you'll install in the exercise:

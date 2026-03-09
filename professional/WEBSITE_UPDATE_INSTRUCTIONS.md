@@ -25,8 +25,10 @@ integrated into Week 2.
 - **Week 2: Building Your Own AI Tools** — Build with Claude Code +
   set up Ollama + page-index-rag. Guardrails, RAG, and local models
   are all here now.
-- Week 3: System design (unchanged)
-- Week 4: Autonomous agents (unchanged)
+- **Week 3: System Design and Architecture** — Compose a multi-server
+  system using the three servers from Weeks 1-2.
+- **Week 4: Autonomous Agents and Controls** — Build a monitoring agent
+  with audit trail using existing servers.
 - **Bonus: REMOVED** — content absorbed into Week 2
 
 ---
@@ -37,108 +39,127 @@ integrated into Week 2.
 
 | File | Website Page | What Changed |
 |------|-------------|--------------|
-| `week-1/reading.md` | week-1.html | Complete rewrite. Now covers: SPY/TLT color strategy (colors, 9 signals, 3 tiers, danger state, greed trim, backtest), MCP fundamentals (anatomy of a tool, return contract, transport), four design principles (pre-compute, context metadata, one-tool-per-question, guide tool), where AI adds value. |
-| `week-1/exercise/README.md` | week-1.html (exercise section) | Complete rewrite. Now: install uv, install spy-tlt-course server, connect to Claude Desktop, guided exploration of 14 tools through specific prompts, troubleshooting. No Claude Code needed. |
-| `week-2/reading.md` | week-2.html | Complete rewrite. Now covers: Claude Code as builder, tool docstring design, return contracts, three guardrail patterns (pre-compute, pre-formatted templates, stale data warnings), Ollama local models, structure-first RAG for financial documents, where AI reasoning adds value. |
-| `week-2/exercise/README.md` | week-2.html (exercise section) | Complete rewrite. Part A (20 min): build watchlist server with Claude Code. Part B (10 min): install Ollama + page-index-rag, query pre-indexed BLK/HOOD filings. |
-| `introduction.md` | intro page | Updated "What You'll Actually Do" section and weekly progression description. |
-| `conclusion.md` | conclusion page | Updated week descriptions. Removed bonus module reference. |
-
-### Supporting files (update if referenced on website):
-
-| File | What Changed |
-|------|--------------|
-| `README.md` | Rewritten — new weekly progression table, included servers, updated structure tree |
-| `COURSE_BRIEF.md` | Updated learning outcomes, chapter mapping, removed bonus chapter |
-
-### New server packages (NOT website content, but referenced in exercises):
-
-| Package | Description |
-|---------|-------------|
-| `servers/spy-tlt-course/` | Pre-built SPY/TLT strategy server with 14 MCP tools. Students install this in Week 1. |
-| `servers/page-index-rag-course/` | Pre-built RAG server with 14 MCP tools + 7 pre-indexed SEC filings (BLK, HOOD). Students install this in Week 2. |
+| `prerequisites.md` | prerequisites.html | **Major rewrite.** Split into "Week 1" (minimal) and "Week 2+" (additional). Removed bonus module references. Fixed Ollama default to qwen3.5:0.8b. Added ZIP download alternative for git clone. Added external resources section. |
+| `week-1/reading.md` | week-1.html | Added framing callouts: "you don't need to memorize this" before strategy section, "you won't write this code" before Python examples. |
+| `week-1/exercise/README.md` | week-1.html (exercise) | Added Settings > Developer > Edit Config path for JSON editing. Added path verification step before config edit. Improved troubleshooting. |
+| `week-2/reading.md` | week-2.html | Complete rewrite (unchanged from previous commit). |
+| `week-2/exercise/README.md` | week-2.html (exercise) | Complete rewrite (unchanged from previous commit). |
+| `week-3/reading.md` | week-3.html | Minor opening paragraph update. |
+| `week-3/exercise/README.md` | week-3.html (exercise) | Rewritten to use existing 3 servers. |
+| `week-4/reading.md` | week-4.html | Minor reference fixes (SPY instead of ES/MES). |
+| `week-4/exercise/README.md` | week-4.html (exercise) | Rewritten to use existing servers. |
+| `introduction.md` | intro page | Updated weekly progression. |
+| `conclusion.md` | conclusion page | Updated week descriptions. |
 
 ---
 
-## Key Content Differences to Reflect
+## Prerequisites Page — Specific Changes
 
-### Week 1 page (biggest change)
+This is the biggest structural change on the website. The current page
+front-loads too many installs before Week 1.
 
-**Before:** Students use Claude Code to build a watchlist server.
-The reading explained MCP concepts abstractly.
+### New structure:
 
-**After:** Students install a pre-built server and explore it. The
-reading explains the SPY/TLT strategy in detail (this is new — the
-old course never explained the strategy, it just assumed knowledge).
+**"Software for Week 1"** (minimal, ~15 min):
+1. Claude Desktop — download and sign in
+2. Terminal — already on their machine, with link to tutorial
+3. uv — one command
+4. Course files — git clone OR ZIP download (new alternative)
 
-Key sections to render on the page:
-1. The SPY/TLT Color Strategy — table of 4 colors, 9 signals by tier,
-   danger state rules, backtest results table
-2. MCP anatomy — code example of `get_current_signal()` with the four
-   components labeled
-3. Four design principles — each grounded in a real tool from the
-   SPY/TLT server
-4. Exercise — 6 steps, each with specific Claude Desktop prompts to try
+**"Additional Software for Week 2"** (install later):
+5. Node.js
+6. Claude Code
+7. Ollama with `qwen3.5:0.8b` as default (was `qwen3.5:4b`)
 
-### Week 2 page (major rewrite)
+**Verification checklists** are split: one for Week 1 (4 items), one
+for Week 2 (3 additional items).
 
-**Before:** Adding guardrails to Week 1's server. RAG was in a separate
-bonus module.
+### Remove from prerequisites page:
+- All "bonus module" references
+- "Software — Bonus Module" section header
+- `nomic-embed-text` model pull (not needed for vectorless RAG)
+- Reference to `bonus-local-rag/exercise/ollama_quickstart.md`
 
-**After:** Two-part exercise. Part A builds a new server from scratch
-with Claude Code. Part B sets up Ollama and page-index-rag.
+### Add to prerequisites page:
+- ZIP download alternative for git clone
+- Terminal tutorial link: [Learn Enough Command Line to Be Dangerous](https://www.learnenough.com/command-line-tutorial/basics)
+- "Recommended External Resources" section with links to free courses
 
-Key sections to render:
-1. Claude Code development loop
-2. Tool docstring design (weak vs strong examples)
-3. Three guardrail patterns with code examples
-4. Ollama introduction + model selection table (by RAM)
-5. Structure-first RAG explanation + tree diagram
-6. Exercise Part A: build watchlist server (step-by-step prompts)
-7. Exercise Part B: install Ollama + page-index-rag (4 steps)
+### Hardware table fix:
+- Change "Recommended — Needed for bonus Ollama module" to
+  "Recommended — Can run larger local models in Week 2"
 
-### Week 3 page (exercise rewritten, reading lightly updated)
+### Data sources table fix:
+- Change SEC EDGAR "Used In" from "Bonus module" to "Week 2+"
 
-**Reading:** Minor update to opening paragraph — now references the
-three servers students already have instead of "In Weeks 1-2, you
-built a single MCP server." Rest of reading unchanged.
+---
 
-**Exercise (rewritten):** Instead of designing a hypothetical system,
-students connect their three existing servers to Claude Desktop and
-experience cross-server queries:
-1. Connect all 3 servers simultaneously
-2. Cross-server queries (strategy + watchlist, strategy + research, all three)
-3. Identify architecture patterns (shared data, shared library candidates)
-4. Build a shared data pattern (watchlist reads SPY CSV from spy-tlt-course)
-5. Design a 4th server (risk management) — design only, not built
+## Week 1 Page — Specific Changes
 
-Key sections to render:
-1. Exercise steps with specific Claude Desktop prompts for cross-server queries
-2. Architecture principles list (5 items)
-3. Troubleshooting section
+### Reading additions:
 
-### Week 4 page (exercise rewritten, reading lightly updated)
+Two new callout blocks (render as highlighted boxes or blockquotes):
 
-**Reading:** Minor updates — replaced MES/ES futures references with
-SPY equivalents (students don't have futures tools). Concepts unchanged.
+1. **Before section 1.2** (the strategy):
+   > "You don't need to memorize any of this. The server handles all the
+   > signal logic automatically. You're reading this so you can understand
+   > what the tools are doing under the hood..."
 
-**Exercise (rewritten):** Students build a monitoring agent that uses
-their existing SPY/TLT and watchlist servers:
-1. Design monitoring rules with Claude Desktop
-2. Build monitor.py that calls spy-tlt-course tools + yfinance
-3. Classify findings: SILENT / ALERT / URGENT / BLOCKED
-4. Add audit trail with full reasoning chain
-5. Expose alerts as MCP tool (get_monitor_alerts)
-6. Test the full agent loop: monitor → alerts in Claude Desktop →
-   cross-server synthesis → proposed actions
+2. **Before the code example in section 1.4** (anatomy of a tool):
+   > "You'll see Python code in this section. You don't need to understand
+   > it — it shows how the tools work internally. You won't write or edit
+   > this code."
 
-Key sections to render:
-1. Step-by-step exercise with Claude Code prompts
-2. Autonomy spectrum diagram (SILENT → ALERT → URGENT → BLOCKED)
-3. "AI Proposes, Humans Decide" section
-4. Troubleshooting section
+### Exercise changes:
 
-### Navigation / Table of Contents
+**Step 3 (Connect to Claude Desktop):**
+- Add note: "The easiest way: in Claude Desktop, go to Settings >
+  Developer > Edit Config."
+- Add path verification step before editing the config
+- Add detail about the hammer icon and what to do if tools don't appear
+
+---
+
+## External Resources to Link
+
+Add these as a sidebar, footer section, or "Learn More" callouts on
+relevant pages. All are free and high-credibility.
+
+### On Prerequisites page (already added to source file):
+
+**Terminal basics:**
+- [Learn Enough Command Line to Be Dangerous](https://www.learnenough.com/command-line-tutorial/basics)
+- [freeCodeCamp: Command Line for Beginners](https://www.freecodecamp.org/news/command-line-for-beginners/)
+
+**MCP deep dives (after Week 1):**
+- [Anthropic: Introduction to MCP](https://anthropic.skilljar.com/introduction-to-model-context-protocol) — free official course, certificate included
+- [DeepLearning.AI: MCP Build Rich-Context AI Apps](https://learn.deeplearning.ai/courses/mcp-build-rich-context-ai-apps-with-anthropic/lesson/fkbhh/introduction) — free, by Andrew Ng + Anthropic
+- [MCP Official Documentation](https://modelcontextprotocol.io)
+
+**Claude Code (before Week 2):**
+- [Anthropic: Claude Code in Action](https://anthropic.skilljar.com/claude-code-in-action) — free official course, certificate
+- [Claude Code Documentation](https://code.claude.com/docs/en/overview)
+
+**Claude Desktop setup help:**
+- [Claude Help Center: Local MCP Servers](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop)
+- [MCP Docs: Connect to Local Servers](https://modelcontextprotocol.io/docs/develop/connect-local-servers)
+
+**Going further (after the course):**
+- [Hugging Face MCP Course](https://huggingface.co/learn/mcp-course/en/unit0/introduction) — free 4-unit course
+- [Anthropic: MCP Advanced Topics](https://anthropic.skilljar.com/model-context-protocol-advanced-topics) — production patterns
+
+### Suggested placement on website:
+
+| Page | Resources to Feature |
+|------|---------------------|
+| Prerequisites | Terminal tutorial, "you'll learn more about MCP in Week 1" |
+| Week 1 | MCP courses (Anthropic Skilljar, DeepLearning.AI), Claude Help Center for setup |
+| Week 2 | Claude Code course and docs, Claude Code in Action |
+| Conclusion | Hugging Face MCP course, MCP Advanced Topics, MCP official docs |
+
+---
+
+## Navigation / Table of Contents
 
 Remove any "Bonus Module" or "Bonus: Local RAG" entries from navigation.
 The course is now strictly 4 weeks with no bonus. Remove "under
@@ -152,9 +173,18 @@ Update the weekly overview/progression table anywhere it appears:
 
 ---
 
+## Interactive Demo Update (Optional)
+
+The current Week 1 demo uses a generic `get_position_summary("AAPL")`
+example. Consider updating it to use the actual SPY/TLT tools students
+will interact with — e.g., `get_current_signal()` returning a Blue
+regime with a Tier 2 signal. This would make the demo feel connected
+to the exercise rather than abstract.
+
+---
+
 ## What NOT to Change
 
 - The glossary is unchanged
-- Prerequisites content is unchanged (though Week 1 now only needs
-  uv + Claude Desktop, not Claude Code — Claude Code is first needed
-  in Week 2)
+- Week 3 and Week 4 readings are only lightly updated (minor reference fixes)
+- The overall site layout and design direction are unchanged

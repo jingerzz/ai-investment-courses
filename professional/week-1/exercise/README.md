@@ -77,13 +77,33 @@ it (or close the terminal).
 
 Now tell Claude Desktop where to find your server.
 
-**Find your Claude Desktop config file:**
+**Open your Claude Desktop config file:**
 
+The easiest way: in Claude Desktop, go to **Settings > Developer >
+Edit Config**. This opens the config file in your default text editor.
+
+If that option isn't available, find the file manually:
 - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 If the file doesn't exist, create it. If it already exists and has
 content, you'll add to the existing `mcpServers` section.
+
+**Before you edit, verify your path.** In your terminal, run:
+
+Mac:
+```bash
+ls ~/ai-investment-courses/professional/servers/spy-tlt-course/
+```
+
+Windows:
+```
+dir %USERPROFILE%\ai-investment-courses\professional\servers\spy-tlt-course\
+```
+
+You should see `pyproject.toml` and a `data/` folder. If you see
+"No such file or directory," your course files are in a different
+location — find the correct path before proceeding.
 
 **Add this to the config file** (replace `YOUR_USERNAME` with your
 actual username):
@@ -124,7 +144,12 @@ Windows example:
 
 **Restart Claude Desktop** completely (quit and reopen, not just close
 the window). When you start a new conversation, you should see the
-SPY/TLT tools available — look for a hammer icon or a tools indicator.
+SPY/TLT tools available — look for a hammer icon (🔨) at the bottom
+of the chat input area. Click it to see the list of available tools.
+
+**If you don't see tools after restarting,** the most common cause is a
+wrong path. Double-check that the `--directory` path matches the output
+from the `ls` command above.
 
 ## Step 4: Your First Conversation (5 min)
 
