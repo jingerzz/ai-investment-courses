@@ -81,8 +81,8 @@
 
 - [ ] **Cross-server works.** Ask Claude Desktop something that
   combines document data with stock data from your Week 1 server:
-  "What does Apple's annual report say about their business, and how
-  is AAPL doing today?"
+  "What does Roblox's annual report say about their business, and how
+  is RBLX doing today?"
 
 ## Privacy
 

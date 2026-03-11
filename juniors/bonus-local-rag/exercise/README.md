@@ -6,9 +6,9 @@ A system that lets you ask questions about company documents — running
 entirely on your own computer. No data gets sent to the cloud. You'll
 be able to ask Claude Desktop things like:
 
-- "What does Apple say about AI risk in their annual report?"
+- "What does Roblox say about user safety risk in their annual report?"
 - "Summarize the business overview from this filing"
-- "Compare the risk factors in Apple's and Microsoft's reports"
+- "Compare the risk factors in Roblox's and Take-Two's reports"
 
 ...with the document search happening locally on your machine.
 
@@ -53,11 +53,11 @@ their annual reports (called 10-K filings). It's free, no account needed.
 Ask Claude Code:
 
 ```
-I want to download Apple's most recent 10-K filing from SEC EDGAR.
+I want to download Roblox's most recent 10-K filing from SEC EDGAR.
 Can you write a script that:
 1. Downloads the filing from EDGAR
 2. Cleans up the HTML into plain text
-3. Saves it as ~/ai-stock-tools/documents/AAPL-10K.txt
+3. Saves it as ~/ai-stock-tools/documents/RBLX-10K.txt
 
 Keep the section headers intact (Item 1, Item 1A, etc.) — they're
 important for organizing the search index.
@@ -104,7 +104,7 @@ a JSON file, no database needed.
 Then test it:
 
 ```
-Can you run the indexer on the AAPL-10K.txt file? Show me how many
+Can you run the indexer on the RBLX-10K.txt file? Show me how many
 sections it found and how long it took.
 ```
 
@@ -123,7 +123,7 @@ Add a function to rag_system.py called answer_question that:
 5. Returns the answer with section citations
 
 Also add a way to test from the command line:
-  uv run python rag_system.py --ask "What are Apple's main risk factors?"
+  uv run python rag_system.py --ask "What are Roblox's main risk factors?"
 ```
 
 Test with a few questions:
@@ -180,8 +180,8 @@ What documents do I have indexed?
 ```
 
 ```
-What does Apple say about AI and machine learning risks in their
-annual report?
+What does Roblox say about user safety and content moderation risks in
+their annual report?
 ```
 
 ## Step 6: Add Another Document and Compare (10 min)
@@ -189,18 +189,18 @@ annual report?
 Download a second company's filing:
 
 ```
-Download Microsoft's most recent 10-K from SEC EDGAR and save it to
-my documents folder. Then index it using my RAG system.
+Download Take-Two's (TTWO) most recent 10-K from SEC EDGAR and save it
+to my documents folder. Then index it using my RAG system.
 ```
 
 Now try cross-document questions in Claude Desktop:
 
 ```
-Compare Apple's and Microsoft's biggest risk factors.
+Compare Roblox's and Take-Two's biggest risk factors.
 ```
 
 ```
-How do Apple and Microsoft describe their competitive advantages?
+How do Roblox and Take-Two describe their competitive advantages?
 ```
 
 Claude Desktop will call your RAG tools for both documents and combine

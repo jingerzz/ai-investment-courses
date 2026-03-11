@@ -6,8 +6,8 @@ A tool that gives Claude Desktop access to real stock market data for
 companies you care about. When you're done, you'll be able to open
 Claude Desktop and ask things like:
 
-- "How is Apple doing today?"
-- "Compare Tesla and Netflix — which one is doing better?"
+- "How is Roblox doing today?"
+- "Compare Spotify and Snapchat — which one is doing better?"
 - "Show me a summary of all my stocks"
 
 ...and Claude will answer using real, current data — not guesses from
@@ -41,8 +41,8 @@ stocks to ones you actually want to follow:**
 
 ```
 I want to build an MCP server that tracks stocks I'm interested in.
-I want to follow these companies: AAPL (Apple), NKE (Nike),
-DIS (Disney), TSLA (Tesla), NFLX (Netflix)
+I want to follow these companies: RBLX (Roblox), SNAP (Snapchat),
+SPOT (Spotify), DUOL (Duolingo), CROX (Crocs)
 
 Please build a FastMCP server in Python that has these tools:
 
@@ -86,9 +86,9 @@ Run: uv run mcp dev server.py
 Claude Code will start the MCP inspector — a web page where you can
 try each tool and see what it returns. Check:
 
-- Does `get_stock_snapshot("AAPL")` return real data?
+- Does `get_stock_snapshot("RBLX")` return real data?
 - Does `get_watchlist_summary()` show all your stocks?
-- Does `get_stock_comparison("AAPL", "TSLA")` compare them correctly?
+- Does `get_stock_comparison("RBLX", "SPOT")` compare them correctly?
 - Are all the numbers already calculated (not raw data)?
 
 Press `Ctrl + C` in the terminal to stop the inspector when done.
@@ -151,7 +151,7 @@ Open Claude Desktop and try these:
 
 - "How are my stocks doing today?"
 - "Which of my stocks has the best momentum right now?"
-- "Compare Apple and Tesla for me — which looks stronger?"
+- "Compare Roblox and Spotify for me — which looks stronger?"
 - "Give me a quick summary of my watchlist"
 
 Claude Desktop will call your tools to get real data, then give you a

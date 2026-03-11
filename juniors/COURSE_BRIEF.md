@@ -44,8 +44,8 @@ progression. Key differences:
 |--------|---------------------|---------------|
 | Finance knowledge | Assumed | Taught alongside AI |
 | Tone | Professional colleague | Friendly mentor |
-| Examples | Bloomberg, risk systems, compliance | Apple, Nike, Disney watchlists |
-| Watchlist stocks | AAPL, MSFT, NVDA, JPM, XOM | AAPL, NKE, DIS, TSLA, NFLX |
+| Examples | Bloomberg, risk systems, compliance | Roblox, Spotify, Snapchat watchlists |
+| Watchlist stocks | AAPL, MSFT, NVDA, JPM, XOM | RBLX, SNAP, SPOT, DUOL, CROX (primary); TTWO, NFLX, DIS (extended) |
 | Agent scenario | Fund monitoring, trade approval | Stock club portfolio alerts |
 | Architecture example | Equity L/S fund, 3 servers | School stock club, 2-3 servers |
 | Risk disclaimer | Light (audience understands) | Prominent (new investors) |
@@ -184,7 +184,7 @@ Each chapter should follow this flow:
 - No images exist yet — CoWork should create diagrams and illustrations
   (this audience benefits more from visuals than the professional version)
 - Example dates use 2026-03-15 throughout
-- Default watchlist stocks: AAPL, NKE, DIS, TSLA, NFLX (brands teens know)
+- Default watchlist stocks: RBLX, SNAP, SPOT, DUOL, CROX (primary); TTWO, NFLX, DIS (extended)
 - Model references use Qwen 3.5 family (0.8b / 4b / 9b) for Ollama
 - The bonus module sits between Weeks 2 and 3 but is optional
 - `architecture_template.md` in Week 3 is a fillable worksheet

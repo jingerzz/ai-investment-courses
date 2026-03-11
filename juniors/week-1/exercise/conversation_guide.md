@@ -10,8 +10,8 @@ examples — change the stocks to ones you actually care about!
 **Good first message** (specific, clear):
 ```
 I want to build an MCP server that tracks stocks I'm interested in.
-I follow: AAPL (Apple), NKE (Nike), DIS (Disney), TSLA (Tesla),
-NFLX (Netflix).
+I follow: RBLX (Roblox), SNAP (Snapchat), SPOT (Spotify),
+DUOL (Duolingo), CROX (Crocs).
 
 Please build a FastMCP server with these tools:
 1. get_stock_snapshot(ticker) - current price, daily change %, 52-week range
@@ -48,7 +48,7 @@ percentages in the code.
 ### Fixing an error
 
 ```
-When I call get_stock_snapshot("DIS"), I get this error:
+When I call get_stock_snapshot("DUOL"), I get this error:
 [paste the error]
 Can you fix it?
 ```
@@ -119,7 +119,7 @@ run the server. Can you fix this?
 ### Data not loading
 
 ```
-The get_stock_snapshot tool works for AAPL but returns an error for
+The get_stock_snapshot tool works for RBLX but returns an error for
 BRK.B. I think the ticker format might be wrong. Can you handle
 tickers with dots and special characters?
 ```
@@ -154,4 +154,4 @@ What do I need to fix?
 
 5. **Ask Claude to test.** After any change, say: "Can you run the MCP
    inspector so I can test this?" or "Can you call get_stock_snapshot
-   with AAPL and show me what it returns?"
+   with RBLX and show me what it returns?"

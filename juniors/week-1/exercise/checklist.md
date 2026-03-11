@@ -19,8 +19,8 @@ need to read the code — just test the tools and check the results.
 For each tool, check:
 
 - [ ] **Real data, not fake data.** The prices should match what you
-  see on a site like Google Finance or StockAnalysis.com. If Apple
-  closed at $195 yesterday, the tool should show something close to that.
+  see on a site like Google Finance or StockAnalysis.com. If Roblox
+  closed at $60 yesterday, the tool should show something close to that.
 
 - [ ] **Numbers are already calculated.** Look at the tool results. Are
   percentages already calculated? Or does it return raw prices that
@@ -54,7 +54,7 @@ For each tool, check:
   restarting, your tools should be visible (look for a hammer icon
   or tool indicator).
 
-- [ ] **Claude uses your tools.** Ask Claude Desktop "How is Apple doing
+- [ ] **Claude uses your tools.** Ask Claude Desktop "How is Roblox doing
   today?" — it should call your `get_stock_snapshot` tool, not answer
   from memory.
 

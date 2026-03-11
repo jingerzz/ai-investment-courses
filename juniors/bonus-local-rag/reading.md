@@ -85,11 +85,11 @@ Not sure how much RAM your computer has?
 for a simple idea: **help AI answer questions by first finding the
 relevant parts of a document.**
 
-Without RAG, if you ask an AI "What are Apple's biggest risks?", it
+Without RAG, if you ask an AI "What are Roblox's biggest risks?", it
 would have to guess based on its training data (which might be old).
 
 With RAG, the system:
-1. Searches through Apple's actual annual report
+1. Searches through Roblox's actual annual report
 2. Finds the sections about risks
 3. Gives those sections to the AI
 4. The AI reads them and gives you a specific, accurate answer
@@ -100,7 +100,7 @@ Before you can search a document, you need to "index" it — like
 building a table of contents.
 
 ```
-Your document (Apple's annual report)
+Your document (Roblox's annual report)
        |
 Split into sections (Risk Factors, Business Overview, etc.)
        |
@@ -116,7 +116,7 @@ makes searching by meaning possible — not just searching for exact words.
 ### Phase 2: Searching (Every Time You Ask)
 
 ```
-Your question: "What are Apple's main risks?"
+Your question: "What are Roblox's main risks?"
        |
 Your question gets turned into numbers (same way as the sections)
        |

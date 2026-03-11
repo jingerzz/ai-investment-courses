@@ -5,22 +5,32 @@
 Let's start with the basics.
 
 A **stock** is a tiny piece of ownership in a company. When you buy a
-share of Apple stock, you own a small fraction of Apple. If Apple does
-well and makes more money, your share becomes worth more. If Apple does
-poorly, your share loses value.
+share of Roblox stock, you own a small fraction of Roblox. If Roblox
+does well and makes more money, your share becomes worth more. If Roblox
+does poorly, your share loses value.
 
 Every stock has a **ticker symbol** — a short code used to identify it.
-Apple is "AAPL". Nike is "NKE". Tesla is "TSLA". You'll use these
-codes throughout the course.
+Roblox is "RBLX". Spotify is "SPOT". Snapchat's parent company is "SNAP".
+You'll use these codes throughout the course.
 
 The **stock price** is what one share costs right now. It changes
 constantly during trading hours (9:30 AM to 4:00 PM Eastern, Monday
 through Friday). After hours, the price stays at whatever it closed at.
 
+> **Investing 101: Share Price vs. Company Value**
+>
+> Here's something that surprises most people: a higher stock price
+> doesn't mean a bigger or better company. Snapchat (SNAP) trades at
+> around $5 per share. Spotify (SPOT) trades at around $517. Does that
+> mean Spotify is 100 times bigger than Snapchat? Nope. Snapchat has
+> way more shares outstanding. What actually tells you a company's size
+> is its **market cap** — the stock price multiplied by the total number
+> of shares. You'll see this in your tool returns.
+
 Now here's the thing about AI: **Claude doesn't know what any stock
 costs right now.** Claude was trained on text from the internet, but
 that training happened months ago. It doesn't have a live connection
-to the stock market. If you ask Claude "What's Apple's stock price?",
+to the stock market. If you ask Claude "What's Roblox's stock price?",
 it might give you a number — but it's probably wrong, because it's
 guessing from old information.
 
@@ -50,14 +60,14 @@ You ask a question → Claude checks its tools → Claude calls a tool
 Now Claude's response is based on actual, current data. The difference
 is huge.
 
-Here's a concrete example. Say you ask Claude Desktop "How is Apple
+Here's a concrete example. Say you ask Claude Desktop "How is Roblox
 doing today?" Without tools, Claude might say "I don't have access to
 current stock data." With your tool connected, Claude:
 
 1. Recognizes this is a stock question
-2. Calls your `get_stock_snapshot("AAPL")` tool
-3. Gets back real data: price $195.20, up 0.85% today
-4. Responds: "Apple is up 0.85% today at $195.20"
+2. Calls your `get_stock_snapshot("RBLX")` tool
+3. Gets back real data: price $59.80, up 1.65% today
+4. Responds: "Roblox is up 1.65% today at $59.80"
 
 **Your data stays on your computer.** Claude doesn't store your stock
 data. It asks your tool for data, gets an answer, and uses it. Your
@@ -81,7 +91,7 @@ this week. It runs on your computer and gives Claude Desktop access to
 stock data.
 
 The word "server" might sound intimidating, but it's just a program
-that answers questions. When Claude Desktop asks "What's Apple's price?",
+that answers questions. When Claude Desktop asks "What's Roblox's price?",
 your server looks it up and sends back the answer.
 
 ### What's Inside an MCP Tool?
@@ -90,7 +100,7 @@ Each tool has four parts:
 
 1. **A name** — like `get_stock_snapshot`. This is how Claude refers to it.
 2. **Inputs** — what information the tool needs. For a stock tool, that's
-   the ticker symbol (like "AAPL").
+   the ticker symbol (like "RBLX").
 3. **A description** — a sentence explaining what the tool does. Claude
    reads this to decide when to use it.
 4. **A return** — the data that comes back. This is structured information
@@ -118,15 +128,15 @@ answer.
 
 ```
 BAD tool return:
-  "previous_close": 193.55
-  "current_price": 195.20
-  (AI has to calculate: 195.20 - 193.55 = 1.65, then 1.65/193.55 = 0.85%)
+  "previous_close": 58.83
+  "current_price": 59.80
+  (AI has to calculate: 59.80 - 58.83 = 0.97, then 0.97/58.83 = 1.65%)
 
 GOOD tool return:
-  "previous_close": 193.55
-  "current_price": 195.20
-  "daily_change": 1.65
-  "daily_change_pct": 0.85
+  "previous_close": 58.83
+  "current_price": 59.80
+  "daily_change": 0.97
+  "daily_change_pct": 1.65
   (Math is already done! AI just reports the number.)
 ```
 
@@ -179,9 +189,9 @@ pulls stock data from Yahoo Finance. No account needed, no credit card,
 no API key. Claude Code will install it for you automatically.
 
 Your default watchlist will include companies you probably know:
-**AAPL** (Apple), **NKE** (Nike), **DIS** (Disney), **TSLA** (Tesla),
-**NFLX** (Netflix). But you can change these to whatever companies
-interest you.
+**RBLX** (Roblox), **SNAP** (Snapchat), **SPOT** (Spotify), **DUOL**
+(Duolingo), **CROX** (Crocs). But you can change these to whatever
+companies interest you.
 
 ---
 

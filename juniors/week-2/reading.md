@@ -29,8 +29,8 @@ live prices.
 
 **Problem 3: Rewording Numbers**
 
-If a tool returns that Apple's price is $195.20, the AI might say "Apple
-is trading at around $195" or "Apple is just under $196." Both are
+If a tool returns that Roblox's price is $59.80, the AI might say "Roblox
+is trading at around $60" or "Roblox is just under $60." Both are
 technically wrong. In finance, exact numbers matter.
 
 This week, you'll add **guardrails** — safety checks that prevent these
@@ -91,9 +91,19 @@ When the AI sees this warning, it starts its response with something like:
 > at 4:00 PM ET.
 
 Without this, imagine you check your stocks at 8 AM on Saturday. The AI
-says "Apple is at $195.20" — and you think that's the current price.
+says "Roblox is at $59.80" — and you think that's the current price.
 But it's actually from Friday afternoon. The stale data warning prevents
 this confusion.
+
+> **Investing 101: What Does "Profitable" Mean?**
+>
+> Crocs (CROX) makes money on every pair of foam clogs it sells. Snapchat
+> (SNAP) has over 400 million users but has never turned a profit. How
+> can a company with 400 million users not make money? Because their
+> costs (servers, employees, R&D) are higher than their ad revenue. A
+> company you use every day can still be a bad investment if it can't
+> turn users into profits. Your daily report will help you spot the
+> difference.
 
 ---
 
@@ -106,25 +116,25 @@ anything.
 Here's why this matters. Say your tool returns this data:
 
 ```
-AAPL: $195.20, +0.85%
-TSLA: $178.50, +3.21%
-NKE:  $97.80,  +0.12%
-DIS:  $112.60, -1.82%
-NFLX: $628.40, -0.35%
+RBLX: $59.80,  +1.65%
+DUOL: $97.42,  +0.38%
+CROX: $80.49,  +0.12%
+SPOT: $517.31, -0.45%
+SNAP: $4.86,   -2.21%
 ```
 
-Without a pre-formatted section, the AI might say "Apple is up about 1%
-at around $195." That's imprecise. With a pre-formatted section, the
+Without a pre-formatted section, the AI might say "Roblox is up about 2%
+at around $60." That's imprecise. With a pre-formatted section, the
 tool builds a table with exact numbers:
 
 ```
 | Stock | Price   | Daily Change |
 |-------|---------|-------------|
-| AAPL  | $195.20 | +0.85%      |
-| TSLA  | $178.50 | +3.21%      |
-| NKE   | $97.80  | +0.12%      |
-| DIS   | $112.60 | -1.82%      |
-| NFLX  | $628.40 | -0.35%      |
+| RBLX  | $59.80  | +1.65%      |
+| DUOL  | $97.42  | +0.38%      |
+| CROX  | $80.49  | +0.12%      |
+| SPOT  | $517.31 | -0.45%      |
+| SNAP  | $4.86   | -2.21%      |
 ```
 
 The tool also returns a flag called `present_verbatim: true`, which
@@ -132,7 +142,7 @@ tells the AI: "Show this table exactly as I gave it to you. Don't
 round the numbers, don't reword it, don't change the formatting."
 
 The AI can still add its own commentary *after* the table — like
-"Tesla is your best performer today" — but the table itself stays
+"Roblox is your best performer today" — but the table itself stays
 exactly as the code built it.
 
 ---
@@ -145,13 +155,13 @@ industries are doing well or poorly. The AI's job is to connect these
 pieces into a story.
 
 For example, say:
-- Disney (DIS) is down 1.82% today
-- The Communication Services sector is down 2.1% today
+- Snapchat (SNAP) is down 2.21% today
+- The Communication Services sector is down 1.8% today
 - The overall market is slightly down
 
-The AI can connect these: "Disney is down today, but this looks like a
-sector-wide thing — Communication Services is the weakest sector. DIS
-is actually doing better than its sector average."
+The AI can connect these: "Snapchat is down today, but this looks like a
+sector-wide thing — Communication Services is the weakest sector. SNAP
+is actually underperforming its sector a bit more than average."
 
 This is something a dashboard can't do. A dashboard shows you three
 separate numbers. The AI explains what they mean *together*.

@@ -15,16 +15,16 @@ Stock Monitor — March 15, 2026 at 10:30 AM
 ==========================================
 
 URGENT (1):
-  TSLA down -6.2% today on high volume (2.5x average)
+  SNAP down -8.1% today on high volume (2.5x average)
     → Big drop with high volume — check for news
     → Rule: big_move → URGENT
 
 ALERTS (1):
-  NKE down -3.8% today
-    → Medium-sized drop, worth keeping an eye on
+  RBLX up +3.8% today
+    → Medium-sized move, worth keeping an eye on
     → Rule: medium_move → ALERT
 
-All clear on AAPL, DIS, NFLX.
+All clear on SPOT, DUOL, CROX.
 Full log: monitor_log.json (10 entries)
 ```
 
@@ -43,7 +43,7 @@ Here are the rules that govern the monitor:
 
 **Why BLOCKED is permanent:**
 
-The monitor can say "Tesla dropped 6%, you might want to sell some
+The monitor can say "Snapchat dropped 8%, you might want to sell some
 shares." But it NEVER actually sells. This isn't because the code
 can't — it's a choice. In investing:
 
@@ -61,9 +61,9 @@ Each entry in `monitor_log.json`:
 ```json
 {
   "timestamp": "2026-03-15T10:30:00Z",
-  "ticker": "TSLA",
+  "ticker": "SNAP",
   "check_type": "daily_price_move",
-  "current_value": -6.2,
+  "current_value": -8.1,
   "threshold": 5.0,
   "unit": "percent",
   "classification": "URGENT",
@@ -75,7 +75,7 @@ Each entry in `monitor_log.json`:
 
 **Why log everything, even boring checks?**
 
-If Tesla was fine at 9:00 AM and crashed by 10:30 AM, the log shows
+If Snapchat was fine at 9:00 AM and crashed by 10:30 AM, the log shows
 exactly when things changed. Without the "all clear" entries, you'd
 only know it crashed — not when or how fast.
 
@@ -91,14 +91,14 @@ Total alerts: 4
 Total urgent: 1
 
 Most frequent alerts:
-  TSLA price moves: 2 alerts
-  NKE price moves: 1 alert
-  DIS unusual volume: 1 alert
+  SNAP price moves: 2 alerts
+  RBLX price moves: 1 alert
+  CROX unusual volume: 1 alert
 
 Trend: Normal alert level this week
 ```
 
-This helps you spot patterns. "Tesla triggered alerts twice this week"
+This helps you spot patterns. "Snapchat triggered alerts twice this week"
 is more useful than seeing each alert by itself.
 
 ---
@@ -117,17 +117,17 @@ This tool makes monitoring data available in Claude Desktop:
   "alerts": [
     {
       "classification": "ALERT",
-      "ticker": "NKE",
-      "message": "Down -3.8% today",
-      "suggested_action": "Medium-sized drop, worth watching",
+      "ticker": "RBLX",
+      "message": "Up +3.8% today",
+      "suggested_action": "Notable move, worth watching",
       "timestamp": "2026-03-15T10:30:00Z"
     }
   ],
   "urgent": [
     {
       "classification": "URGENT",
-      "ticker": "TSLA",
-      "message": "Down -6.2% today on 2.5x average volume",
+      "ticker": "SNAP",
+      "message": "Down -8.1% today on 2.5x average volume",
       "suggested_action": "Check for news",
       "timestamp": "2026-03-15T10:30:00Z"
     }
@@ -157,13 +157,13 @@ and says something like:
 
 > You have 1 urgent item and 1 alert:
 >
-> **URGENT: Tesla down 6.2% on high volume** — Volume is 2.5x normal,
+> **URGENT: Snapchat down 8.1% on high volume** — Volume is 2.5x normal,
 > which usually means something happened in the news. Worth checking.
 >
-> **ALERT: Nike down 3.8%** — Not as dramatic as Tesla, but notable.
-> Keep an eye on it.
+> **ALERT: Roblox up 3.8%** — A solid move to the upside. Keep an eye
+> on what's driving it.
 >
-> Apple, Disney, and Netflix are all fine today.
+> Spotify, Duolingo, and Crocs are all fine today.
 
 Notice how Claude adds context and connects the dots — that's the
 value AI adds on top of raw alert data.

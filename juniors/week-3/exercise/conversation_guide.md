@@ -117,17 +117,17 @@ What tools do I have across all my servers?
 ### Does Claude pick the right server?
 
 ```
-How is Apple's stock doing today?
+How is Roblox's stock doing today?
 (Should use stock server)
 
-Tell me about Apple as a company — what do they do?
+Tell me about Roblox as a company — what do they do?
 (Should use research server)
 ```
 
 ### Can Claude combine servers?
 
 ```
-Give me a full overview of Apple — both how the stock is doing
+Give me a full overview of Roblox — both how the stock is doing
 and what the company looks like fundamentally.
 (Should use tools from both servers)
 ```

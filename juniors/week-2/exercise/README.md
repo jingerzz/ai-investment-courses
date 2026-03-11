@@ -112,8 +112,8 @@ Give me my morning report.
 
 Check the output:
 - Does it include the pre-formatted section with exact numbers?
-- Does it connect the dots? (e.g., "Disney is down but so is its
-  whole sector, so it's not just a Disney problem")
+- Does it connect the dots? (e.g., "Snapchat is down but so is its
+  whole sector, so it's not just a SNAP problem")
 - Does it mention the overall market status?
 
 Try this tricky prompt:

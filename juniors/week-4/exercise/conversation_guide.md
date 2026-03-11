@@ -10,7 +10,7 @@ How to talk to Claude when building your stock monitor.
 
 ```
 I want to build a stock monitoring system. My watchlist has:
-AAPL, NKE, DIS, TSLA, NFLX.
+RBLX, SNAP, SPOT, DUOL, CROX.
 
 What should it watch for? Help me think of everything — not just
 prices, but volume, big news moves, and anything else that matters.
@@ -42,7 +42,7 @@ Help me list everything that should be BLOCKED (human-only):
 ### Creating the monitor
 
 ```
-Build monitor.py that checks my stocks (AAPL, NKE, DIS, TSLA, NFLX)
+Build monitor.py that checks my stocks (RBLX, SNAP, SPOT, DUOL, CROX)
 and logs everything to monitor_log.json.
 
 Check: daily price change and volume for each stock.
@@ -108,7 +108,7 @@ How many alerts have I had this week? Any patterns?
 ### Understanding the rules
 
 ```
-If Tesla drops 6% today, what would my monitor flag?
+If Snapchat drops 6% today, what would my monitor flag?
 ```
 
 ---

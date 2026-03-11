@@ -30,7 +30,7 @@ think through this:
 I want to build a monitoring system for my stock watchlist. Help me
 think through the rules:
 
-My watchlist: AAPL, NKE, DIS, TSLA, NFLX
+My watchlist: RBLX, SNAP, SPOT, DUOL, CROX
 
 1. What should it check? (price changes, volume spikes, anything else?)
 2. What size price move should trigger an alert? 3%? 5%?
@@ -54,7 +54,7 @@ Tell Claude Code:
 ```
 Build a stock monitoring script called monitor.py that:
 
-1. CHECKS my watchlist stocks (AAPL, NKE, DIS, TSLA, NFLX):
+1. CHECKS my watchlist stocks (RBLX, SNAP, SPOT, DUOL, CROX):
    - Current price and daily change for each stock
    - Whether any stock is up or down more than 3% today
    - Whether any stock has unusual volume (more than 2x its average)
@@ -165,7 +165,7 @@ Give me my morning report including any monitoring alerts.
 ```
 BLOCKED means BLOCKED — forever.
 
-The monitor can say "Tesla dropped 6%, consider selling."
+The monitor can say "Snapchat dropped 6%, consider selling."
 It can even calculate exactly how many shares to sell.
 But it NEVER actually buys or sells.
 That's always your decision.

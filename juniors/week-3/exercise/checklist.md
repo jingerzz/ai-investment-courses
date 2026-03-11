@@ -36,7 +36,7 @@ Check your architecture design and multi-server setup.
   research tools.
 
 - [ ] **Claude combines servers.** Ask something that needs both servers
-  (e.g., "Tell me about Apple — stock performance and company info")
+  (e.g., "Tell me about Roblox — stock performance and company info")
   — Claude uses tools from multiple servers.
 
 - [ ] **Shared code works.** If both servers use shared utilities, they

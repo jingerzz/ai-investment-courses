@@ -16,7 +16,7 @@ hasn't checked the news in two years.
 
 In this course, you'll build tools that connect AI to real stock market
 data. When you're done, you'll be able to ask Claude things like "How
-is Apple doing today?" and get an answer based on the actual current
+is Roblox doing today?" and get an answer based on the actual current
 stock price — not a guess.
 
 ---
@@ -26,7 +26,7 @@ stock price — not a guess.
 Over four weeks, you'll create a set of AI-powered tools:
 
 - A **stock tracker** that lets Claude look up real prices for companies
-  you care about (Apple, Nike, Tesla, Disney, Netflix — whatever you want)
+  you care about (Roblox, Spotify, Snapchat, Duolingo, Crocs — whatever you want)
 - A **daily report tool** with safety checks that keep the AI from
   making math mistakes or showing you old data without telling you
 - A **system design** for connecting multiple AI tools together

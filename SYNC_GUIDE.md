@@ -68,7 +68,7 @@ These elements differ by design between courses:
 |---------|-------------|--------|
 | **Tone** | Senior colleague, direct | Cool older sibling, encouraging |
 | **Finance knowledge** | Assumed (no definitions) | Taught inline ("Investing 101" sidebars) |
-| **Default stocks** | AAPL, MSFT, NVDA, JPM, XOM | AAPL, NKE, DIS, TSLA, NFLX |
+| **Default stocks** | AAPL, MSFT, NVDA, JPM, XOM | RBLX, SNAP, SPOT, DUOL, CROX (primary); TTWO, NFLX, DIS (extended) |
 | **Project folder** | `~/ai-finance-tools` | `~/ai-stock-tools` |
 | **Status labels** | outperforming/underperforming | hot/cold/steady |
 | **Week 3 scenario** | Equity L/S fund (3 servers) | School stock club (2 servers) |

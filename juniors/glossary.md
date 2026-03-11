@@ -7,17 +7,17 @@ Key terms used in this course, explained in plain language.
 ## Investing Terms
 
 **Stock**
-A tiny piece of ownership in a company. If you buy one share of Apple
-stock, you own a very small fraction of Apple. If Apple does well, your
+A tiny piece of ownership in a company. If you buy one share of Roblox
+stock, you own a very small fraction of Roblox. If Roblox does well, your
 share becomes worth more.
 
 **Ticker symbol**
-A short code for a company's stock. Apple is "AAPL", Nike is "NKE",
-Tesla is "TSLA". You'll use these codes when asking Claude about stocks.
+A short code for a company's stock. Roblox is "RBLX", Spotify is "SPOT",
+Snapchat is "SNAP". You'll use these codes when asking Claude about stocks.
 
 **Stock price**
-What one share of a company costs right now. Apple's stock price might
-be $195, meaning one share costs $195. Prices change throughout the
+What one share of a company costs right now. Roblox's stock price might
+be $60, meaning one share costs $60. Prices change throughout the
 trading day.
 
 **Market cap (market capitalization)**
@@ -47,7 +47,7 @@ a stock is near its 52-week high, it's been doing well. Near the low,
 not so much.
 
 **Portfolio**
-All the investments you own. If you have shares of Apple, Nike, and
+All the investments you own. If you have shares of Roblox, Spotify, and
 Disney, those three stocks are your portfolio.
 
 **Watchlist**
@@ -57,6 +57,25 @@ Like a wish list for investments.
 **YTD return (Year-to-Date return)**
 How much a stock has gone up or down since January 1st of the current
 year, shown as a percentage.
+
+**Earnings**
+The profit a company makes. Companies report their earnings every three
+months (quarterly). When Roblox reports earnings, the stock often moves
+a lot because investors are reacting to whether the company did better
+or worse than expected.
+
+**Stock split**
+When a company divides its existing shares into more shares. If you own
+1 share worth $500 and the company does a 10-for-1 split, you now own
+10 shares worth $50 each. Your total value hasn't changed — there are
+just more pieces. Netflix did this, which is why its share price went
+from around $700 to around $70.
+
+**Profitable**
+A company is profitable when it makes more money than it spends. Crocs
+is highly profitable — it earns money on every pair of foam clogs it
+sells. Snapchat has never been profitable despite having 400 million
+users. Being profitable and being popular aren't the same thing.
 
 **10-K filing**
 A detailed annual report that public companies must file with the
@@ -168,8 +187,8 @@ Claude Code.
 
 **Tool (MCP)**
 A function that AI can call. Each tool has a name and returns structured
-data. For example, `get_stock_snapshot("AAPL")` is a tool that returns
-Apple's current stock information.
+data. For example, `get_stock_snapshot("RBLX")` is a tool that returns
+Roblox's current stock information.
 
 **uv**
 A behind-the-scenes tool that Claude Code uses to manage Python

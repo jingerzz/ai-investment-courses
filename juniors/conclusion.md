@@ -42,7 +42,7 @@ wanted, checked what Claude built, and improved it through conversation.
 - Track different things: cryptocurrency, sports team valuations,
   or any data that interests you
 - Build a tool that compares companies in the same industry
-  (like Nike vs. Adidas vs. Under Armour)
+  (like Roblox vs. Take-Two vs. EA in gaming)
 - Add alerts for earnings announcements or big news events
 
 ### Learn more about investing

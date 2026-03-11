@@ -3,7 +3,7 @@
 ## 4.1 From Questions to Monitoring
 
 In Weeks 1-3, you built tools that Claude uses when *you* ask a
-question. You ask "How is Apple doing?", Claude calls your tool, and
+question. You ask "How is Roblox doing?", Claude calls your tool, and
 you get an answer. The AI waits for you.
 
 This week, we flip it around. You'll build AI that **proactively
@@ -47,7 +47,7 @@ you've lost money on a mistake the AI was totally confident about.
 
 **Reason 2: AI can't understand context.**
 
-Maybe Apple's stock dropped 5% because of a temporary news story that
+Maybe Roblox's stock dropped 5% because of a temporary news story that
 doesn't actually matter. A human investor knows to wait it out. An
 autonomous AI might panic-sell. Context, judgment, and experience are
 things AI doesn't have.
@@ -100,7 +100,7 @@ Why log everything, even boring routine checks?
 1. **You can review what happened while you were away.** "What did the
    monitor see while I was at school?" The log tells you.
 
-2. **You can spot patterns.** "Tesla has triggered alerts 3 times this
+2. **You can spot patterns.** "Snapchat has triggered alerts 3 times this
    week" is more useful than seeing each alert individually.
 
 3. **You have proof.** If something goes wrong, the log shows exactly

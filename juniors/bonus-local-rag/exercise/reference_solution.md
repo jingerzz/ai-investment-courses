@@ -18,8 +18,8 @@ Plus a documents folder:
 ```
 ~/ai-stock-tools/
 ├── documents/
-│   ├── AAPL-10K.txt              # The document
-│   └── AAPL-10K-index.json       # Generated search index
+│   ├── RBLX-10K.txt              # The document
+│   └── RBLX-10K-index.json       # Generated search index
 ├── rag_system.py                  # Core search logic
 ├── rag_server.py                  # MCP server
 └── server.py                      # Week 1-2 stock tracker
@@ -33,21 +33,21 @@ The index JSON file stores everything needed for searching:
 
 ```json
 {
-  "document": "AAPL-10K.txt",
+  "document": "RBLX-10K.txt",
   "indexed_at": "2026-03-15T14:30:00Z",
   "model": "nomic-embed-text",
   "sections": [
     {
       "id": 0,
       "title": "Item 1: Business — Overview",
-      "text": "Apple Inc. designs, manufactures, and markets smartphones...",
+      "text": "Roblox Corporation operates a global platform for immersive 3D experiences...",
       "char_count": 4250,
       "embedding": [0.023, -0.041, 0.018, ...]
     },
     {
       "id": 1,
-      "title": "Item 1: Business — Products and Services",
-      "text": "iPhone. iPhone is the Company's line of smartphones...",
+      "title": "Item 1: Business — Platform and Experiences",
+      "text": "The Roblox Platform enables users to create, share, and enjoy immersive 3D experiences...",
       "char_count": 3100,
       "embedding": [0.015, -0.033, 0.042, ...]
     }
@@ -71,26 +71,26 @@ Key points:
 
 ```json
 {
-  "query": "What are Apple's main risk factors?",
-  "document": "AAPL-10K",
+  "query": "What are Roblox's main risk factors?",
+  "document": "RBLX-10K",
   "results": [
     {
       "section_title": "Item 1A: Risk Factors — Macroeconomic Risks",
-      "excerpt": "The Company's operations depend significantly on worldwide economic conditions...",
+      "excerpt": "The Company's business depends on attracting and retaining users, particularly those under 18...",
       "similarity_score": 0.84,
       "confidence": "high",
       "section_id": 5
     },
     {
       "section_title": "Item 1A: Risk Factors — Legal and Regulatory",
-      "excerpt": "The Company is subject to complex and changing laws...",
+      "excerpt": "The Company is subject to evolving regulations regarding child safety online...",
       "similarity_score": 0.79,
       "confidence": "high",
       "section_id": 6
     },
     {
       "section_title": "Item 1A: Risk Factors — Technology Risks",
-      "excerpt": "The Company's products may be affected by new technologies...",
+      "excerpt": "The Company faces intense competition from other gaming and social platforms...",
       "similarity_score": 0.76,
       "confidence": "high",
       "section_id": 7
@@ -119,9 +119,9 @@ Key points:
 
 ```json
 {
-  "question": "What are Apple's main risk factors related to AI?",
-  "document": "AAPL-10K",
-  "answer": "According to Item 1A (Risk Factors — Technology Risks), Apple identifies several AI-related risks: the company's products may be affected by rapid technological changes including AI, and the company faces competition from others investing heavily in AI. The filing also notes under Legal and Regulatory that evolving AI regulations could impact operations.",
+  "question": "What are Roblox's main risk factors related to user safety?",
+  "document": "RBLX-10K",
+  "answer": "According to Item 1A (Risk Factors — Macroeconomic Risks), Roblox identifies several user safety risks: the company's platform must continuously invest in safety features for its largely under-18 user base, and evolving regulations around child safety could require significant changes. The filing also notes under Legal and Regulatory that COPPA compliance and international child safety laws are ongoing concerns.",
   "citations": [
     {
       "section_title": "Item 1A: Risk Factors — Technology Risks",
@@ -188,21 +188,21 @@ a definitive analysis.
 
 ## The Hybrid Pattern in Action
 
-Here's what happens when you ask Claude Desktop "What does Apple's
-annual report say about AI risk, and how is AAPL doing today?":
+Here's what happens when you ask Claude Desktop "What does Roblox's
+annual report say about user safety risk, and how is RBLX doing today?":
 
 ```
-1. Claude calls ask_document("AI risk", "AAPL-10K")
+1. Claude calls ask_document("user safety risk", "RBLX-10K")
    → Your RAG server searches locally via Ollama
-   → Returns cited sections about AI risk (local, private)
+   → Returns cited sections about safety risks (local, private)
 
-2. Claude calls get_stock_snapshot("AAPL")
+2. Claude calls get_stock_snapshot("RBLX")
    → Your Week 1 server fetches live data via yfinance
    → Returns current price and daily change (from the internet)
 
 3. Claude puts it together:
-   "Apple's annual report identifies AI regulation as a key risk
-   factor (Item 1A). Meanwhile, AAPL is up 0.85% today at $195.20."
+   "Roblox's annual report identifies child safety regulation as a key
+   risk factor (Item 1A). Meanwhile, RBLX is up 1.65% today at $59.80."
 ```
 
 The document search was completely local — no data left your computer.

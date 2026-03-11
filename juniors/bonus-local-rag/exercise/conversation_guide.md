@@ -10,8 +10,8 @@ with Ollama.
 ### Downloading from SEC EDGAR
 
 ```
-Download Apple's most recent 10-K filing from SEC EDGAR and save it
-as a clean text file in ~/ai-stock-tools/documents/AAPL-10K.txt.
+Download Roblox's most recent 10-K filing from SEC EDGAR and save it
+as a clean text file in ~/ai-stock-tools/documents/RBLX-10K.txt.
 
 Remove HTML tags and formatting junk. Keep the section headers
 (Item 1, Item 1A, etc.) — they're important for organizing the search.
@@ -117,7 +117,7 @@ What documents do I have indexed?
 ```
 
 ```
-What are Apple's main risk factors according to their annual report?
+What are Roblox's main risk factors according to their annual report?
 ```
 
 ### Testing citations
@@ -130,13 +130,13 @@ the specific section.
 ### Cross-document comparison
 
 ```
-Compare Apple's and Microsoft's risk factors related to AI.
+Compare Roblox's and Take-Two's risk factors related to user growth.
 ```
 
 ### Testing "I don't know"
 
 ```
-What was Apple's stock price on January 15th?
+What was Roblox's stock price on January 15th?
 (This info isn't in an annual report — the system should say so)
 ```
 

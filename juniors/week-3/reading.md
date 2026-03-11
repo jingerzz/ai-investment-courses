@@ -84,7 +84,7 @@ at the same time. It sees all the tools from all servers and picks
 the right one based on your question.
 
 If you ask "How are my stocks doing?", Claude uses the stock server.
-If you ask "What does Apple's annual report say about competition?",
+If you ask "What does Roblox's annual report say about competition?",
 Claude uses the research server.
 If you ask "Give me a morning overview with any alerts", Claude uses
 *both* servers and combines the answers.
@@ -128,6 +128,16 @@ If Yahoo Finance stops working, your tools should:
 
 This is the same stale data warning pattern from Week 2 — but now
 applied at the system level.
+
+> **Investing 101: The GTA Effect**
+>
+> When Take-Two (TTWO) announced GTA VI, the stock jumped — even though
+> the game wouldn't ship for over a year. Why do announcements move
+> stock prices before anything actually ships? Because stock prices
+> reflect what investors *expect* to happen in the future, not just
+> what's happening today. A research server that tracks company
+> announcements and filings can help you spot these moments before
+> everyone else catches on.
 
 ---
 

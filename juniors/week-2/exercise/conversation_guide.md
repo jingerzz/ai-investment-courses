@@ -86,7 +86,7 @@ reword or reformat the numbers."
 ### The AI doesn't connect the dots
 
 ```
-The report mentions that Disney is down 1.8% but doesn't mention that
+The report mentions that Snapchat is down 2.2% but doesn't mention that
 the whole Communication Services sector is also down. Can you add a
 field to get_watchlist_movers that shows each stock's sector and
 whether the stock is doing better or worse than that sector? That

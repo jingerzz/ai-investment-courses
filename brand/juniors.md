@@ -202,23 +202,23 @@ AND AI concepts. Uses analogies freely. Defines terms on first use.
 - No emoji (per shared brand)
 - Define financial terms on first use, inline or in "Investing 101"
   sidebar
-- Use relatable company examples: Apple, Nike, Disney, Tesla, Netflix
+- Use relatable company examples: Roblox, Snapchat, Spotify, Duolingo, Crocs (primary); Take-Two, Netflix, Disney (extended)
 - Use relatable analogies: smoke detector, restaurant waiter, movie
   director, menu at a restaurant
 - Risk disclaimers should be honest but not scary
 
 **Example — good:**
-> "Tesla is your standout today — up 3.21% with more than double its
+> "Roblox is your standout today — up 2.35% with more than double its
 > normal trading volume, even while the overall market is slightly
 > down. That kind of strength against a weak market is worth paying
 > attention to."
 
 **Example — too childish:**
-> "Wow, Tesla is on FIRE today! Super cool to see it going up while
+> "Wow, Roblox is on FIRE today! Super cool to see it going up while
 > everything else is going down, right?? Let's see what happens next!"
 
 **Example — too adult:**
-> "TSLA exhibits notable relative strength, outperforming the broader
+> "RBLX exhibits notable relative strength, outperforming the broader
 > market on elevated volume, suggesting institutional accumulation
 > during a risk-off session."
 
@@ -267,9 +267,9 @@ JSON tool returns:
 
 ```
 {
-  "ticker": "AAPL",           ← The stock's code name
-  "current_price": 195.20,    ← What one share costs right now
-  "daily_change_pct": 0.85,   ← Up 0.85% today (code did this math)
+  "ticker": "RBLX",           ← The stock's code name
+  "current_price": 59.80,     ← What one share costs right now
+  "daily_change_pct": 1.65,   ← Up 1.65% today (code did this math)
   "data_source": "yfinance"   ← Where the data came from
 }
 ```

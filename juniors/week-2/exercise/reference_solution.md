@@ -64,9 +64,9 @@ the market is having a good day or bad day. With a pre-computed label
 
 ```json
 {
-  "formatted_section": "## Your Stocks — March 15, 2026\n\n| Stock | Price | Daily Change | vs Sector |\n|-------|-------|--------------|-----------|\n| TSLA | $178.50 | +3.21% | +2.8% above XLY |\n| AAPL | $195.20 | +0.85% | +0.5% above XLK |\n| NKE | $97.80 | +0.12% | -0.3% below XLY |\n| NFLX | $628.40 | -0.35% | +0.1% above XLY |\n| DIS | $112.60 | -1.82% | -0.5% below XLY |\n\n**Market Status:** Meh (slightly down day)\n**Your Average Return:** +0.40%\n**Notable:** TSLA unusual volume (2.1x average)",
+  "formatted_section": "## Your Stocks — March 15, 2026\n\n| Stock | Price | Daily Change | vs Sector |\n|-------|-------|--------------|-----------|\n| RBLX | $59.80 | +1.65% | +1.2% above XLK |\n| DUOL | $97.42 | +0.38% | +0.0% vs XLK |\n| CROX | $80.49 | +0.12% | -0.3% below XLY |\n| SPOT | $517.31 | -0.45% | +0.1% above XLK |\n| SNAP | $4.86 | -2.21% | -0.9% below XLK |\n\n**Market Status:** Meh (slightly down day)\n**Your Average Return:** -0.10%\n**Notable:** RBLX elevated volume (1.5x average)",
   "present_verbatim": true,
-  "ai_notes": "Tesla is the standout — strong day with unusual volume while the broader market is slightly down. Disney's weakness looks sector-related. The market status is 'meh', not alarming.",
+  "ai_notes": "Roblox is the standout — strong day with elevated volume while the broader market is slightly down. Snapchat's weakness is sharper than its sector, worth watching. The market status is 'meh', not alarming.",
   "data_source": "yfinance",
   "as_of": "2026-03-15T16:05:00Z",
   "stale_data_warning": null
@@ -89,21 +89,21 @@ exactly as the code made them.
 >
 > | Stock | Price | Daily Change | vs Sector |
 > |-------|-------|--------------|-----------|
-> | TSLA | $178.50 | +3.21% | +2.8% above XLY |
-> | AAPL | $195.20 | +0.85% | +0.5% above XLK |
-> | NKE | $97.80 | +0.12% | -0.3% below XLY |
-> | NFLX | $628.40 | -0.35% | +0.1% above XLY |
-> | DIS | $112.60 | -1.82% | -0.5% below XLY |
+> | RBLX | $59.80 | +1.65% | +1.2% above XLK |
+> | DUOL | $97.42 | +0.38% | +0.0% vs XLK |
+> | CROX | $80.49 | +0.12% | -0.3% below XLY |
+> | SPOT | $517.31 | -0.45% | +0.1% above XLK |
+> | SNAP | $4.86 | -2.21% | -0.9% below XLK |
 >
 > **Market Status:** Meh (slightly down day)
-> **Your Average Return:** +0.40%
-> **Notable:** TSLA unusual volume (2.1x average)
+> **Your Average Return:** -0.10%
+> **Notable:** RBLX elevated volume (1.5x average)
 >
-> Tesla is your standout today — up 3.21% with more than double its
-> normal trading volume, even while the overall market is slightly down.
-> That kind of strength against a weak market is worth paying attention
-> to. Disney is down 1.82%, but its whole sector is struggling too, so
-> this isn't just a Disney problem.
+> Roblox is your standout today — up 1.65% with elevated volume, even
+> while the overall market is slightly down. That kind of strength
+> against a weak market is worth paying attention to. Snapchat is down
+> 2.21%, underperforming its sector by about a percent — that's more
+> of a SNAP-specific issue than a market-wide problem.
 
 Notice: the table has exact code-calculated numbers. The paragraph below
 is the AI connecting the dots. Both are valuable, but the numbers are

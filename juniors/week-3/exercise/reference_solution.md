@@ -154,9 +154,9 @@ It's much harder to un-split servers than to split them.
 | Question | Servers Used |
 |----------|-------------|
 | "How are our stocks doing today?" | Stock tracker |
-| "Tell me about Nike as a company" | Research |
-| "Give me a full report on Apple — stock and company" | Both |
-| "Compare Tesla and Apple — both stock performance and fundamentals" | Both |
+| "Tell me about Roblox as a company" | Research |
+| "Give me a full report on Roblox — stock and company" | Both |
+| "Compare Roblox and Spotify — both stock performance and fundamentals" | Both |
 | "Which company on our watchlist has the best financials?" | Both |
 
 This cross-referencing is the main benefit. Each server does one thing

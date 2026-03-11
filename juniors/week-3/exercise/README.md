@@ -33,8 +33,8 @@ have one server that tracks stocks and gives daily reports.
 
 I want to expand this into a multi-server system. Here's what our
 club does:
-- We track a watchlist of stocks we're interested in (Apple, Nike,
-  Disney, Tesla, Netflix, and others)
+- We track a watchlist of stocks we're interested in (Roblox, Snapchat,
+  Spotify, Duolingo, Crocs, and others)
 - We research companies by reading their annual reports and comparing
   competitors
 - We want alerts when stocks make big moves or have unusual volume
@@ -128,7 +128,7 @@ What tools do I have available?
 Claude should see tools from all servers. Try a cross-server question:
 
 ```
-Tell me about Apple — how is the stock doing today and what do we
+Tell me about Roblox — how is the stock doing today and what do we
 know about the company?
 ```
 
