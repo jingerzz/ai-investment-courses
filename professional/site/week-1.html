@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 1: Making Your Data AI-Accessible | AI-Powered Investment Management</title>
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="content">
+      <!-- Chapter Header -->
+      <div class="chapter-header">
+        <div class="chapter-label">Week 1</div>
+        <h1>Making Your Data AI-Accessible — The Tool-Use Pattern</h1>
+        <div class="chapter-meta">
+          <span>Reading: 30 minutes</span>
+          <span>Exercise: 30 minutes</span>
+        </div>
+      </div>
+
+      <!-- Demo Launch Card -->
+      <div class="demo-card">
+        <div class="demo-info">
+          <h3>Interactive Demo: The Tool-Use Pattern</h3>
+          <p>See how AI connects to your data through structured tools — step by step.</p>
+        </div>
+        <a href="demo-week-1.html" class="demo-btn">Launch Demo</a>
+      </div>
+
+      <!-- Section Tabs -->
+      <div class="section-tabs">
+        <button class="section-tab active" data-tab="tab-reading">Reading</button>
+        <button class="section-tab" data-tab="tab-exercise">Exercise</button>
+        <button class="section-tab" data-tab="tab-prompts">Prompts</button>
+        <button class="section-tab" data-tab="tab-checklist">Checklist</button>
+      </div>
+
+      <!-- ============================================================
+           TAB 1: Reading
+           ============================================================ -->
+      <div id="tab-reading" class="tab-content active">
+
+        <!-- Section 1.1: Shared -->
+        <h2>A Working Strategy — Your First AI Tool</h2>
+
+        <p class="lead">Most AI courses start with theory. This one starts with a working investment strategy connected to live market data through Claude.</p>
+
+        <p>By the end of this chapter's exercise, you'll have installed a pre-built AI tool on your machine. You'll open Claude Desktop, ask "What's today's signal?", and get a real answer — based on a real strategy — computed from real market data. No code written, no API keys, no subscriptions.</p>
+
+        <p>But first, you need to understand what the tool is doing. The strategy behind it matters — not just because it's an interesting approach to tactical allocation, but because understanding the strategy will help you see <em>why</em> the AI tools are designed the way they are.</p>
+
+        <!-- Track Toggle for Section 1.2 -->
+        <div class="track-toggle">
+          <span class="track-label">Choose your track:</span>
+          <div class="track-pills">
+            <button class="track-btn active" data-track="systematic">Systematic Trading</button>
+            <button class="track-btn" data-track="research">Stock Research</button>
+          </div>
+        </div>
+
+        <!-- Section 1.2 — Systematic Track -->
+        <div class="track-content active" data-track="systematic">
+          <h2>The SPY/TLT Color Strategy</h2>
+
+          <div class="callout">
+            <div class="callout-title">You Don't Need to Memorize This</div>
+            <p>The server handles all the signal logic automatically. You're reading this so you can understand what the tools are doing under the hood — and so you can evaluate AI tool design when you build your own in Week 2. Skim the signal details; focus on the overall structure.</p>
+          </div>
+
+          <h3>The Core Idea</h3>
+
+          <p>The strategy classifies every trading day into one of four <strong>colors</strong> based on a simple observation: what happened to stocks (SPY) and bonds (TLT) today?</p>
+
+          <table>
+            <thead>
+              <tr><th>Color</th><th>SPY</th><th>TLT</th><th>What It Means</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Green</strong></td><td>Up</td><td>Up</td><td>Risk-on rally. Both equities and Treasuries rise. Money is flowing in broadly.</td></tr>
+              <tr><td><strong>Orange</strong></td><td>Up</td><td>Down</td><td>Equity strength, but bonds are being sold. Markets are complacent — no demand for safety.</td></tr>
+              <tr><td><strong>Blue</strong></td><td>Down</td><td>Up</td><td>Flight to safety. Equities sold, Treasuries bought. Classic risk-off.</td></tr>
+              <tr><td><strong>Red</strong></td><td>Down</td><td>Down</td><td>Capitulation. Both equities and bonds decline. No safe haven bid.</td></tr>
+            </tbody>
+          </table>
+
+          <p>Why SPY and TLT specifically? Because the relationship between equities and long-term Treasuries captures something fundamental about market sentiment. When investors get nervous, they sell stocks and buy bonds (Blue days). When panic exhausts itself, both decline together (Red days). The color tells you <em>what kind</em> of market day it was — not just whether stocks went up or down.</p>
+
+          <h3>Signals: When to Act</h3>
+
+          <p>The strategy maintains a permanent 1x long SPY position — it's always in the market. The question isn't <em>whether</em> to own equities, but <em>how much</em>. On certain color patterns, the strategy adds tactical leverage (up to 2x) for a limited number of days.</p>
+
+          <p>Nine signals are organized into three conviction tiers:</p>
+
+          <p><strong>Tier 1 — Maximum conviction (2.0x exposure):</strong></p>
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li><strong>T1_BOTH_STRONG_BLUE:</strong> SPY down &gt;1% <em>and</em> TLT up &gt;1% on the same day. Acute risk-off shock — both legs are moving with force. Hold the boost for 3 days.</li>
+            <li><strong>T1_STRONG_HIVOL_RED:</strong> Red day with SPY down &gt;1% and volume &gt;1.5x its 20-day average. Capitulation-style selling with high participation. 3-day hold.</li>
+            <li><strong>T1_STRONG_RED_STREAK:</strong> Three or more consecutive Red days with at least two showing strong SPY declines. Clustered panic — 1-day hold targeting the immediate bounce.</li>
+          </ul>
+
+          <p><strong>Tier 2 — High conviction (1.5x exposure):</strong></p>
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li><strong>T2_STRONG_BLUE_NEGCORR:</strong> Strong Blue day when the 20-day SPY/TLT correlation is below -0.3. The negative correlation confirms that flight-to-safety mechanics are working normally. 3-day hold.</li>
+            <li><strong>T2_WEAK_RED_EXHAUSTION:</strong> Three or more Red days in a row, but none with a strong SPY decline. Selling pressure is shallow and may be exhausting. 1-day hold.</li>
+            <li><strong>T2_GREEN_MOMENTUM:</strong> Three or more consecutive Green days. Orderly risk-on behavior may continue. Upgrades to 2.0x when SPY is above both its 50-day and 200-day moving averages. Held while the Green streak continues.</li>
+            <li><strong>T2_SPY_DOWN_STREAK:</strong> SPY closes down four or more days in a row. Mean-reversion trade — 1-day hold.</li>
+          </ul>
+
+          <p><strong>Tier 3 — Moderate conviction (1.25x exposure):</strong></p>
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li><strong>T3_WEAK_BLUE_NEGCORR:</strong> Blue day with a mild SPY decline (&le;1%) and negative correlation. Supportive structure, but not a strong signal. 3-day hold.</li>
+            <li><strong>T3_ORANGE_GRIND:</strong> Three or more consecutive Orange days. Equity strength despite bond weakness — modest continuation bet. Held while the streak continues.</li>
+          </ul>
+
+          <p>Signals are evaluated <strong>top-down in priority order</strong> each day at close. The first match wins. If no signal triggers, the strategy holds its base 1x position.</p>
+
+          <h3>Safety Rules</h3>
+
+          <p>Two mechanisms protect capital:</p>
+
+          <p><strong>Danger state:</strong> If Blue days stack up consecutively, the strategy interprets this as sustained selling pressure that isn't bouncing.</p>
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li>In a <strong>bull regime</strong> (SPY above its 200-day SMA): 4+ consecutive Blue days trigger a full exit to cash. Sit out for 2 days, then re-enter at 1x.</li>
+            <li>In a <strong>bear regime</strong> (SPY below its 200-day SMA): the threshold tightens to 3+ Blue days with a 3-day sit-out. Bear markets are more dangerous, so the strategy exits earlier and stays out longer.</li>
+          </ul>
+
+          <p><strong>Greed trim:</strong> If the 5-day cumulative magnitude of up-move days reaches 6.0%, any active boost is closed. The market has moved significantly in the strategy's favor — take the win.</p>
+
+          <h3>How It Has Performed</h3>
+
+          <p>Over a backtest spanning 2002-2026 (roughly 5,900 trading days):</p>
+
+          <table>
+            <thead>
+              <tr><th>Metric</th><th>Strategy</th><th>SPY Buy &amp; Hold</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>CAGR</td><td>15.6%</td><td>9.0%</td></tr>
+              <tr><td>Total Return</td><td>~3,000%</td><td>~660%</td></tr>
+              <tr><td>Max Drawdown</td><td>-35.4%</td><td>-56.5%</td></tr>
+              <tr><td>Sharpe Ratio</td><td>0.74</td><td>—</td></tr>
+            </tbody>
+          </table>
+
+          <p>The strategy outperforms because it <strong>scales position size based on conviction signals</strong> — adding exposure when risk-off events are likeliest to mean-revert, while protecting capital during sustained downtrends via the danger rule.</p>
+
+          <p>Standard caveats apply: this backtest assumes fractional exposure compounding with no transaction costs, slippage, or margin interest. Past performance does not predict future results. The point here isn't to convince you to trade this strategy — it's to give you a concrete example of the kind of systematic logic that AI tools can make accessible.</p>
+        </div>
+
+        <!-- Section 1.2 — Research Track -->
+        <div class="track-content" data-track="research">
+          <h2>A Document Intelligence System — Analyzing SEC Filings</h2>
+
+          <div class="callout">
+            <div class="callout-title">You Don't Need to Memorize This</div>
+            <p>The server handles all the document processing automatically. You're reading this so you can understand what the tools are doing under the hood — and so you can evaluate AI tool design when you build your own in Week 2. Skim the technical details; focus on the overall structure.</p>
+          </div>
+
+          <h3>The Core Idea</h3>
+
+          <p>Every public company tells its story in SEC filings. The 10-K annual report, the 10-Q quarterly update, the 8-K material event disclosure — these documents contain the ground truth about a company's finances, risks, and strategy. Professional investors read them. But they're long, dense, and hard to search across.</p>
+
+          <p>The page-index-rag server solves this: it takes SEC filings (or any document), builds a structured index of every section, and lets Claude search and cite specific passages. You ask a question in natural language; Claude finds the exact paragraph in the filing that answers it — with a citation you can verify.</p>
+
+          <p>This is <strong>Retrieval-Augmented Generation (RAG)</strong> — a pattern where the AI retrieves relevant information from your documents before generating a response. Instead of answering from training data (which may be outdated or wrong), the AI answers from the actual filing.</p>
+
+          <h3>What Makes This RAG Different</h3>
+
+          <p>Most RAG systems use vector search: they convert text into numerical representations (embeddings) and find passages that are mathematically similar to your question. This works but has failure modes. It can miss passages that use different terminology, or return passages that are superficially similar but not actually relevant.</p>
+
+          <p>The page-index-rag server uses a <strong>structure-first approach</strong> called PageIndex. Instead of embedding chunks of text, it builds a hierarchical index of the document's structure — sections, subsections, tables, and key passages. When you search, the system navigates this structure to find relevant sections, then reads them in context.</p>
+
+          <p>Think of it as the difference between searching a book with Ctrl-F versus using the table of contents and index. Both work, but the structural approach understands <em>where</em> information lives in the document — not just which words appear near each other.</p>
+
+          <h3>Pre-Indexed Companies</h3>
+
+          <p>The course server comes with filings pre-indexed for two companies:</p>
+
+          <table>
+            <thead>
+              <tr><th>Company</th><th>Ticker</th><th>Filings</th><th>Why These Companies</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>BlackRock</strong></td><td>BLK</td><td>10-K, 10-Q</td><td>World's largest asset manager. Filings cover AUM trends, fee dynamics, iShares growth, regulatory risks.</td></tr>
+              <tr><td><strong>Robinhood</strong></td><td>HOOD</td><td>10-K, 10-Q</td><td>Retail brokerage disruptor. Filings cover PFOF revenue, crypto exposure, user growth, regulatory challenges.</td></tr>
+            </tbody>
+          </table>
+
+          <p>These represent two very different business models in financial services. BlackRock is an institutional asset manager with $10T+ AUM. Robinhood is a consumer fintech platform. Comparing their filings — risk factors, revenue composition, regulatory language — gives you a concrete feel for what document-backed AI analysis can do.</p>
+
+          <p>You can also index your own documents later (in Week 2). Any PDF, HTML, or CSV file can be indexed.</p>
+
+          <h3>The 14 Tools</h3>
+
+          <p>The page-index-rag server exposes 14 tools to Claude. The most important ones for your first session:</p>
+
+          <table>
+            <thead>
+              <tr><th>Tool</th><th>What It Does</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>get_rag_guide()</code></td><td>Describes all tools and recommended workflows</td></tr>
+              <tr><td><code>list_documents()</code></td><td>Shows all indexed documents with their IDs</td></tr>
+              <tr><td><code>search_with_citations(query, doc_id)</code></td><td>Searches a document for relevant passages, returns text with citations</td></tr>
+              <tr><td><code>batch_query(query, doc_ids)</code></td><td>Searches across multiple documents at once</td></tr>
+              <tr><td><code>get_document_overview(doc_id)</code></td><td>Shows the structural outline of a document</td></tr>
+              <tr><td><code>get_document_section(doc_id, node_id)</code></td><td>Reads a specific section of a document</td></tr>
+              <tr><td><code>fetch_company_filings(ticker, forms)</code></td><td>Downloads new filings from SEC EDGAR</td></tr>
+              <tr><td><code>check_company_indexed(ticker)</code></td><td>Checks if a company's filings are already indexed</td></tr>
+            </tbody>
+          </table>
+
+          <p>The remaining tools handle indexing status, document management, and batch operations. You'll see them in the guide tool output.</p>
+
+          <h3>How It Works in Practice</h3>
+
+          <p>When you ask Claude "What are BlackRock's biggest risk factors?", here's what happens:</p>
+
+          <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li>Claude calls <code>search_with_citations("risk factors", doc_id="BLK-10K")</code></li>
+            <li>The server searches the filing's structure for the Risk Factors section</li>
+            <li>It returns the relevant passages with page and section citations</li>
+            <li>Claude synthesizes the passages into a clear answer</li>
+            <li>You can verify every claim by checking the citation</li>
+          </ol>
+
+          <p>The AI never invents financial information. Every statement it makes about a company comes from the actual filing, with a citation you can trace back to the source. This is the fundamental difference between RAG-backed analysis and asking a chatbot questions from its training data.</p>
+        </div>
+
+        <!-- Section 1.3: Shared -->
+        <h2>From Spreadsheet to AI Tool</h2>
+
+        <p class="lead">You could implement this strategy in a spreadsheet. Pull SPY and TLT prices, compute the colors, check the signal rules, look up the current regime. Analysts do this kind of work daily.</p>
+
+        <p>But here's what changes when you connect this strategy to Claude through structured tools:</p>
+
+        <p><strong>You can ask questions in natural language.</strong> Instead of scanning rows in a spreadsheet, you ask Claude: "What's today's signal and what does it mean?" Claude calls <code>get_current_signal()</code>, reads the result, and explains it — including why this signal fired, what the exposure recommendation is, and what risks to watch.</p>
+
+        <p><strong>You get cross-referenced analysis.</strong> Ask for a trade briefing and Claude calls multiple tools: the current signal, the pivot levels, the trade plan. It synthesizes these into a narrative: "We're in a Blue regime with a Tier 2 signal. SPY is near S1 support. The trade plan suggests buying the dip toward S1 with a stop at S2."</p>
+
+        <p><strong>The AI doesn't do math.</strong> Every number Claude reports — the signal tier, the pivot levels, the risk/reward ratio — was computed by Python and handed to Claude as a finished result. Claude interprets and explains. It doesn't calculate.</p>
+
+        <p>This is the <strong>tool-use pattern</strong>: you define structured tools that the AI can call on demand. The AI decides <em>when</em> to call a tool, <em>what parameters</em> to pass, and <em>how to interpret</em> the results. Your data stays in your systems. The AI sees only what you explicitly expose.</p>
+
+        <!-- Section 1.4: Shared -->
+        <h2>Model Context Protocol (MCP) — The Standard Interface</h2>
+
+        <p class="lead">The tool-use pattern needs a standard way to describe tools so any AI model can understand them. That standard is <strong>Model Context Protocol (MCP)</strong>, an open protocol created by Anthropic.</p>
+
+        <p>Think of MCP as USB-C for AI. Just as USB-C lets any device connect to any charger or display, MCP lets any AI model connect to any tool.</p>
+
+        <h3>Anatomy of a Tool</h3>
+
+        <div class="callout">
+          <div class="callout-title">Code Preview</div>
+          <p>You'll see Python code in this section. You don't need to understand it — it shows how the tools work internally. You won't write or edit this code. Focus on the four labeled components (name, parameters, docstring, return value) and what each one does.</p>
+        </div>
+
+        <p>Every MCP tool has four components. Here's a real tool from the SPY/TLT server you'll install in the exercise:</p>
+
+        <pre class="code-block"><span class="keyword">@mcp.tool()</span>
+<span class="keyword">async def</span> <span class="string">get_current_signal</span>() -> <span class="keyword">dict</span>:
+    <span class="comment">"""Get today's strategy signal, color classification, and recommended action.
+
+    Returns the latest day's signal evaluation including color, signal name,
+    tier, target exposure, and recommended action. Includes stale data
+    warning if data needs refreshing.
+    """</span>
+    <span class="comment"># ... Python code computes the result ...</span>
+    <span class="keyword">return</span> {
+        <span class="string">"date"</span>: <span class="string">"2026-03-06"</span>,
+        <span class="string">"color"</span>: <span class="string">"Blue"</span>,
+        <span class="string">"signal"</span>: <span class="string">"T2_STRONG_BLUE_NEGCORR"</span>,
+        <span class="string">"tier"</span>: <span class="number">2</span>,
+        <span class="string">"target_exposure"</span>: <span class="number">1.5</span>,
+        <span class="string">"action"</span>: <span class="string">"Add SPY to 1.50x at next open"</span>,
+        <span class="string">"spy_close"</span>: <span class="number">678.50</span>,
+        <span class="string">"spy_pct_change"</span>: <span class="number">-1.23</span>,
+        <span class="string">"tlt_close"</span>: <span class="number">91.15</span>,
+        <span class="string">"tlt_pct_change"</span>: <span class="number">0.87</span>,
+        <span class="string">"data_source"</span>: <span class="string">"yfinance + local CSV"</span>,
+        <span class="string">"stale_data_warning"</span>: <span class="keyword">None</span>,
+    }</pre>
+
+        <p>The four components:</p>
+
+        <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Name</strong> (<code>get_current_signal</code>) — How the AI refers to the tool. Descriptive names help the AI decide when to call it.</li>
+          <li><strong>Parameters</strong> — Typed inputs the tool accepts. This tool takes no parameters, but others take <code>days</code>, <code>sequence</code>, <code>signal_name</code>, etc.</li>
+          <li><strong>Docstring</strong> — Natural language description the AI reads before deciding whether to call the tool. This is your most powerful lever for shaping AI behavior (more on this below).</li>
+          <li><strong>Return value</strong> — A structured dictionary with semantic field names. The AI reads these fields to formulate its response.</li>
+        </ol>
+
+        <h3>The Return Contract</h3>
+
+        <p>A hard rule for financial AI tools: <strong>never raise exceptions from tools.</strong> When a tool crashes, the AI receives a generic error and can't reason about what went wrong. When a tool returns a structured error, the AI can explain the issue and suggest alternatives.</p>
+
+        <pre class="code-block"><span class="comment"># WRONG — AI receives an opaque crash</span>
+<span class="keyword">@mcp.tool()</span>
+<span class="keyword">async def</span> <span class="string">get_signal</span>() -> <span class="keyword">dict</span>:
+    data = fetch_data()       <span class="comment"># might throw</span>
+    <span class="keyword">return</span> compute_signal(data)
+
+<span class="comment"># RIGHT — AI receives actionable information</span>
+<span class="keyword">@mcp.tool()</span>
+<span class="keyword">async def</span> <span class="string">get_signal</span>() -> <span class="keyword">dict</span>:
+    <span class="keyword">try</span>:
+        data = fetch_data()
+        <span class="keyword">return</span> {<span class="string">"signal"</span>: data.signal, <span class="string">"confidence"</span>: data.confidence}
+    <span class="keyword">except</span> DataUnavailableError:
+        <span class="keyword">return</span> {<span class="string">"error"</span>: <span class="string">"Market data unavailable. Try refresh_data() first."</span>}</pre>
+
+        <p>Every tool in the SPY/TLT server follows this pattern. You'll never see the server crash — if something goes wrong, you'll see an <code>error</code> field with a message you can act on.</p>
+
+        <h3>Transport Modes</h3>
+
+        <p>MCP servers run in two modes:</p>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>stdio</strong> (local): Claude Desktop launches the server as a process on your machine. Fast, secure, no network. This is what we use in the course.</li>
+          <li><strong>streamable-http</strong> (cloud): The server runs on a remote machine. Supports authentication, multiple users, cloud deployment. Used in production environments.</li>
+        </ul>
+
+        <p>The same tool code works in both modes — only the transport configuration changes.</p>
+
+        <!-- Section 1.5: Shared -->
+        <h2>Four Design Principles for AI Tools</h2>
+
+        <p class="lead">The SPY/TLT server implements four design principles that make AI tools effective for finance. As you use the server in the exercise, watch for these patterns — they'll guide you when you build your own tools in Week 2.</p>
+
+        <h3>Principle 1: Pre-Compute Everything</h3>
+
+        <p>The AI should interpret results, not compute them. Python handles the math — the AI handles the narrative.</p>
+
+        <p>When you ask the SPY/TLT server for a trade briefing, every number in the response was computed by Python: the pivot levels, the risk/reward ratios, the position sizing. The AI presents them and explains what they mean. It never adds, divides, or averages numbers on its own.</p>
+
+        <div class="callout callout-guardrail">
+          <div class="callout-title">Why This Is Critical for Finance</div>
+          <p>An AI that hallucinates a portfolio return of 12% when it's actually 1.2% is worse than no AI at all. The <code>get_trade_briefing()</code> tool returns a fully formatted markdown section with Python-inserted prices — the AI presents it verbatim.</p>
+        </div>
+
+        <h3>Principle 2: Return Context, Not Just Data</h3>
+
+        <p>Every tool return includes metadata that helps the AI qualify its statements:</p>
+
+        <pre class="code-block"><span class="keyword">return</span> {
+    <span class="string">"signal"</span>: <span class="string">"T2_STRONG_BLUE_NEGCORR"</span>,
+    <span class="string">"tier"</span>: <span class="number">2</span>,
+    <span class="string">"target_exposure"</span>: <span class="number">1.5</span>,
+    <span class="string">"data_source"</span>: <span class="string">"yfinance + local CSV"</span>,
+    <span class="string">"stale_data_warning"</span>: <span class="keyword">None</span>,       <span class="comment"># or "Data is 1 day behind. Call refresh_data()."</span>
+}</pre>
+
+        <p>When the AI sees a <code>stale_data_warning</code>, it tells the user: "Note: this analysis is based on yesterday's close — the market has been open for 3 hours." Without this field, stale data looks identical to fresh data.</p>
+
+        <p>The <code>data_source</code> field serves a similar purpose. When a tool falls back to a secondary data provider, the AI can say "this uses delayed data" instead of silently presenting lower-quality information as if it were live.</p>
+
+        <h3>Principle 3: One Tool Per Decision-Relevant Question</h3>
+
+        <p>Don't build a single <code>get_everything()</code> tool. The SPY/TLT server has 14 tools, each answering a specific question:</p>
+
+        <pre class="code-block">get_current_signal()    -> "What's the regime right now?"
+get_trading_levels()    -> "Where are the key support/resistance levels?"
+get_backtest_summary()  -> "How has this strategy performed historically?"
+analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Blue?"</pre>
+
+        <p>When a user asks "What's the signal?", the AI calls one tool — not five. When they ask for a full briefing, the AI (or the briefing tool) calls several and synthesizes them. Granular tools give the AI flexibility to fetch only what's needed.</p>
+
+        <h3>Principle 4: The Guide Tool Pattern</h3>
+
+        <p>The SPY/TLT server has a tool called <code>get_strategy_guide()</code> — and it's the first tool the AI should call in any session. It returns:</p>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li>A catalog of all 14 tools with descriptions</li>
+          <li>Recommended workflows (morning briefing, signal check, research)</li>
+          <li>Strategy concepts (color definitions, signal tiers, key rules)</li>
+          <li>Critical rules ("ALWAYS call <code>refresh_data()</code> before any analysis")</li>
+        </ul>
+
+        <p>This is like giving a new analyst a cheat sheet for your desk's systems. Without it, the AI might call tools in a suboptimal order or miss relevant tools entirely. With it, the AI knows to call <code>refresh_data()</code> before querying signals — because the guide told it to.</p>
+
+        <!-- Section 1.6: Shared -->
+        <h2>How AI Adds Value (and Where It Doesn't)</h2>
+
+        <h3>High-Value AI Tasks</h3>
+
+        <p><strong>Cross-signal synthesis:</strong> The AI calls multiple tools — signal, levels, trade plan — and connects them: "Blue regime with a Tier 2 signal. SPY is near S1 support. The trade plan suggests buying the dip." No dashboard does this automatically.</p>
+
+        <p><strong>Natural language trade plans:</strong> Instead of scanning a grid of numbers, the AI says: "Entry zone is 676-681. Stop at 671. Target 1 is 686 for a 1.5:1 R:R." It translates structured data into actionable language.</p>
+
+        <p><strong>Pattern explanation:</strong> "The last 66 times we saw a Blue-Red-Blue sequence, SPY was up 66.7% of the time the next day, with an average gain of 0.4%." The AI queries historical data and narrates the pattern.</p>
+
+        <p><strong>Context for non-specialists:</strong> A PM asks "What does T2_STRONG_BLUE_NEGCORR mean?" The AI calls <code>explain_signal()</code> and returns a clear explanation of the trigger, the logic, the sizing rationale, and the risks.</p>
+
+        <h3>Low-Value Tasks (Keep in Python)</h3>
+
+        <p><strong>Numerical computation:</strong> Never let the AI calculate returns, position sizes, or risk metrics. It will hallucinate numbers. Pre-compute in Python and return the result.</p>
+
+        <p><strong>Precise pricing:</strong> The AI should never state a price it didn't receive from a tool. The <code>get_trade_briefing()</code> tool solves this by returning a pre-formatted section with all prices Python-inserted.</p>
+
+        <p><strong>Order execution:</strong> The AI should never directly place trades. It proposes; a separate system (with human approval) executes. We'll cover this in Week 4.</p>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways">
+          <h3>Key Takeaways</h3>
+          <ol>
+            <li><strong>Tool-use is the pattern</strong> that connects AI to your data. You define structured tools; the AI decides when to call them and how to interpret the results.</li>
+            <li><strong>MCP is the standard</strong> for describing tools to AI models — like USB-C for AI.</li>
+            <li><strong>Tools return dicts, never raise</strong> — errors are data, not exceptions.</li>
+            <li><strong>Pre-compute results</strong> — Python does math, AI does interpretation. This prevents hallucinated numbers in financial outputs.</li>
+            <li><strong>Include context</strong> — <code>data_source</code>, <code>stale_data_warning</code>, and semantic field names help the AI qualify its statements.</li>
+            <li><strong>One tool per question</strong> — granular tools let the AI fetch only what it needs for the current conversation.</li>
+            <li><strong>Guide tools orient the AI</strong> — describe your server's capabilities so the AI calls tools in the right order.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           TAB 2: Exercise
+           ============================================================ -->
+      <div id="tab-exercise" class="tab-content">
+
+        <div class="track-toggle">
+          <span class="track-label">Choose your track:</span>
+          <div class="track-pills">
+            <button class="track-btn active" data-track="systematic">Systematic Trading</button>
+            <button class="track-btn" data-track="research">Stock Research</button>
+          </div>
+        </div>
+
+        <!-- Exercise — Systematic Track -->
+        <div class="track-content active" data-track="systematic">
+          <h2>Install and Explore the SPY/TLT Strategy Server</h2>
+
+          <p class="lead">You'll install a pre-built MCP server that connects Claude Desktop to a real trading strategy with live market data. When you're done, you'll be able to ask "What's today's signal?" and get a real answer computed by real tools.</p>
+
+          <div class="callout">
+            <div class="callout-title">What You Need</div>
+            <ul style="margin-left: 1.5rem;">
+              <li>A Mac or PC with at least 8GB RAM</li>
+              <li>Claude Desktop installed (<a href="https://claude.ai/download">claude.ai/download</a>)</li>
+              <li>A terminal application (Terminal on Mac, PowerShell on Windows)</li>
+            </ul>
+          </div>
+
+          <!-- Step 1 -->
+          <div class="step" data-step="1">
+            <h3>Install the Package Manager</h3>
+            <p><strong>Time: 3 minutes</strong></p>
+
+            <p>We use <code>uv</code> — a fast Python package manager. You don't need to know Python; <code>uv</code> just handles the installation plumbing.</p>
+
+            <p><strong>Mac (paste into Terminal):</strong></p>
+            <pre class="code-block">curl -LsSf https://astral.sh/uv/install.sh | sh</pre>
+
+            <p><strong>Windows (paste into PowerShell):</strong></p>
+            <pre class="code-block">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</pre>
+
+            <p>Close and reopen your terminal after installing. Verify it works:</p>
+            <pre class="code-block">uv --version</pre>
+
+            <p>You should see a version number like <code>uv 0.7.x</code>. If you get "command not found", try opening a new terminal window.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step" data-step="2">
+            <h3>Download the Course Server</h3>
+            <p><strong>Time: 3 minutes</strong></p>
+
+            <p>The SPY/TLT Course Edition server is included in your course materials. Navigate to it:</p>
+            <pre class="code-block">cd ~/ai-investment-courses/professional/servers/spy-tlt-course</pre>
+
+            <p>Install the server and its dependencies:</p>
+            <pre class="code-block">uv sync</pre>
+
+            <p>This downloads Python (if needed) and installs four packages: <code>mcp</code>, <code>numpy</code>, <code>yfinance</code>, and <code>pandas</code>. Takes about 30 seconds.</p>
+
+            <p>Verify the server works:</p>
+            <pre class="code-block">uv run spy-tlt-server &</pre>
+
+            <p>You should see the server start without errors. Press <code>Ctrl+C</code> to stop it (or close the terminal).</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step" data-step="3">
+            <h3>Connect to Claude Desktop</h3>
+            <p><strong>Time: 5 minutes</strong></p>
+
+            <p>Now tell Claude Desktop where to find your server.</p>
+
+            <p><strong>Open your Claude Desktop config file:</strong></p>
+            <p>The easiest way: in Claude Desktop, go to <strong>Settings &gt; Developer &gt; Edit Config</strong>. This opens the config file in your default text editor.</p>
+
+            <p>If that option isn't available, find the file manually:</p>
+            <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+              <li><strong>Mac:</strong> <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+              <li><strong>Windows:</strong> <code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
+            </ul>
+
+            <p>If the file doesn't exist, create it. If it already exists and has content, you'll add to the existing <code>mcpServers</code> section.</p>
+
+            <p><strong>Before you edit, verify your path.</strong> In your terminal, run:</p>
+
+            <p>Mac:</p>
+            <pre class="code-block">ls ~/ai-investment-courses/professional/servers/spy-tlt-course/</pre>
+
+            <p>Windows:</p>
+            <pre class="code-block">dir %USERPROFILE%\ai-investment-courses\professional\servers\spy-tlt-course\</pre>
+
+            <p>You should see <code>pyproject.toml</code> and a <code>data/</code> folder. If you see "No such file or directory," your course files are in a different location — find the correct path before proceeding.</p>
+
+            <p><strong>Add this to the config file</strong> (replace <code>YOUR_USERNAME</code> with your actual username):</p>
+
+            <p>Mac example:</p>
+            <pre class="code-block">{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"spy-tlt-course"</span>: {
+      <span class="string">"command"</span>: <span class="string">"uv"</span>,
+      <span class="string">"args"</span>: [
+        <span class="string">"--directory"</span>,
+        <span class="string">"/Users/YOUR_USERNAME/ai-investment-courses/professional/servers/spy-tlt-course"</span>,
+        <span class="string">"run"</span>,
+        <span class="string">"spy-tlt-server"</span>
+      ]
+    }
+  }
+}</pre>
+
+            <p>Windows example:</p>
+            <pre class="code-block">{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"spy-tlt-course"</span>: {
+      <span class="string">"command"</span>: <span class="string">"uv"</span>,
+      <span class="string">"args"</span>: [
+        <span class="string">"--directory"</span>,
+        <span class="string">"C:\\Users\\YOUR_USERNAME\\ai-investment-courses\\professional\\servers\\spy-tlt-course"</span>,
+        <span class="string">"run"</span>,
+        <span class="string">"spy-tlt-server"</span>
+      ]
+    }
+  }
+}</pre>
+
+            <p><strong>Restart Claude Desktop</strong> completely (quit and reopen, not just close the window). When you start a new conversation, you should see the SPY/TLT tools available — look for a hammer icon at the bottom of the chat input area. Click it to see the list of available tools.</p>
+
+            <p><strong>If you don't see tools after restarting,</strong> the most common cause is a wrong path. Double-check that the <code>--directory</code> path matches the output from the <code>ls</code> command above.</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step" data-step="4">
+            <h3>Your First Conversation</h3>
+            <p><strong>Time: 5 minutes</strong></p>
+
+            <p>Open a new conversation in Claude Desktop and try these prompts. After each one, observe what happens — which tools Claude calls, what data comes back, how Claude presents it.</p>
+
+            <p><strong>Start with orientation:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Discover tools</div>
+              <pre>What tools do you have available from the SPY/TLT strategy server?</pre>
+            </div>
+
+            <p>Claude should call <code>get_strategy_guide()</code> and explain the 14 available tools.</p>
+
+            <p><strong>Get today's signal:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Signal check</div>
+              <pre>Refresh the data, then tell me what today's signal is.</pre>
+            </div>
+
+            <p>Watch Claude call <code>refresh_data()</code> first (pulling the latest from Yahoo Finance), then <code>get_current_signal()</code>. It will report the color, any active signal, and the recommended exposure.</p>
+
+            <p><strong>Ask for a briefing:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Trade briefing</div>
+              <pre>Give me a complete trade briefing.</pre>
+            </div>
+
+            <p>Claude calls <code>get_trade_briefing()</code> and presents a pre-formatted markdown section with pivot levels, support/resistance, and a trade plan. Notice: every number was computed by Python. Claude is presenting it, not calculating it.</p>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="step" data-step="5">
+            <h3>Explore the Design Principles</h3>
+            <p><strong>Time: 7 minutes</strong></p>
+
+            <p>Now look for the four design principles from the reading. Each prompt below highlights a specific principle.</p>
+
+            <p><strong>Principle 1 — Pre-computed results:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Pre-computed levels</div>
+              <pre>What are today's key SPY levels?</pre>
+            </div>
+            <p>Claude calls <code>get_trading_levels()</code>. Look at the response: pivot points, R1-R3, S1-S3, SMAs, ATR — all pre-computed. The AI didn't calculate any of this.</p>
+
+            <p><strong>Principle 2 — Context metadata:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Stale data check</div>
+              <pre>What's the current signal? (Don't refresh the data first.)</pre>
+            </div>
+            <p>If the data is stale, look for the <code>stale_data_warning</code> field. Claude should mention it: "Note: this data is from [date] and may not reflect current prices."</p>
+
+            <p><strong>Principle 3 — One tool per question:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Focused query</div>
+              <pre>How has the strategy performed since 2020?</pre>
+            </div>
+            <p>Claude calls <code>get_backtest_summary(start_date="2020-01-01")</code> — just one focused tool for this specific question.</p>
+
+            <p><strong>Principle 4 — The guide tool:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Workflow guidance</div>
+              <pre>What's the recommended workflow for a morning briefing?</pre>
+            </div>
+            <p>Claude calls <code>get_strategy_guide(topic="workflow")</code> and returns the exact sequence: refresh, briefing, present verbatim.</p>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="step" data-step="6">
+            <h3>Try Real Analysis</h3>
+            <p><strong>Time: 7 minutes</strong></p>
+
+            <p>Now use the tools for actual investment analysis. These prompts go beyond single tool calls — they show how the AI synthesizes across multiple data sources.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Pattern analysis</div>
+              <pre>Have we seen a Blue-Red-Blue pattern recently? What usually happens after that sequence?</pre>
+            </div>
+            <p>Claude calls <code>analyze_pattern(sequence="Blue,Red,Blue")</code> and reports: how many times this pattern occurred historically, what percentage of the time the market was up the next day, and the average forward return.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Signal education</div>
+              <pre>Explain the T1_BOTH_STRONG_BLUE signal. When does it fire, why is it Tier 1, and what are the risks?</pre>
+            </div>
+            <p>Claude calls <code>explain_signal("T1_BOTH_STRONG_BLUE")</code> and returns a detailed explanation including trigger conditions, sizing rationale, statistical framing, and risk factors.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Historical context</div>
+              <pre>Show me SPY's streak patterns. What typically happens after 4+ consecutive down days?</pre>
+            </div>
+            <p>Claude calls <code>spy_streaks()</code> and walks you through winning/losing streak data, including "what happens next" analysis.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Cross-referencing</div>
+              <pre>Given today's signal and the current technical levels, what's the risk/reward on this setup? Walk me through the logic.</pre>
+            </div>
+            <p>This is where the AI adds real value. It pulls together the signal, the levels, and the trade plan — then explains how they connect.</p>
+          </div>
+
+          <!-- What You Learned -->
+          <div class="callout">
+            <div class="callout-title">What You Learned</div>
+            <ul style="margin-left: 1.5rem;">
+              <li>How to install an MCP server and connect it to Claude Desktop</li>
+              <li>How Claude discovers and calls tools automatically based on your questions</li>
+              <li>How pre-computed results prevent the AI from making math errors</li>
+              <li>How stale data warnings help the AI qualify its statements</li>
+              <li>How the guide tool orients Claude in a new session</li>
+              <li>How Claude synthesizes across multiple tools for cross-referenced analysis</li>
+            </ul>
+          </div>
+
+          <!-- If You Get Stuck -->
+          <div class="warning">
+            <div class="warning-title">If You Get Stuck</div>
+            <ul style="margin-left: 1.5rem;">
+              <li><strong>"uv: command not found"</strong> — Close your terminal and open a new one. The installer added <code>uv</code> to your PATH, but the current terminal doesn't see it yet.</li>
+              <li><strong>"Tools don't appear in Claude Desktop"</strong> — Make sure you restarted Claude Desktop completely (quit the app, not just close the window). Check that the path in <code>claude_desktop_config.json</code> points to the correct directory.</li>
+              <li><strong>"Tool call failed"</strong> — The most common cause is a wrong path in the config file. Double-check that the <code>--directory</code> path matches where you actually installed the course materials.</li>
+              <li><strong>"Data is stale"</strong> — Ask Claude to <code>refresh_data()</code>. This fetches the latest prices from Yahoo Finance.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Exercise — Research Track -->
+        <div class="track-content" data-track="research">
+          <h2>Install and Explore the Document Analysis Server</h2>
+
+          <p class="lead">You'll install a pre-built MCP server that connects Claude Desktop to a document intelligence system for analyzing SEC filings. When you're done, you'll be able to ask "What are BlackRock's biggest risk factors?" and get an answer backed by citations from the actual filing.</p>
+
+          <div class="callout">
+            <div class="callout-title">What You Need</div>
+            <ul style="margin-left: 1.5rem;">
+              <li>A Mac or PC with at least 8GB RAM</li>
+              <li>Claude Desktop installed (<a href="https://claude.ai/download">claude.ai/download</a>)</li>
+              <li>A terminal application (Terminal on Mac, PowerShell on Windows)</li>
+            </ul>
+          </div>
+
+          <!-- Step 1 -->
+          <div class="step" data-step="1">
+            <h3>Install the Package Manager</h3>
+            <p><strong>Time: 3 minutes</strong></p>
+
+            <p>We use <code>uv</code> — a fast Python package manager. You don't need to know Python; <code>uv</code> just handles the installation plumbing.</p>
+
+            <p><strong>Mac (paste into Terminal):</strong></p>
+            <pre class="code-block">curl -LsSf https://astral.sh/uv/install.sh | sh</pre>
+
+            <p><strong>Windows (paste into PowerShell):</strong></p>
+            <pre class="code-block">powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</pre>
+
+            <p>Close and reopen your terminal after installing. Verify it works:</p>
+            <pre class="code-block">uv --version</pre>
+
+            <p>You should see a version number like <code>uv 0.7.x</code>. If you get "command not found", try opening a new terminal window.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step" data-step="2">
+            <h3>Download the Course Server</h3>
+            <p><strong>Time: 3 minutes</strong></p>
+
+            <p>The Page-Index RAG Course Edition server is included in your course materials. Navigate to it:</p>
+            <pre class="code-block">cd ~/ai-investment-courses/professional/servers/page-index-rag-course</pre>
+
+            <p>Install the server and its dependencies:</p>
+            <pre class="code-block">uv sync</pre>
+
+            <p>This downloads Python (if needed) and installs the required packages including <code>mcp</code>, <code>beautifulsoup4</code>, and the PageIndex engine. Takes about 30 seconds.</p>
+
+            <p>Verify the server works:</p>
+            <pre class="code-block">uv run rag-server &</pre>
+
+            <p>You should see the server start without errors. Press <code>Ctrl+C</code> to stop it (or close the terminal).</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step" data-step="3">
+            <h3>Connect to Claude Desktop</h3>
+            <p><strong>Time: 5 minutes</strong></p>
+
+            <p>Now tell Claude Desktop where to find your server.</p>
+
+            <p><strong>Open your Claude Desktop config file:</strong></p>
+            <p>The easiest way: in Claude Desktop, go to <strong>Settings &gt; Developer &gt; Edit Config</strong>. This opens the config file in your default text editor.</p>
+
+            <p>If that option isn't available, find the file manually:</p>
+            <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+              <li><strong>Mac:</strong> <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+              <li><strong>Windows:</strong> <code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
+            </ul>
+
+            <p>If the file doesn't exist, create it. If it already exists and has content, you'll add to the existing <code>mcpServers</code> section.</p>
+
+            <p><strong>Before you edit, verify your path.</strong> In your terminal, run:</p>
+
+            <p>Mac:</p>
+            <pre class="code-block">ls ~/ai-investment-courses/professional/servers/page-index-rag-course/</pre>
+
+            <p>Windows:</p>
+            <pre class="code-block">dir %USERPROFILE%\ai-investment-courses\professional\servers\page-index-rag-course\</pre>
+
+            <p>You should see <code>pyproject.toml</code>, a <code>data/</code> folder, and a <code>config.json</code> file. If you see "No such file or directory," your course files are in a different location — find the correct path before proceeding.</p>
+
+            <p><strong>Add this to the config file</strong> (replace <code>YOUR_USERNAME</code> with your actual username):</p>
+
+            <p>Mac example:</p>
+            <pre class="code-block">{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"page-index-rag-course"</span>: {
+      <span class="string">"command"</span>: <span class="string">"uv"</span>,
+      <span class="string">"args"</span>: [
+        <span class="string">"--directory"</span>,
+        <span class="string">"/Users/YOUR_USERNAME/ai-investment-courses/professional/servers/page-index-rag-course"</span>,
+        <span class="string">"run"</span>,
+        <span class="string">"rag-server"</span>
+      ]
+    }
+  }
+}</pre>
+
+            <p>Windows example:</p>
+            <pre class="code-block">{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"page-index-rag-course"</span>: {
+      <span class="string">"command"</span>: <span class="string">"uv"</span>,
+      <span class="string">"args"</span>: [
+        <span class="string">"--directory"</span>,
+        <span class="string">"C:\\Users\\YOUR_USERNAME\\ai-investment-courses\\professional\\servers\\page-index-rag-course"</span>,
+        <span class="string">"run"</span>,
+        <span class="string">"rag-server"</span>
+      ]
+    }
+  }
+}</pre>
+
+            <p><strong>Restart Claude Desktop</strong> completely (quit and reopen, not just close the window). When you start a new conversation, you should see the page-index-rag tools available — look for a hammer icon at the bottom of the chat input area. Click it to see the list of available tools.</p>
+
+            <p><strong>If you don't see tools after restarting,</strong> the most common cause is a wrong path. Double-check that the <code>--directory</code> path matches the output from the <code>ls</code> command above.</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step" data-step="4">
+            <h3>Your First Conversation</h3>
+            <p><strong>Time: 5 minutes</strong></p>
+
+            <p>Open a new conversation in Claude Desktop and try these prompts. After each one, observe what happens — which tools Claude calls, what data comes back, how Claude presents it.</p>
+
+            <p><strong>Start with orientation:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Discover tools</div>
+              <pre>What document analysis tools do you have available?</pre>
+            </div>
+            <p>Claude should call <code>get_rag_guide()</code> and explain the available tools and recommended workflows.</p>
+
+            <p><strong>See what's indexed:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">List documents</div>
+              <pre>What documents are currently indexed? Show me the full list.</pre>
+            </div>
+            <p>Claude calls <code>list_documents()</code> and shows you the pre-indexed filings for BlackRock (BLK) and Robinhood (HOOD).</p>
+
+            <p><strong>Ask your first document question:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">First search</div>
+              <pre>What are BlackRock's largest risk factors according to their most recent 10-K filing?</pre>
+            </div>
+            <p>Claude calls <code>search_with_citations()</code> targeting the BLK 10-K. It will return specific passages from the Risk Factors section with citations you can verify. Notice: every claim comes from the actual filing, not from Claude's training data.</p>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="step" data-step="5">
+            <h3>Explore the Design Principles</h3>
+            <p><strong>Time: 7 minutes</strong></p>
+
+            <p>Now look for the four design principles from the reading. Each prompt below highlights a specific principle.</p>
+
+            <p><strong>Principle 1 — Pre-computed results:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Structural overview</div>
+              <pre>Show me the structural overview of the BlackRock 10-K.</pre>
+            </div>
+            <p>Claude calls <code>get_document_overview()</code>. Look at the response: a hierarchical table of contents showing every section, subsection, and their page ranges. The server pre-computed this structure during indexing. Claude presents it — it didn't parse the document itself.</p>
+
+            <p><strong>Principle 2 — Context metadata:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Citation metadata</div>
+              <pre>Search the Robinhood 10-K for information about payment for order flow revenue.</pre>
+            </div>
+            <p>Look at the citations in the response. Each passage includes a document ID, section reference, and page number. This metadata lets you verify every claim.</p>
+
+            <p><strong>Principle 3 — One tool per question:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Cross-document query</div>
+              <pre>How does Robinhood's revenue model differ from BlackRock's?</pre>
+            </div>
+            <p>Claude calls <code>batch_query()</code> across both companies' filings — one focused tool for cross-document analysis.</p>
+
+            <p><strong>Principle 4 — The guide tool:</strong></p>
+            <div class="prompt-block">
+              <div class="prompt-label">Workflow guidance</div>
+              <pre>What's the recommended workflow for analyzing a new company's filings?</pre>
+            </div>
+            <p>Claude calls <code>get_rag_guide()</code> and returns the recommended sequence: check if indexed, fetch filings, wait for indexing, search and analyze.</p>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="step" data-step="6">
+            <h3>Try Real Analysis</h3>
+            <p><strong>Time: 7 minutes</strong></p>
+
+            <p>Now use the tools for actual investment analysis. These prompts go beyond single tool calls — they show how the AI synthesizes across multiple documents.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Comparative analysis</div>
+              <pre>Compare the competitive landscape discussions in BlackRock's 10-K versus Robinhood's 10-K. What threats does each company identify?</pre>
+            </div>
+            <p>Claude searches both filings and synthesizes the comparison. Notice how it cites specific passages from each filing — you can trace every claim back to the source.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Deep dive</div>
+              <pre>What does BlackRock's 10-K say about their iShares ETF business? Pull the relevant sections and summarize the key metrics they report.</pre>
+            </div>
+            <p>Claude may call <code>search_with_citations()</code> and then follow up with <code>get_document_section()</code> to read specific sections in full context.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Regulatory analysis</div>
+              <pre>What regulatory risks does Robinhood disclose in their 10-K? Are any of these risks shared with BlackRock?</pre>
+            </div>
+            <p>This is where the AI adds real value — cross-referencing regulatory disclosures across two different companies with different business models, citing the specific language each company uses.</p>
+
+            <div class="prompt-block">
+              <div class="prompt-label">Due diligence</div>
+              <pre>If I were considering investing in Robinhood, what are the three most important things I should understand from their 10-K filing? Cite the specific sections.</pre>
+            </div>
+            <p>Claude synthesizes across the entire filing to surface the most material disclosures, with citations for each.</p>
+          </div>
+
+          <!-- What You Learned -->
+          <div class="callout">
+            <div class="callout-title">What You Learned</div>
+            <ul style="margin-left: 1.5rem;">
+              <li>How to install an MCP server and connect it to Claude Desktop</li>
+              <li>How Claude discovers and calls document analysis tools based on your questions</li>
+              <li>How RAG (Retrieval-Augmented Generation) grounds AI responses in actual documents</li>
+              <li>How citations let you verify every claim the AI makes</li>
+              <li>How the guide tool orients Claude in a new session</li>
+              <li>How Claude synthesizes across multiple documents for comparative analysis</li>
+            </ul>
+          </div>
+
+          <!-- If You Get Stuck -->
+          <div class="warning">
+            <div class="warning-title">If You Get Stuck</div>
+            <ul style="margin-left: 1.5rem;">
+              <li><strong>"uv: command not found"</strong> — Close your terminal and open a new one. The installer added <code>uv</code> to your PATH, but the current terminal doesn't see it yet.</li>
+              <li><strong>"Tools don't appear in Claude Desktop"</strong> — Make sure you restarted Claude Desktop completely (quit the app, not just close the window). Check that the path in <code>claude_desktop_config.json</code> points to the correct directory.</li>
+              <li><strong>"Tool call failed"</strong> — The most common cause is a wrong path in the config file. Double-check that the <code>--directory</code> path matches where you actually installed the course materials.</li>
+              <li><strong>"No documents found"</strong> — The server comes with pre-indexed filings. If <code>list_documents()</code> returns nothing, the data directory may not have been included. Re-download the course files and check that <code>servers/page-index-rag-course/data/indexes/</code> contains files.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           TAB 3: Prompts
+           ============================================================ -->
+      <div id="tab-prompts" class="tab-content">
+
+        <div class="track-toggle">
+          <span class="track-label">Choose your track:</span>
+          <div class="track-pills">
+            <button class="track-btn active" data-track="systematic">Systematic Trading</button>
+            <button class="track-btn" data-track="research">Stock Research</button>
+          </div>
+        </div>
+
+        <!-- Prompts — Systematic Track -->
+        <div class="track-content active" data-track="systematic">
+          <h2>Conversation Guide: SPY/TLT Strategy</h2>
+
+          <p class="lead">These prompts show how to get the most out of the SPY/TLT strategy server. They're organized from basic exploration to real analysis — try them in order during your first session.</p>
+
+          <h3>Getting Oriented</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Discover tools</div>
+            <pre>What tools do you have available from the SPY/TLT strategy server?</pre>
+          </div>
+          <p>Claude calls <code>get_strategy_guide()</code> and explains the 14 available tools. This is always the right way to start.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Refresh and check</div>
+            <pre>Refresh the data, then tell me what today's signal is.</pre>
+          </div>
+          <p>Always refresh before querying signals — this ensures you're working with the latest data.</p>
+
+          <h3>Market Analysis</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Trade briefing</div>
+            <pre>Give me a complete trade briefing.</pre>
+          </div>
+          <p>The briefing tool returns pre-formatted analysis with pivot levels, support/resistance, and a trade plan. Every number is Python-computed.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Technical levels</div>
+            <pre>What are today's key SPY levels?</pre>
+          </div>
+          <p>Pivot points, R1-R3, S1-S3, SMAs, ATR — all pre-computed by Python.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Backtest performance</div>
+            <pre>How has the strategy performed since 2020?</pre>
+          </div>
+          <p>Focused query that uses a single tool: <code>get_backtest_summary()</code>.</p>
+
+          <h3>Pattern and Signal Analysis</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Pattern analysis</div>
+            <pre>Have we seen a Blue-Red-Blue pattern recently? What usually happens after that sequence?</pre>
+          </div>
+          <p>Historical pattern matching with forward return statistics.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Signal deep-dive</div>
+            <pre>Explain the T1_BOTH_STRONG_BLUE signal. When does it fire, why is it Tier 1, and what are the risks?</pre>
+          </div>
+          <p>Signal education with trigger conditions, sizing rationale, and risk factors.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Streak analysis</div>
+            <pre>Show me SPY's streak patterns. What typically happens after 4+ consecutive down days?</pre>
+          </div>
+          <p>Mean-reversion analysis using historical streak data.</p>
+
+          <h3>Cross-Referencing</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Risk/reward synthesis</div>
+            <pre>Given today's signal and the current technical levels, what's the risk/reward on this setup? Walk me through the logic.</pre>
+          </div>
+          <p>This is where the AI adds the most value — pulling together signals, levels, and trade plans into a coherent narrative.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Morning workflow</div>
+            <pre>What's the recommended workflow for a morning briefing?</pre>
+          </div>
+          <p>The guide tool returns the exact sequence you should follow each morning.</p>
+
+          <h3>Tips</h3>
+
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li><strong>Always refresh first.</strong> Start every session with <code>refresh_data()</code> to ensure current prices.</li>
+            <li><strong>One question at a time.</strong> Let Claude call the right tool for each question rather than asking for everything at once.</li>
+            <li><strong>Check the stale data warning.</strong> If you see it, refresh before making any decisions.</li>
+            <li><strong>Ask "why" questions.</strong> "Why is this Tier 1?" or "Why did the danger state trigger?" — Claude can explain the logic using the signal explanation tools.</li>
+          </ul>
+        </div>
+
+        <!-- Prompts — Research Track -->
+        <div class="track-content" data-track="research">
+          <h2>Conversation Guide: Document Analysis</h2>
+
+          <p class="lead">These prompts demonstrate different aspects of document-backed AI analysis. They're organized from orientation to advanced cross-document synthesis.</p>
+
+          <h3>Getting Oriented</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Discover tools</div>
+            <pre>What document analysis tools do you have? Give me a quick overview of what each one does.</pre>
+          </div>
+          <p>The guide tool gives Claude the full catalog. You'll see 14 tools organized by function.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">See what's indexed</div>
+            <pre>List all indexed documents. For each one, tell me the company, filing type, and document ID.</pre>
+          </div>
+          <p>You need the document IDs to target specific filings in later queries.</p>
+
+          <h3>Single-Document Analysis</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Structural exploration</div>
+            <pre>Show me the table of contents for BlackRock's 10-K. What are the major sections?</pre>
+          </div>
+          <p>Understanding document structure helps you ask more targeted questions.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Targeted search</div>
+            <pre>Search BlackRock's 10-K for their discussion of fee rates and pricing pressure. What trends do they describe?</pre>
+          </div>
+          <p>Specific, targeted queries produce better citations than broad questions.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Section deep-dive</div>
+            <pre>Pull the full Management Discussion and Analysis section from the Robinhood 10-K. Summarize the key points and highlight any numbers they report.</pre>
+          </div>
+          <p>Reading a full section gives Claude more context than a keyword search.</p>
+
+          <h3>Cross-Document Analysis</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Comparative analysis</div>
+            <pre>Compare how BlackRock and Robinhood describe their competitive advantages. What does each company claim sets them apart?</pre>
+          </div>
+          <p>Cross-document synthesis is where AI adds the most value — it would take an analyst hours to read both filings and extract these comparisons.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Revenue model comparison</div>
+            <pre>How does BlackRock make money versus how Robinhood makes money? Use the 10-K filings to compare their revenue breakdowns.</pre>
+          </div>
+          <p>Specific questions about business model differences produce well-structured, citation-backed analysis.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Risk factor comparison</div>
+            <pre>What regulatory risks does each company disclose? Are there any risks that appear in both filings?</pre>
+          </div>
+          <p>Regulatory risk is concrete and well-documented in 10-Ks, making it ideal for RAG-backed analysis.</p>
+
+          <h3>Due Diligence Workflows</h3>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Investment thesis</div>
+            <pre>I'm evaluating BlackRock as a long-term investment. Based on their 10-K, what are the top 3 bull arguments and top 3 bear arguments? Cite specific sections for each.</pre>
+          </div>
+          <p>Forcing citations keeps the AI grounded in the filing rather than generating opinions from training data.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Red flag scan</div>
+            <pre>Search Robinhood's 10-K for any mentions of litigation, regulatory actions, or material weaknesses. Summarize what you find.</pre>
+          </div>
+          <p>These are specific disclosure categories that every 10-K addresses, making searches precise and comprehensive.</p>
+
+          <div class="prompt-block">
+            <div class="prompt-label">Forward-looking statements</div>
+            <pre>What does BlackRock say about their growth strategy and outlook? Pull from the Management Discussion section.</pre>
+          </div>
+          <p>Combining a topic search with a section target gives Claude both breadth and precision.</p>
+
+          <h3>Tips</h3>
+
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li><strong>Use document IDs for precision.</strong> "Search BLK's 10-K for..." is better than "What does BlackRock say about..." because it targets a specific filing.</li>
+            <li><strong>Ask for citations explicitly.</strong> "Cite the specific section" forces Claude to reference the filing rather than paraphrase from memory.</li>
+            <li><strong>Start broad, then narrow.</strong> "What are the risk factors?" gives you an overview. "Tell me more about the interest rate risk they describe" digs into a specific finding.</li>
+            <li><strong>Compare across documents.</strong> The most valuable analysis comes from cross-referencing multiple filings — something that's tedious manually but natural for AI with the right tools.</li>
+            <li><strong>Verify the citations.</strong> The AI provides section and page references. Spot-check a few to build confidence in the system.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           TAB 4: Checklist (shared across tracks)
+           ============================================================ -->
+      <div id="tab-checklist" class="tab-content">
+        <h2>Self-Evaluation Checklist</h2>
+
+        <p class="lead">Use this to confirm you've covered the key concepts and completed the hands-on exercise. Every item should be a confident "yes" before moving to Week 2.</p>
+
+        <div class="checklist">
+          <h3>Concepts</h3>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Can you explain the tool-use pattern?</strong> You should be able to describe it in one sentence: the AI calls structured tools to fetch data, then interprets the results in natural language.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Do you understand what MCP is?</strong> You know it's the standard protocol for describing tools to AI models — like USB-C for AI.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Can you name the four components of an MCP tool?</strong> Name, parameters, docstring, return value.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Do you understand why tools return dicts, never raise?</strong> Errors are data, not exceptions. When a tool crashes, the AI can't reason about the failure. When it returns <code>{"error": "..."}</code>, the AI can explain and suggest alternatives.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Design Principles</h3>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Pre-compute everything.</strong> Python does math, AI does interpretation. You saw this in action with trading levels, pivot points, or document structure indexes.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Return context, not just data.</strong> Every tool includes metadata like <code>data_source</code>, <code>stale_data_warning</code>, or citation references that help the AI qualify its statements.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>One tool per question.</strong> Granular tools let the AI fetch only what's needed. You saw the AI call a single focused tool for specific questions.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>The guide tool pattern.</strong> A guide tool describes the server's capabilities and recommended workflows, orienting the AI on which tools to call and in what order.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Hands-On</h3>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you installed the MCP server?</strong> You ran <code>uv sync</code> and the server started without errors.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Is the server connected to Claude Desktop?</strong> You see the tools available in the hammer icon menu.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you had a multi-tool conversation?</strong> You asked Claude a question that required calling more than one tool, and it synthesized the results into a coherent answer.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you identified each design principle in action?</strong> You saw pre-computed results, context metadata, focused tools, and the guide tool working during your exploration.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Ready for Week 2</h3>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You understand what the AI does vs. what the tools do.</strong> The tools compute; the AI interprets, explains, and synthesizes. You can point to specific examples from your session.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You have opinions about tool design.</strong> You noticed things you liked (or didn't) about how the server's tools are structured. Those opinions will guide you when you build your own in Week 2.</div>
+          </div>
+        </div>
+
+        <p>If any items above are unchecked, revisit that section of the reading or try the exercise prompts again. Week 2 assumes you're comfortable with these concepts.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/track-toggle.js"></script>
+  <script src="js/nav.js" data-current="week-1"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.section-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

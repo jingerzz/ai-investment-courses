@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 4: Agents and Human-in-the-Loop Controls | AI-Powered Investment Management</title>
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="content">
+      <!-- Chapter Header -->
+      <div class="chapter-header">
+        <div class="chapter-label">Chapter 4</div>
+        <h1>Agents and Human-in-the-Loop Controls</h1>
+        <div class="chapter-meta">
+          <span>Reading: 30 minutes</span>
+          <span>Exercise: 30 minutes</span>
+        </div>
+      </div>
+
+      <!-- Demo Launch Card -->
+      <div class="demo-card">
+        <div class="demo-info">
+          <h3>Interactive Demo: Agent Loop Explorer</h3>
+          <p>Visualize the 6-step agent loop, explore autonomy levels from Day 1 to Month 6, and see how approval workflows protect against unauthorized trades.</p>
+        </div>
+        <a href="demo-week-4.html" class="demo-btn">Launch Demo →</a>
+      </div>
+
+      <!-- Section Tabs -->
+      <div class="section-tabs">
+        <button class="section-tab active" data-tab="tab-reading">Reading</button>
+        <button class="section-tab" data-tab="tab-exercise">Exercise</button>
+        <button class="section-tab" data-tab="tab-prompts">Prompts</button>
+        <button class="section-tab" data-tab="tab-checklist">Checklist</button>
+      </div>
+
+      <!-- TAB 1: Reading -->
+      <div id="tab-reading" class="tab-content active">
+        <!-- Section 4.1: The Agent Loop -->
+        <h2>The Agent Loop</h2>
+
+        <p class="lead">In Weeks 1-3, you built tools that AI uses when a human asks a question. The AI is reactive — it waits for you, calls tools, and responds. This week, we go further: AI that proactively monitors, reasons, and proposes actions.</p>
+
+        <h3>From Tool-Use to Autonomy</h3>
+
+        <p>The progression:</p>
+
+        <pre class="code-block"><span class="keyword">Level 0</span> — Dashboard:      Human reads data, makes decisions
+<span class="keyword">Level 1</span> — Tool-assisted:  Human asks AI, AI calls tools, human decides
+<span class="keyword">Level 2</span> — Proactive:      AI monitors signals, proposes actions, human approves
+<span class="keyword">Level 3</span> — Semi-autonomous: AI executes routine actions, escalates unusual ones
+<span class="keyword">Level 4</span> — Autonomous:     AI executes independently (NOT recommended for finance)</pre>
+
+        <p>Most investment firms should aim for <strong>Level 2-3</strong>. Level 4 is inappropriate for regulated environments and high-stakes financial decisions.</p>
+
+        <h3>The 6-Step Agent Loop</h3>
+
+        <p>An autonomous agent follows a continuous loop:</p>
+
+        <pre class="code-block">┌─────────────────────────────────────────────────┐
+│                                                 │
+│  <span class="number">1.</span> GATHER    Call MCP tools for current state   │
+│       ↓                                         │
+│  <span class="number">2.</span> REASON    AI synthesizes across tool results │
+│       ↓                                         │
+│  <span class="number">3.</span> PROPOSE   Generate action with reasoning     │
+│       ↓                                         │
+│  <span class="number">4.</span> APPROVE   Human reviews and approves/rejects │
+│       ↓                                         │
+│  <span class="number">5.</span> EXECUTE   Send order to broker (if approved) │
+│       ↓                                         │
+│  <span class="number">6.</span> LOG       Record everything to audit trail   │
+│       ↓                                         │
+│  (wait for next check interval, then repeat)    │
+│                                                 │
+└─────────────────────────────────────────────────┘</pre>
+
+        <p>Each step has a clear boundary:</p>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Gather:</strong> The agent is an MCP client — it connects to your signal, risk, and research servers the same way a human analyst would.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Reason:</strong> The AI synthesizes tool results. "Blue regime + ES near S1 + risk is below limits → this is a buying opportunity."
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Propose:</strong> The agent formats a specific proposal: "Buy 2 MES contracts at 5385, stop at 5340, target 5420. Risk: $225."
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Approve:</strong> A human (via Telegram, Slack, email, or dashboard) reviews and approves or rejects. The agent does NOT proceed without approval.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Execute:</strong> Only after approval, the agent calls the broker API.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Log:</strong> Every step — the tool results, the AI reasoning, the proposal, the approval/rejection, and the fill — is recorded.
+        </div>
+
+        <h3>Separation of Concerns</h3>
+
+        <p>A critical architectural decision: <strong>signal servers are read-only, execution is write-only.</strong></p>
+
+        <pre class="code-block"><span class="keyword">Signal Server</span> (read-only):
+  - get_current_signal()    → returns data
+  - get_trade_plan()        → returns levels
+  - get_risk_report()       → returns exposure
+  - NEVER places orders
+
+<span class="keyword">Execution Layer</span> (write-only):
+  - submit_order()          → sends to broker
+  - get_fill_status()       → checks execution
+  - cancel_order()          → cancels pending
+  - NEVER computes signals</pre>
+
+        <p>Why separate? If the signal server has a bug, it returns bad data — but it can't place orders. The blast radius of any single component failure is limited.</p>
+
+        <!-- Section 4.2: Human-in-the-Loop Controls -->
+        <h2>Human-in-the-Loop Controls</h2>
+
+        <h3>Why Full Autonomy Is Wrong for Finance</h3>
+
+        <p>Three reasons to always keep a human in the loop:</p>
+
+        <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Regulatory:</strong> Most jurisdictions require human oversight of algorithmic trading decisions. A fully autonomous AI trading system may violate regulations (MiFID II, SEC Rule 15c3-5, etc.).</li>
+          <li><strong>Risk:</strong> AI can be confidently wrong. A hallucinated signal or misinterpreted data point could lead to a catastrophic trade. Human review catches "this doesn't feel right" moments.</li>
+          <li><strong>Trust:</strong> Building trust with AI is incremental. Starting with full autonomy means the first mistake destroys confidence. Starting with approve-everything and gradually expanding autonomy builds trust.</li>
+        </ol>
+
+        <h3>Approval Workflows</h3>
+
+        <p>The approval mechanism should match your team's communication patterns:</p>
+
+        <div class="callout">
+          <div class="callout-title">Telegram/Slack Integration</div>
+          <pre class="code-block">Bot: Trade Proposal
+     Signal: T2_STRONG_BLUE (Tier 2)
+     Action: BUY 2 MES @ 5385
+     Stop: 5340 (45 pts, $225 risk)
+     Target: 5420 (35 pts, $175 reward)
+     R:R = 1:0.78
+     Account risk: 0.45%
+
+     [Approve]  [Reject]  [Modify]</pre>
+          <p>The proposal includes everything the PM needs to decide: what the signal is and why, exact order details with pre-computed risk, risk as a percentage of account, and one-tap approve/reject.</p>
+        </div>
+
+        <p>Key details:</p>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li>Proposals expire after a configurable window (e.g., 15 minutes)</li>
+          <li>Rejected proposals are logged with optional rejection reason</li>
+          <li>Modified proposals (PM changes size or price) go through the same logging</li>
+        </ul>
+
+        <h3>Escalation Patterns</h3>
+
+        <p>Not all proposals are equal. Configure different approval requirements:</p>
+
+        <pre class="code-block"><span class="keyword">APPROVAL_RULES</span> = {
+    <span class="comment"># Routine: auto-notify, auto-approve after 5 min if no rejection</span>
+    <span class="string">"close_existing_position"</span>: ApprovalLevel.NOTIFY,
+
+    <span class="comment"># Standard: requires explicit approval</span>
+    <span class="string">"open_new_position"</span>: ApprovalLevel.APPROVE,
+
+    <span class="comment"># Elevated: requires approval + confirmation</span>
+    <span class="string">"increase_position_size"</span>: ApprovalLevel.CONFIRM,
+
+    <span class="comment"># Blocked: agent cannot propose this</span>
+    <span class="string">"override_risk_limit"</span>: ApprovalLevel.BLOCKED,
+}</pre>
+
+        <p>Start conservative (everything requires APPROVE) and gradually move routine actions to NOTIFY as trust builds.</p>
+
+        <h3>Configurable Autonomy Levels</h3>
+
+        <p>Define a progression from "day one" to "month six":</p>
+
+        <pre class="code-block"><span class="keyword">Day 1:</span>    Everything requires explicit approval
+<span class="keyword">Week 2:</span>   Data refresh and signal checks run automatically
+<span class="keyword">Month 1:</span>  Position closes auto-approved (with notification)
+<span class="keyword">Month 3:</span>  Small positions (< 0.5% risk) auto-approved
+<span class="keyword">Month 6:</span>  Standard positions auto-approved; only large/unusual escalated</pre>
+
+        <p>Each level should be explicitly documented, reviewed, and approved by stakeholders before activation.</p>
+
+        <!-- Section 4.3: Audit Trails and Compliance -->
+        <h2>Audit Trails and Compliance</h2>
+
+        <h3>What Gets Logged</h3>
+
+        <p>Every agent action produces a log entry:</p>
+
+        <pre class="code-block"><span class="keyword">@dataclass</span>
+<span class="keyword">class</span> <span class="string">AgentLogEntry</span>:
+    timestamp: datetime
+    event_type: <span class="keyword">str</span>          <span class="comment"># "signal_check", "proposal", "approval", "execution", "error"</span>
+    signal_data: <span class="keyword">dict</span>        <span class="comment"># Raw tool returns that informed the decision</span>
+    ai_reasoning: <span class="keyword">str</span>        <span class="comment"># The AI's full reasoning text</span>
+    proposed_action: <span class="keyword">dict</span>   <span class="comment"># Exact order details</span>
+    approval_status: <span class="keyword">str</span>     <span class="comment"># "pending", "approved", "rejected", "expired"</span>
+    approved_by: <span class="keyword">str</span>         <span class="comment"># Who approved (username)</span>
+    execution_result: <span class="keyword">dict</span>   <span class="comment"># Fill details from broker</span>
+    notes: <span class="keyword">str</span>               <span class="comment"># Human-added notes or rejection reason</span></pre>
+
+        <p>This creates a complete chain: <em>what the AI saw → what it reasoned → what it proposed → who approved → what happened.</em> This chain is essential for:</p>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Post-trade review:</strong> "Why did the agent propose this trade?"</li>
+          <li><strong>Compliance audit:</strong> "Show me all trades approved by PM_Smith last month"</li>
+          <li><strong>Model improvement:</strong> "The agent proposed 15 Blue-regime trades; 12 were profitable — the signal is working"</li>
+        </ul>
+
+        <h3>Journal Pattern</h3>
+
+        <p>Store the audit trail in a structured format (SQLite is simple and effective):</p>
+
+        <pre class="code-block"><span class="keyword">CREATE TABLE</span> trade_journal (
+    id INTEGER PRIMARY KEY,
+    timestamp TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    signal_name TEXT,
+    signal_tier INTEGER,
+    regime TEXT,
+    proposed_ticker TEXT,
+    proposed_side TEXT,
+    proposed_quantity INTEGER,
+    proposed_price REAL,
+    stop_price REAL,
+    target_price REAL,
+    dollar_risk REAL,
+    account_risk_pct REAL,
+    ai_reasoning TEXT,
+    approval_status TEXT DEFAULT 'pending',
+    approved_by TEXT,
+    approval_timestamp TEXT,
+    fill_price REAL,
+    fill_quantity INTEGER,
+    fill_timestamp TEXT,
+    pnl REAL,
+    notes TEXT
+);</pre>
+
+        <p>Every query an analyst or compliance officer might ask is answerable from this table.</p>
+
+        <!-- Section 4.4: Testing and Monitoring -->
+        <h2>Testing and Monitoring</h2>
+
+        <h3>Testing Agent Systems</h3>
+
+        <p>Agent systems need tests that go beyond unit tests:</p>
+
+        <h4>Scenario Tests</h4>
+
+        <p>Simulate a complete agent loop with mocked data:</p>
+
+        <pre class="code-block"><span class="keyword">async def</span> <span class="string">test_blue_regime_proposes_long</span>():
+    <span class="string">"""Agent should propose a long trade in Blue regime near support."""</span>
+    <span class="comment"># Mock tools to return Blue regime + ES near S1</span>
+    mock_signal = {<span class="string">"color"</span>: <span class="string">"Blue"</span>, <span class="string">"signal"</span>: <span class="string">"T2_STRONG_BLUE"</span>, <span class="string">"exposure"</span>: 1.5}
+    mock_levels = {<span class="string">"pivot"</span>: 5420, <span class="string">"s1"</span>: 5385, <span class="string">"current"</span>: 5390}
+    mock_risk = {<span class="string">"status"</span>: <span class="string">"OK"</span>, <span class="string">"available_risk_pct"</span>: 2.0}
+
+    proposal = <span class="keyword">await</span> agent.reason(mock_signal, mock_levels, mock_risk)
+
+    <span class="keyword">assert</span> proposal <span class="keyword">is not None</span>
+    <span class="keyword">assert</span> proposal[<span class="string">"side"</span>] == <span class="string">"BUY"</span>
+    <span class="keyword">assert</span> proposal[<span class="string">"stop"</span>] < proposal[<span class="string">"entry"</span>]
+    <span class="keyword">assert</span> proposal[<span class="string">"dollar_risk"</span>] > 0
+
+<span class="keyword">async def</span> <span class="string">test_danger_state_no_proposal</span>():
+    <span class="string">"""Agent should NOT propose trades during danger state."""</span>
+    mock_signal = {<span class="string">"color"</span>: <span class="string">"Blue"</span>, <span class="string">"danger_state"</span>: <span class="keyword">True</span>, <span class="string">"exposure"</span>: 0.0}
+
+    proposal = <span class="keyword">await</span> agent.reason(mock_signal, {}, {})
+
+    <span class="keyword">assert</span> proposal <span class="keyword">is None</span>  <span class="comment"># No trade proposed</span></pre>
+
+        <h4>Edge Case Tests</h4>
+
+        <pre class="code-block"><span class="keyword">async def</span> <span class="string">test_stale_data_blocks_proposal</span>():
+    <span class="string">"""Agent should not propose trades on stale data."""</span>
+    mock_signal = {
+        <span class="string">"color"</span>: <span class="string">"Blue"</span>,
+        <span class="string">"signal"</span>: <span class="string">"T2_STRONG_BLUE"</span>,
+        <span class="string">"stale_data_warning"</span>: <span class="string">"Data is 4 hours old"</span>,
+    }
+    proposal = <span class="keyword">await</span> agent.reason(mock_signal, {}, {})
+    <span class="keyword">assert</span> proposal <span class="keyword">is None</span>  <span class="comment"># Stale data = no action</span>
+
+<span class="keyword">async def</span> <span class="string">test_broker_unavailable_logs_error</span>():
+    <span class="string">"""If broker is down, agent logs error and does not retry."""</span>
+    mock_broker = MockBroker(available=<span class="keyword">False</span>)
+    result = <span class="keyword">await</span> agent.execute(proposal, broker=mock_broker)
+    <span class="keyword">assert</span> result[<span class="string">"status"</span>] == <span class="string">"error"</span>
+    <span class="keyword">assert</span> <span class="string">"broker unavailable"</span> <span class="keyword">in</span> result[<span class="string">"error"</span>].lower()</pre>
+
+        <h3>Monitoring in Production</h3>
+
+        <p>Key metrics to track:</p>
+
+        <pre class="code-block"><span class="keyword">Agent uptime:</span>           Is the loop running?
+<span class="keyword">Signal check frequency:</span> Are checks happening on schedule?
+<span class="keyword">Proposal rate:</span>          How many proposals per day? (sudden spike = investigate)
+<span class="keyword">Approval latency:</span>       How long between proposal and approval?
+<span class="keyword">Rejection rate:</span>         High rejections = agent may be miscalibrated
+<span class="keyword">Fill rate:</span>              Are approved orders actually filling?
+<span class="keyword">P&L tracking:</span>           Is the agent's signal quality improving or degrading?</pre>
+
+        <h3>The Iteration Advantage</h3>
+
+        <p>Unlike ML models, MCP-based agents have a fast iteration cycle:</p>
+
+        <pre class="code-block"><span class="keyword">Traditional ML:</span>
+  New signal idea → collect data → train model → validate → deploy → months
+
+<span class="keyword">MCP tool approach:</span>
+  New signal idea → write tool → add tests → deploy → AI has access → hours</pre>
+
+        <p>No retraining, no fine-tuning, no validation set. You add a new tool, the AI can immediately call it. This means you can experiment with new signals, risk checks, or data sources at the speed of software development, not ML pipelines.</p>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways">
+          <h2>Key Takeaways</h2>
+          <ol>
+            <li>Level 2-3 autonomy is appropriate for finance — AI proposes, humans approve</li>
+            <li>Signal servers are read-only, execution is write-only — limit blast radius</li>
+            <li>Start conservative — everything requires approval on day one</li>
+            <li>Log everything — tool results, AI reasoning, proposals, approvals, fills</li>
+            <li>Approval UX matters — one-tap approve/reject with all context included</li>
+            <li>Escalation tiers — routine actions can graduate to auto-approval over time</li>
+            <li>Test the full loop — scenario tests with mocked tools, not just unit tests</li>
+            <li>Iterate fast — new tools = new capabilities, no retraining needed</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- TAB 2: Exercise -->
+      <div id="tab-exercise" class="tab-content">
+        <h2>Build an Agent Workflow</h2>
+
+        <p>This exercise walks you through building an automated monitoring system that checks your portfolio on a schedule and sends alerts when something needs attention. By the end, you'll have a system that introduces the concept of AI that acts proactively — with your approval.</p>
+
+        <!-- Step 1 -->
+        <div class="step" data-step="1">
+          <div class="step-title">Design Your Agent Rules</div>
+          <div class="step-time">5 minutes</div>
+          <p>Before building anything, decide your rules. Open Claude Desktop and think through this:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>I want to build a monitoring agent for my stock portfolio. Help me think
+through the rules:
+
+1. What should it check? (positions, risk limits, price moves, volume)
+2. How often? (every 15 min during market hours? once a day?)
+3. What warrants an alert? (position down 3%? risk limit approached?)
+4. What should just be logged silently? (routine checks, no changes)
+5. What should NEVER be automated? (actual trading, changing limits)
+
+My portfolio has [X stocks] and my risk limits are [your limits from Week 3].</pre>
+          </div>
+          <p>Write down the rules Claude Desktop helps you design. You'll give these to Claude Code in the next step.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step" data-step="2">
+          <div class="step-title">Build the Monitor with Claude Code</div>
+          <div class="step-time">10 minutes</div>
+          <p>Tell Claude Code to build the monitoring script:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Build a portfolio monitoring script called monitor.py that:
+
+1. CHECKS these things on my portfolio [your stocks]:
+   - Current price and daily change for each position
+   - Whether any position is down more than 3% today
+   - Whether any position exceeds 20% of portfolio weight
+   - Whether any sector exceeds 35% of portfolio weight
+   - Whether there's unusual volume (> 2x average) on any position
+
+2. CLASSIFIES each finding:
+   - "alert" — needs my attention (limit breach, big move, unusual volume)
+   - "warning" — approaching a limit (within 5% of threshold)
+   - "info" — routine data, no action needed
+
+3. LOGS everything to a file called monitor_log.json:
+   - Timestamp of each check
+   - What was checked
+   - What was found (all positions, not just alerts)
+   - Classification (alert/warning/info)
+
+4. PRINTS a summary to the terminal showing only alerts and warnings.
+
+Use yfinance for data. The script should run once and exit — I'll run it
+manually for now. No scheduling yet.</pre>
+          </div>
+          <p>Test it by asking Claude Code: "Can you run the monitor script and show me what it outputs?"</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step" data-step="3">
+          <div class="step-title">Add an Audit Trail</div>
+          <div class="step-time">5 minutes</div>
+          <p>Update the monitor to write a more detailed audit log:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Update monitor.py to write a more detailed audit log. For each check,
+record:
+
+1. timestamp - when the check ran
+2. check_type - what was checked (e.g., "position_concentration")
+3. finding - what was found (e.g., "NVDA at 22.3% of portfolio")
+4. classification - alert / warning / info
+5. threshold - what the limit is (e.g., "20% max")
+6. action_required - what the user should consider doing
+7. data_source - where the data came from
+
+Store this in monitor_log.json as an array of entries. Each run of the
+script appends new entries, it doesn't overwrite old ones.
+
+Also add a command-line option: when I run "uv run python monitor.py --summary"
+it should read the log file and show me a summary of all alerts from the past week.</pre>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step" data-step="4">
+          <div class="step-title">Define Approval Levels</div>
+          <div class="step-time">5 minutes</div>
+          <p>Tell Claude Code to add a rules configuration:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Add a rules section at the top of monitor.py that defines what each
+alert level means in terms of action:
+
+RULES = {
+    "routine_check": "SILENT - runs automatically, logged only",
+    "price_move_under_3pct": "SILENT - normal volatility, log only",
+    "price_move_3_to_5pct": "ALERT - notify me, I decide what to do",
+    "price_move_over_5pct": "URGENT - notify me immediately",
+    "approaching_position_limit": "ALERT - notify me to consider trimming",
+    "breaching_position_limit": "URGENT - notify me, suggest trim size",
+    "unusual_volume": "ALERT - notify me, might indicate news",
+    "place_trade": "BLOCKED - never auto-trade, always requires my action",
+    "change_risk_limits": "BLOCKED - never auto-modify limits",
+}
+
+Print the applicable rule with each alert so I can see the system's
+reasoning. For BLOCKED rules, add a note in the guide that says these
+actions are never automated.</pre>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step" data-step="5">
+          <div class="step-title">Connect to Your MCP Servers</div>
+          <div class="step-time">5 minutes</div>
+          <p>Now make the monitoring data available to Claude Desktop as a tool:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Add a new tool to my existing portfolio server called
+get_monitor_alerts that:
+
+1. Reads the monitor_log.json file
+2. Returns the most recent check's alerts and warnings
+3. Includes the approval level and suggested action for each
+4. Returns an empty alerts list with status "all_clear" if nothing
+   needs attention</pre>
+          </div>
+          <p>Update your guide tool and restart Claude Desktop.</p>
+          <p>Test in Claude Desktop:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Test Prompt</div>
+            <pre>Are there any alerts on my portfolio I should know about?</pre>
+          </div>
+        </div>
+
+        <!-- What You Learned -->
+        <div class="callout">
+          <div class="callout-title">What You Learned</div>
+          <ul style="margin-left: 1.5rem;">
+            <li>How to design monitoring rules before building anything</li>
+            <li>The classification pattern: alert / warning / info</li>
+            <li>Audit trails: logging every check so you can review later</li>
+            <li>Approval levels: which actions are silent, which need you, which are blocked entirely</li>
+            <li>How to connect monitoring output to Claude Desktop as a tool</li>
+            <li>The principle that AI proposes, humans decide — the monitor alerts you but never trades</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 3: Prompts -->
+      <div id="tab-prompts" class="tab-content">
+        <h2>Prompt Patterns for Week 4</h2>
+
+        <p>This section shows you how to talk to Claude when building monitoring and agent workflows.</p>
+
+        <!-- Designing Rules -->
+        <h3>Designing Rules (Claude Desktop)</h3>
+
+        <h4>Getting started with monitoring design</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Example Prompt</div>
+          <pre>I want to build a portfolio monitoring agent. My portfolio has these
+stocks: [list them].
+
+What should it monitor? Help me think of everything — not just prices,
+but risk metrics, volume, concentration, and anything else that matters
+for an equity portfolio.</pre>
+        </div>
+
+        <h4>Defining thresholds</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Example Prompt</div>
+          <pre>Help me set reasonable thresholds for alerts:
+- What daily price move should trigger an alert? 3%? 5%?
+- How close to a risk limit should I be warned? 80% of limit? 90%?
+- What volume multiple is "unusual"? 2x average? 3x?
+
+I'd rather get too many alerts at first and dial them back than miss
+something important.</pre>
+        </div>
+
+        <h4>Thinking about approval levels</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Example Prompt</div>
+          <pre>I want to categorize every possible action into these levels:
+- SILENT: happens automatically, just logged
+- ALERT: I'm notified and decide what to do
+- URGENT: I'm notified immediately
+- BLOCKED: never automated, always requires my manual action
+
+Help me classify these actions:
+- Routine data check
+- Small price move (< 3%)
+- Large price move (> 5%)
+- Approaching a concentration limit
+- Breaching a concentration limit
+- Placing a trade to rebalance
+- Changing a risk limit</pre>
+        </div>
+
+        <!-- Building with Claude Code -->
+        <h3>Building with Claude Code</h3>
+
+        <h4>Creating the monitor script</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Example Prompt</div>
+          <pre>Build a monitoring script called monitor.py that checks my portfolio
+and logs everything to monitor_log.json.
+
+Check:
+- Price and daily change for each stock
+- Position concentration vs 20% single-stock limit
+- Sector concentration vs 35% sector limit
+- Unusual volume (> 2x 10-day average)
+
+Classify findings as alert/warning/info. Print only alerts and warnings.
+Log everything.
+
+My portfolio: [list stocks and approximate share counts]</pre>
+        </div>
+
+        <h4>Adding the audit trail</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Example Prompt</div>
+          <pre>The monitor_log.json needs more detail. For each finding, log:
+- timestamp
+- check_type (what was checked)
+- ticker (which stock)
+- current_value (what the current metric is)
+- threshold (what the limit is)
+- classification (alert/warning/info)
+- suggested_action (what I should consider doing)
+- data_source
+
+Also add a --summary flag that shows alerts from the past 7 days.</pre>
+        </div>
+
+        <h4>Making it an MCP tool</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Example Prompt</div>
+          <pre>Add a tool to my portfolio_server.py called get_monitor_alerts that
+reads the latest entries from monitor_log.json and returns any alerts
+or warnings. If everything is fine, return {"status": "all_clear"}.
+
+Include the approval level and suggested action for each alert.</pre>
+        </div>
+
+        <!-- Testing Prompts -->
+        <h3>Testing Prompts for Claude Desktop</h3>
+
+        <h4>Basic alert check</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test Prompt</div>
+          <pre>Are there any alerts on my portfolio?</pre>
+        </div>
+
+        <h4>Morning review with monitoring</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test Prompt</div>
+          <pre>Give me my morning briefing, including any monitoring alerts from
+overnight.</pre>
+        </div>
+
+        <h4>Historical review</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test Prompt</div>
+          <pre>How many alerts have I had this week? Any patterns?</pre>
+        </div>
+
+        <h4>Testing the boundary</h4>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test Prompt</div>
+          <pre>If NVDA drops 6% today, what would the monitor flag?
+(Claude should explain the alert levels that would trigger)</pre>
+        </div>
+
+        <!-- Tips for Week 4 -->
+        <h3>Tips for Week 4</h3>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Start conservative.</strong> Set all thresholds loose (3% moves, 80% of limits). You can always tighten them later.</li>
+          <li><strong>Run the monitor manually first.</strong> Before automating, run it yourself a few times to verify the output makes sense.</li>
+          <li><strong>Check the audit log.</strong> After each run, look at monitor_log.json (ask Claude Code to show you the latest entries). Verify the classifications make sense.</li>
+          <li><strong>The BLOCKED level is non-negotiable.</strong> Never remove it for trading or limit changes. This is a permanent design principle, not training wheels.</li>
+          <li><strong>Connect it to Claude Desktop last.</strong> Get the monitor working standalone first, then add the MCP tool. This way you debug one thing at a time.</li>
+        </ul>
+      </div>
+
+      <!-- TAB 4: Checklist -->
+      <div id="tab-checklist" class="tab-content">
+        <h2>Self-Evaluation Checklist</h2>
+
+        <p>Use this checklist to verify your monitoring agent is working correctly. Aim for all boxes checked.</p>
+
+        <!-- Monitor Script -->
+        <div class="checklist">
+          <h3>Monitor Script</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Runs without errors. <code>uv run python monitor.py</code> completes and prints a summary.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Checks all categories. Price moves, concentration limits, sector limits, and unusual volume are all checked.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Classifications make sense. A 1% move is "info", a 4% move is "alert", a limit breach is "urgent".</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Prints only alerts and warnings. The terminal output doesn't drown you in routine "info" entries.</div>
+          </div>
+        </div>
+
+        <!-- Audit Trail -->
+        <div class="checklist">
+          <h3>Audit Trail</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Log file exists. <code>monitor_log.json</code> is created after running the monitor.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Entries have all fields. Each log entry includes timestamp, check_type, ticker, current value, threshold, classification, and suggested action.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Log is append-only. Running the monitor twice creates more entries — it doesn't overwrite the first run.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Summary flag works. <code>uv run python monitor.py --summary</code> shows alerts from the past week.</div>
+          </div>
+        </div>
+
+        <!-- Approval Levels -->
+        <div class="checklist">
+          <h3>Approval Levels</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Rules are defined. The script has a rules section that maps each finding type to SILENT / ALERT / URGENT / BLOCKED.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">BLOCKED items exist. At minimum, "place_trade" and "change_risk_limits" are BLOCKED — never automated.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Rules are visible in output. Each alert shows its approval level and the rule that triggered it.</div>
+          </div>
+        </div>
+
+        <!-- MCP Integration -->
+        <div class="checklist">
+          <h3>MCP Integration</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><code>get_monitor_alerts</code> tool works. In Claude Desktop, asking "Any alerts?" returns data from the monitor log.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Tool filters correctly. Only alerts and warnings are returned, not routine info entries.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Status when all clear. If no alerts exist, the tool returns <code>{"status": "all_clear"}</code> — not an empty or confusing response.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Claude interprets correctly. Claude Desktop gives a useful natural language summary of the alerts, including suggested actions.</div>
+          </div>
+        </div>
+
+        <!-- Design Principles -->
+        <div class="checklist">
+          <h3>Design Principles</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">AI proposes, human decides. Nothing in your system executes a trade without human action. The monitor only alerts and suggests.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Everything is logged. Even "all clear" checks are recorded. You can reconstruct exactly what the monitor saw at any point.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Thresholds are explicit. Every alert has a clear threshold. No magic numbers hidden in code that you can't review.</div>
+          </div>
+        </div>
+
+        <!-- End-of-Course Assessment -->
+        <div class="checklist">
+          <h3>End-of-Course Self-Assessment</h3>
+          <p>After completing all four weeks, you should be able to:</p>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Describe a workflow to Claude Code and get a working MCP server</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Evaluate whether what Claude built is correct and complete</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Iterate when something isn't right — describe the problem, let Claude fix it</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Connect MCP tools to Claude Desktop and use them in conversation</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Design guardrails that prevent the AI from making mistakes</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Architect a multi-server system with clear domain boundaries</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Build monitoring with audit trails and appropriate approval levels</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Explain the principle "AI proposes, humans decide" and why it matters in finance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/nav.js" data-current="week-4"></script>
+
+  <script>
+    // Section tabs functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.section-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+
+          // Remove active class from all buttons and contents
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+
+          // Add active class to clicked button and corresponding content
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

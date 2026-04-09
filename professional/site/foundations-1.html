@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foundations 1: Understanding Claude | AI-Powered Investment Management</title>
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="content">
+      <!-- Chapter Header -->
+      <div class="chapter-header">
+        <div class="chapter-label">Foundations 1</div>
+        <h1>Understanding Claude — Your AI Research Partner</h1>
+        <div class="chapter-meta">
+          <span>Reading: 25 minutes</span>
+          <span>Exercise: 20 minutes</span>
+        </div>
+      </div>
+
+      <!-- Section Tabs -->
+      <div class="section-tabs">
+        <button class="section-tab active" data-tab="tab-reading">Reading</button>
+        <button class="section-tab" data-tab="tab-exercise">Exercise</button>
+        <button class="section-tab" data-tab="tab-checklist">Checklist</button>
+      </div>
+
+      <!-- TAB 1: Reading -->
+      <div id="tab-reading" class="tab-content active">
+
+        <div class="callout">
+          <div class="callout-title">What You Need for This Module</div>
+          <p>Just a Claude account and a web browser. Go to <a href="https://claude.ai">claude.ai</a> and sign in (or create an account). No software to install, no terminal commands. You can do everything in this module from your phone or tablet if you prefer.</p>
+        </div>
+
+        <div class="callout callout-guardrail">
+          <div class="callout-title">Course Overview: What You'll Build</div>
+          <p><strong>Foundations 1-2:</strong> Understand Claude — system prompts, projects, Desktop &amp; Mobile setup.<br>
+          <strong>Week 1:</strong> Connect Claude to live market data through pre-built tools.<br>
+          <strong>Week 2:</strong> Build your own AI tools using Claude Code.<br>
+          <strong>Week 3:</strong> Design multi-server systems for your organization.<br>
+          <strong>Week 4:</strong> Add autonomous agent capabilities with guardrails.</p>
+        </div>
+
+        <h2>What Large Language Models Actually Are</h2>
+
+        <p class="lead">Imagine hiring an analyst who has read every investing textbook ever written, every earnings call transcript from the last twenty years, every macro research note published in English, and most of the financial press. This analyst can synthesize across all of it, draw connections between disparate ideas, and explain complex topics clearly.</p>
+
+        <p>Now imagine that this analyst has no Bloomberg terminal. No market data feed. No access to EDGAR. Everything they know comes from what they read during training — and that training ended months ago. They can reason brilliantly about what they've seen, but they cannot tell you what happened in the market yesterday.</p>
+
+        <p>That's a large language model.</p>
+
+        <p>LLMs like Claude are pattern-matching engines trained on enormous amounts of text. During training, the model processes billions of documents and learns the statistical relationships between words, sentences, and ideas. It learns what good financial analysis looks like by reading thousands of examples. It learns how to reason about risk by absorbing decades of research. It learns accounting standards, valuation frameworks, and regulatory language — not because someone programmed those rules in, but because the patterns appeared over and over in the training data.</p>
+
+        <p>This produces something genuinely useful: a system that can reason about finance at a high level, explain complex concepts clearly, and synthesize across multiple frameworks. Ask Claude to compare DCF and comparable company analysis for a specific situation, and it will give you a thoughtful answer that reflects real understanding of both methods.</p>
+
+        <p>But there are hard limits. Claude does not have access to current prices, recent filings, or live data of any kind. It cannot look something up. When it states a number — a stock price, a GDP figure, an earnings result — it is drawing from training data that may be months or years old. It has no way to know whether that number is still accurate.</p>
+
+        <div class="callout">
+          <div class="callout-title">The Fundamental Tension</div>
+          <p>This is the fundamental tension of using AI for investment work: the reasoning is strong, but the data connection is missing. The rest of this course is about solving that problem. But first, you need to understand how Claude works well enough to use it effectively even without live data — because the reasoning capabilities alone are remarkably powerful for the right tasks.</p>
+        </div>
+
+        <h2>The Context Window</h2>
+
+        <p class="lead">Every conversation with Claude has a context window — think of it as Claude's working memory. Everything you say, everything Claude says, and any documents you share all occupy space in this window. When the window fills up, the oldest parts of the conversation start dropping out.</p>
+
+        <p>Claude's context window holds roughly 200,000 tokens. A token is roughly three-quarters of a word, so 200K tokens is approximately 150,000 words — about the length of two full-length books, or a stack of 10-K filings from three or four mid-cap companies.</p>
+
+        <p>This has practical implications for investment work:</p>
+
+        <h3>Long documents work</h3>
+        <p>You can paste an entire earnings transcript or a 50-page research report into a conversation and ask Claude to analyze it. The document fits comfortably in the context window, and Claude can reference specific sections, compare different parts, and draw conclusions across the whole thing.</p>
+
+        <h3>Conversations have memory — until they don't</h3>
+        <p>In a long conversation, Claude remembers everything you've discussed. If you analyzed Apple in the first message and Microsoft in the fifth, you can ask Claude to compare them in the tenth message. But in an extremely long session, early messages may fall out of context. If you notice Claude forgetting something you discussed earlier, start a new conversation and bring forward the key points.</p>
+
+        <h3>Focused questions get better answers</h3>
+        <p>A question like "What are the three biggest risks in this 10-K?" will get a sharper answer than "Tell me everything about this filing." Not because Claude can't process the whole document, but because a focused question directs Claude's attention to the most relevant patterns. Think of it like giving an analyst a specific assignment versus telling them to "look into it."</p>
+
+        <h3>You control what's in the window</h3>
+        <p>Every piece of text you include is text Claude can reference. Every piece you leave out is invisible. This means you can shape Claude's analysis by choosing what context to provide. Give Claude your investment thesis before asking it to evaluate a company, and the analysis will be framed around your thesis. Skip the thesis, and you'll get a generic overview.</p>
+
+        <h2>System Prompts and Custom Instructions</h2>
+
+        <p class="lead">When you start a conversation with Claude, you can provide instructions that persist throughout the entire session. These are called custom instructions (on claude.ai) or system prompts (in the API). They tell Claude who you are, how you work, and how you want it to respond.</p>
+
+        <p>Without custom instructions, Claude has no idea whether you're a retail investor asking about your first stock purchase or a portfolio manager running a multi-billion dollar fund. It defaults to general-purpose responses that try to be helpful to everyone — which means they're not specifically helpful to you.</p>
+
+        <p>Custom instructions change this. They shape every response Claude gives, without you having to repeat yourself in every message. Here's what good custom instructions look like for an investment professional:</p>
+
+        <pre class="code-block">You are assisting a senior equity analyst at a long/short hedge fund.
+I cover US technology stocks with a focus on enterprise software.
+
+When analyzing companies:
+- Frame everything in terms of competitive moat and unit economics
+- I care about Rule of 40 (revenue growth + FCF margin) as a quality metric
+- Always note the bull and bear case, even if one seems obvious
+- Use specific numbers from filings, not generalizations
+
+When responding:
+- Be direct. Skip disclaimers about "this is not financial advice"
+- If you're uncertain about a data point, say so explicitly
+- Use the terminology I'd use with my PM, not retail language
+- Keep responses concise --- I'll ask for more detail if I need it</pre>
+
+        <p>Notice what these instructions accomplish. They tell Claude your role (senior equity analyst), your domain (enterprise software), your analytical framework (moat, unit economics, Rule of 40), and your communication preferences (direct, concise, no disclaimers). Every response Claude gives in this session will be calibrated to this context.</p>
+
+        <p>Compare that to a conversation without instructions, where you'd need to say "Remember, I'm an equity analyst who cares about unit economics" in every other message. Custom instructions say it once and it sticks.</p>
+
+        <p>You can update your custom instructions at any time. As you work with Claude more, you'll develop a feel for what makes your instructions more effective. Start simple and add specifics as you discover what you want Claude to do differently.</p>
+
+        <h2>Projects in Claude</h2>
+
+        <p class="lead">A Claude project is a workspace where you can organize conversations around a specific topic. Think of it as a folder with persistent context — its own custom instructions and its own knowledge base.</p>
+
+        <p>Why does this matter? Because different types of investment work require different contexts. Your equity research needs different instructions than your macro analysis, which needs different instructions than your compliance review. Without projects, you'd either maintain one giant set of instructions that tries to cover everything (and covers nothing well) or rewrite your instructions for every new conversation.</p>
+
+        <p>Projects solve this by letting you create separate workspaces:</p>
+
+        <ul>
+          <li><strong>Equity Research</strong> — instructions focused on fundamental analysis, your coverage universe, your valuation framework</li>
+          <li><strong>Macro / Asset Allocation</strong> — instructions focused on regime analysis, cross-asset correlations, your firm's allocation process</li>
+          <li><strong>Compliance Review</strong> — instructions focused on regulatory language, your firm's policies, disclosure requirements</li>
+          <li><strong>Earnings Season</strong> — instructions focused on transcript analysis, estimate revisions, management tone</li>
+        </ul>
+
+        <p>Each project has two key features:</p>
+
+        <h3>Project instructions</h3>
+        <p>These work like the custom instructions described earlier, but they apply only to conversations within that project. Your Equity Research project might say "Focus on enterprise software and SaaS metrics." Your Macro project might say "I trade SPY and TLT as my primary instruments. Analyze everything through a regime lens."</p>
+
+        <h3>Project knowledge</h3>
+        <p>This lets you upload documents that Claude can reference in every conversation within the project. Upload your firm's investment process document to a project, and Claude can reference it when you ask "How would our process evaluate this opportunity?" Upload a set of earnings transcripts, and Claude can compare them across conversations.</p>
+
+        <p>To create a project:</p>
+
+        <ol>
+          <li>Go to <a href="https://claude.ai">claude.ai</a></li>
+          <li>Look for "Projects" in the left sidebar</li>
+          <li>Click "Create project" (or the + icon)</li>
+          <li>Give it a name and write your project instructions</li>
+          <li>Optionally, upload documents to the project knowledge base</li>
+        </ol>
+
+        <p>Every conversation you start within that project will have access to those instructions and documents automatically. You don't need to re-upload or re-explain anything.</p>
+
+        <h2>Artifacts</h2>
+
+        <p class="lead">When Claude produces a substantial, standalone piece of content — a comparison table, a formatted report, a structured analysis — it can create an artifact. An artifact appears in a separate panel alongside the conversation, making it easy to read, copy, or reference without scrolling through chat messages.</p>
+
+        <p>Think of the difference between an analyst explaining something verbally at your desk versus handing you a printed summary. The explanation is useful in the moment. The printed summary is something you can take with you, mark up, and share. Artifacts are the printed summary.</p>
+
+        <p>For investment work, artifacts are particularly useful for:</p>
+
+        <h3>Comparison tables</h3>
+        <p>Ask Claude to compare the financial profiles of five companies, and it can produce a clean table with revenue growth, margins, valuation multiples, and key metrics — formatted and ready to reference. This is far more useful than the same information buried in a paragraph of text.</p>
+
+        <h3>Structured reports</h3>
+        <p>Ask Claude to write a brief investment memo on a company, and it can produce a formatted document with sections for thesis, key metrics, risks, and catalysts. You can copy this directly into your workflow.</p>
+
+        <h3>Checklists and frameworks</h3>
+        <p>Ask Claude to create a due diligence checklist for evaluating SaaS acquisitions, and it produces a structured document you can reuse across multiple deals.</p>
+
+        <p>Artifacts appear automatically when Claude determines the content warrants a standalone format. You can also ask explicitly: "Create a table comparing these companies" or "Put that analysis in an artifact I can reference later."</p>
+
+        <p>Not everything should be an artifact. Quick answers, clarifications, and back-and-forth discussion work better as regular conversation. Artifacts are for outputs you want to keep, reference, or share.</p>
+
+        <h2>Prompting for Investment Work</h2>
+
+        <p class="lead">Generic prompt engineering advice — "be specific," "provide context," "ask step by step" — applies to finance, but it misses what makes financial prompting different. Your domain has its own vocabulary, its own analytical frameworks, and its own standards for what constitutes a useful answer. Here are the practices that matter most.</p>
+
+        <h3>Be specific about timeframes, instruments, and analysis type</h3>
+        <p>Finance is full of ambiguity that natural language makes worse. "How is Apple doing?" could mean the stock price, the business fundamentals, the competitive position, or the technical setup. Claude will guess, and it might guess wrong.</p>
+
+        <p>Instead: "Analyze Apple's enterprise services segment over the last three fiscal years, focusing on revenue growth and margin expansion." This eliminates ambiguity and gets you an answer you can actually use.</p>
+
+        <h3>Tell Claude what role to play</h3>
+        <p>"You are a sell-side analyst writing a note for institutional clients" produces very different output than "You are helping a retail investor understand their portfolio." The role shapes the depth, the terminology, and the assumptions Claude makes about what you already know.</p>
+
+        <p>For investment professionals, useful roles include: equity research analyst, credit analyst, risk manager, macro strategist, compliance officer. Each one changes how Claude frames its analysis.</p>
+
+        <h3>Provide context about your analytical framework</h3>
+        <p>If you care about free cash flow yield more than P/E, say so. If your firm uses a specific scoring model, describe it. Claude can't read your mind about which metrics matter to you, but it's very good at adapting once you tell it.</p>
+
+        <pre class="code-block">Evaluate this company using our quality framework: sustainable
+revenue growth above 15%, gross margins above 60%, and FCF
+conversion above 20% of revenue. Flag any metric that falls short.</pre>
+
+        <h3>Ask Claude to show its reasoning</h3>
+        <p>"Walk me through how you'd evaluate the bull case for this stock" produces a more useful response than "Is this stock a buy?" The first gives you reasoning you can agree with, challenge, or build on. The second gives you a conclusion you can't evaluate.</p>
+
+        <p>This is especially important because Claude doesn't have current data. When it shows its reasoning, you can see where the logic is sound (based on enduring principles) and where it's working from potentially stale information (specific numbers or recent events).</p>
+
+        <h3>Push back and iterate</h3>
+        <p>Claude's first answer is rarely its best answer. Treat it like a draft from a junior analyst. "That's a reasonable framework, but you're not considering the impact of their pricing power on margins. Redo the analysis with that factor included."</p>
+
+        <p>This kind of iteration is where Claude becomes genuinely valuable. It doesn't get defensive. It doesn't forget the prior context. It incorporates your feedback and produces a better version. The best investment analysis with Claude comes from three or four rounds of refinement, not from a single perfect prompt.</p>
+
+        <h3>State what you don't want</h3>
+        <p>"Don't include generic risk factors that apply to every company. Focus on the two or three risks specific to this business model." This prevents the kind of padding that makes AI output feel like a compliance document rather than useful analysis.</p>
+
+        <div class="takeaways">
+          <h3>Key Takeaways</h3>
+          <ol>
+            <li><strong>LLMs are powerful reasoning engines with no live data.</strong> Claude can analyze, synthesize, and explain financial concepts at a high level, but every specific number it quotes comes from training data that may be outdated.</li>
+            <li><strong>The context window is your working memory.</strong> At ~200K tokens, you can fit entire filings and transcripts, but focused questions get better answers than open-ended ones.</li>
+            <li><strong>Custom instructions eliminate repetition.</strong> Define your role, your framework, and your preferences once, and Claude applies them to every response in the session.</li>
+            <li><strong>Projects organize your work.</strong> Separate projects for different types of analysis keep your instructions focused and your documents accessible.</li>
+            <li><strong>Prompting for finance is about precision.</strong> Specify timeframes, instruments, and analysis types. Tell Claude your framework. Ask it to show its reasoning so you can evaluate where the logic is sound and where the data might be stale.</li>
+          </ol>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: Exercise -->
+      <div id="tab-exercise" class="tab-content">
+
+        <p class="lead">You'll set up a Claude project tailored to your investment work, experience the difference that custom instructions make, and learn how project knowledge transforms Claude from a generic assistant into a research partner that understands your context.</p>
+
+        <div class="callout">
+          <div class="callout-title">What You Need</div>
+          <ul style="margin-left: 1.5rem;">
+            <li>A Claude account at <a href="https://claude.ai">claude.ai</a> (Pro or Team plan)</li>
+            <li>A web browser</li>
+            <li>A finance document you can upload (any PDF — a research report, an earnings transcript, a 10-K excerpt, or even a one-page strategy summary). If you don't have one handy, you can download any 10-K from <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;type=10-K">SEC EDGAR</a></li>
+          </ul>
+        </div>
+
+        <div class="step" data-step="1">
+          <h3>Ask Claude a Finance Question</h3>
+          <p><strong>Time: 5 minutes</strong></p>
+          <p>Go to <a href="https://claude.ai">claude.ai</a> and start a new conversation — not inside a project. Just a plain conversation.</p>
+          <p>Ask Claude a question you'd normally research manually. Something substantive, not a simple fact lookup. For example:</p>
+          <pre class="code-block">What are the key risks to the US equity market in the current
+macro environment? Focus on the three most likely scenarios that
+would cause a drawdown of 10% or more.</pre>
+          <p>Read the response carefully. Notice:</p>
+          <ul style="margin-left: 1.5rem;">
+            <li>How detailed is it? Does it feel generic or specific?</li>
+            <li>Does Claude make assumptions about your role or expertise level?</li>
+            <li>Are there specific numbers? If so, are they current or potentially outdated?</li>
+            <li>Does the framing match how you'd discuss this with a colleague?</li>
+          </ul>
+          <p>Don't dismiss the response — it will probably be reasonable. But note its tone, its assumptions, and its level of specificity. You're about to see how much better this gets.</p>
+        </div>
+
+        <div class="step" data-step="2">
+          <h3>Create a Project with Custom Instructions</h3>
+          <p><strong>Time: 10 minutes</strong></p>
+          <ol style="margin-left: 1.5rem;">
+            <li>In the left sidebar of claude.ai, find <strong>Projects</strong></li>
+            <li>Click <strong>Create project</strong> (or the + icon)</li>
+            <li>Name it something specific: "Equity Research", "Macro Analysis", or "Portfolio Review" — whatever matches your actual work</li>
+            <li>In the project instructions, write something like this (adapt it to your actual role):</li>
+          </ol>
+          <pre class="code-block">You are assisting a [your role] at a [your firm type].
+I focus on [your coverage area or strategy].
+
+When analyzing markets or companies:
+- [Your primary analytical framework --- e.g., "Use a top-down macro
+  framework starting with rates and credit conditions"]
+- [Key metrics you care about --- e.g., "I evaluate companies on FCF
+  yield, ROIC, and revenue durability"]
+- [Your style --- e.g., "Always present the bear case, even for
+  positions I own"]
+
+When responding:
+- Be direct and concise. I'll ask for detail if I need it.
+- Use institutional-level terminology, not retail language.
+- If you're uncertain about a specific data point, flag it explicitly
+  rather than presenting it as fact.
+- Skip boilerplate disclaimers about not being financial advice.</pre>
+          <p>Take a few minutes to make this genuinely reflect how you work. The more specific your instructions, the more useful the exercise will be.</p>
+        </div>
+
+        <div class="step" data-step="3">
+          <h3>Compare Responses</h3>
+          <p><strong>Time: 5 minutes</strong></p>
+          <p>Inside your new project, start a conversation and ask the <strong>exact same question</strong> from Step 1:</p>
+          <pre class="code-block">What are the key risks to the US equity market in the current
+macro environment? Focus on the three most likely scenarios that
+would cause a drawdown of 10% or more.</pre>
+          <p>Now compare the two responses side by side. You should notice:</p>
+          <ul style="margin-left: 1.5rem;">
+            <li><strong>Framing:</strong> The project response should be calibrated to your role. If you said you're a PM, it might discuss portfolio implications. If you said you're an analyst, it might go deeper on specific sectors.</li>
+            <li><strong>Terminology:</strong> The language should match your instructions. If you asked for institutional terminology, you should see it.</li>
+            <li><strong>Depth and focus:</strong> The response should emphasize the analytical dimensions you specified. If you said you care about credit conditions, credit should feature prominently.</li>
+            <li><strong>Tone:</strong> If you asked for directness, the response should skip hedging language and get to the point.</li>
+          </ul>
+          <p>The same model, the same question, but meaningfully different output — because you gave Claude context about who you are and how you think.</p>
+        </div>
+
+        <div class="step" data-step="4">
+          <h3>Add Project Knowledge</h3>
+          <p><strong>Time: 7 minutes</strong></p>
+          <p>Now give Claude something specific to work with.</p>
+          <ol style="margin-left: 1.5rem;">
+            <li>In your project settings, find the knowledge section</li>
+            <li>Upload a document: a research report, an earnings transcript, a 10-K filing, or any finance document you work with regularly</li>
+            <li>Start a new conversation within the project</li>
+          </ol>
+          <p>Ask Claude questions that require the document:</p>
+          <pre class="code-block">Summarize the key financial takeaways from the document I uploaded.
+Focus on anything that surprised you or diverged from consensus
+expectations.</pre>
+          <p>Then go deeper:</p>
+          <pre class="code-block">What are the three most important risk factors mentioned in this
+filing? For each one, tell me whether you think it's a standard
+boilerplate disclosure or a genuinely material risk, and why.</pre>
+          <p>And try cross-referencing:</p>
+          <pre class="code-block">Based on the financials in this document, which metrics are
+trending in the wrong direction? What questions would you want
+answered before getting comfortable with this company?</pre>
+          <p>Notice how different this is from asking Claude generic questions. With project knowledge, Claude is analyzing a specific document — your document — through the lens of your analytical framework. This is closer to having a research partner who has actually read the briefing materials.</p>
+        </div>
+
+        <div class="step" data-step="5">
+          <h3>Try Claude on Mobile</h3>
+          <p><strong>Time: 3 minutes</strong></p>
+          <p>If you have the Claude mobile app installed (<a href="https://apps.apple.com/app/claude-by-anthropic/id6473753684">iOS</a> / <a href="https://play.google.com/store/apps/details?id=com.anthropic.claude">Android</a>), open it and navigate to the same project.</p>
+          <p>Notice what's the same:</p>
+          <ul style="margin-left: 1.5rem;">
+            <li>Your project instructions carry over</li>
+            <li>Your uploaded documents are accessible</li>
+            <li>The same analytical framing applies</li>
+          </ul>
+          <p>Notice what's different:</p>
+          <ul style="margin-left: 1.5rem;">
+            <li>Shorter responses may work better on a small screen</li>
+            <li>Voice input can be faster than typing complex questions</li>
+            <li>You can do quick checks — "remind me of the key risks from that 10-K" — without sitting at your desk</li>
+          </ul>
+          <p>If you don't have the mobile app, skip this step. It's useful but not essential.</p>
+        </div>
+
+        <div class="takeaways">
+          <h3>What You Learned</h3>
+          <ol>
+            <li><strong>Custom instructions reshape Claude's output.</strong> The same question produces materially different responses when Claude knows your role, your framework, and your preferences. This isn't cosmetic — it changes what Claude emphasizes, how it frames analysis, and what assumptions it makes.</li>
+            <li><strong>Projects keep context organized.</strong> Instead of one conversation that tries to do everything, you can maintain separate workspaces with focused instructions and relevant documents.</li>
+            <li><strong>Project knowledge turns Claude into a research partner.</strong> Generic questions get generic answers. Questions grounded in your actual documents get specific, actionable analysis.</li>
+            <li><strong>Claude works across devices.</strong> Your projects, instructions, and knowledge are available on web and mobile, so you can continue your work wherever you are.</li>
+            <li><strong>The quality of Claude's output depends on the quality of your input.</strong> Specific instructions and focused questions consistently outperform vague ones. This is a skill you'll develop throughout the course.</li>
+          </ol>
+        </div>
+
+      </div>
+
+      <!-- TAB 3: Checklist -->
+      <div id="tab-checklist" class="tab-content">
+
+        <p class="lead">Use this to confirm you've covered the key concepts and completed the hands-on exercise. Every item should be a confident "yes" before moving to Foundations 2.</p>
+
+        <div class="checklist">
+          <h3>Concepts</h3>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Can you explain what a large language model is and isn't?</strong> You should be able to describe it in one sentence: a reasoning engine trained on text that has no access to live data.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Do you understand the context window?</strong> You know it's Claude's working memory (~200K tokens), that longer conversations eventually lose early context, and that focused questions get better answers.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Can you explain what custom instructions do?</strong> You know they persist across messages, shape how Claude responds, and eliminate the need to repeat your role and preferences in every conversation.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Do you understand the difference between a plain conversation and a project?</strong> You know that projects have their own instructions and knowledge base, and that different projects can serve different types of analysis.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Hands-On</h3>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you created a Claude project?</strong> You have at least one project with a name relevant to your work (not "Test Project").</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you written custom instructions?</strong> Your project has instructions that describe your role, your analytical framework, and your communication preferences.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you compared responses with and without instructions?</strong> You asked the same question in a plain conversation and in your project, and you noticed the difference in framing, depth, and terminology.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you uploaded a document to project knowledge?</strong> You added a PDF or text file and asked Claude questions about its contents.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Have you asked Claude to analyze your document?</strong> Not just "summarize this" but a question that requires Claude to interpret the document through your analytical framework.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Ready for Foundations 2</h3>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You're comfortable navigating claude.ai.</strong> You can create conversations, switch between projects, and find your uploaded documents.</div>
+          </div>
+
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You've developed a sense for what makes a good prompt.</strong> You know that specific, structured questions with clear analytical direction outperform vague ones.</div>
+          </div>
+        </div>
+
+        <p>If any items above are unchecked, revisit that section of the reading or the exercise before continuing. Foundations 2 builds directly on these skills.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/nav.js" data-current="foundations-1"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.section-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

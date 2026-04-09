@@ -9,5 +9,5 @@ __pycache__/
 **/marketing/
 **/interactive/
 
-# Site build artifacts
-professional/site/
+# Site build artifacts (included on v2-refresh for deployment)
+# professional/site/

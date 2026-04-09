@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 3: Multi-Server Architecture | AI-Powered Investment Management</title>
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="content">
+      <!-- Chapter Header -->
+      <div class="chapter-header">
+        <div class="chapter-label">Chapter 3</div>
+        <h1>Multi-Server Architecture</h1>
+        <div class="chapter-meta">
+          <span>Reading: 30 minutes</span>
+          <span>Exercise: 30 minutes</span>
+        </div>
+      </div>
+
+      <!-- Demo Launch Card -->
+      <div class="demo-card">
+        <div class="demo-info">
+          <h3>Interactive Demo: Architecture Explorer</h3>
+          <p>Click through a multi-server architecture to see how responsibilities are divided across signal, risk, research, and execution servers.</p>
+        </div>
+        <a href="demo-week-3.html" class="demo-btn">Launch Demo →</a>
+      </div>
+
+      <!-- Section Tabs -->
+      <div class="section-tabs">
+        <button class="section-tab active" data-tab="tab-reading">Reading</button>
+        <button class="section-tab" data-tab="tab-exercise">Exercise</button>
+        <button class="section-tab" data-tab="tab-prompts">Prompts</button>
+        <button class="section-tab" data-tab="tab-checklist">Checklist</button>
+      </div>
+
+      <!-- TAB 1: Reading -->
+      <div id="tab-reading" class="tab-content active">
+        <!-- Section 3.1: Multi-Server Architecture -->
+        <h2>Multi-Server Architecture</h2>
+
+        <p class="lead">In Weeks 1-2, you built a single MCP server with a few tools. In production, you'll have multiple domains — each with its own data sources, update cadence, and access requirements. The question is: one big server or several small ones?</p>
+
+        <h3>Why Separate Servers</h3>
+
+        <p>Consider a real investment platform with these domains:</p>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Market signals</strong> — regime detection, technical indicators, trade plans</li>
+          <li><strong>Risk management</strong> — position limits, sector exposure, drawdown monitoring</li>
+          <li><strong>Research / RAG</strong> — SEC filing analysis, earnings transcript Q&A</li>
+          <li><strong>Execution</strong> — order management, fill tracking, trade journal</li>
+        </ul>
+
+        <p>Putting everything in one server creates problems:</p>
+
+        <pre class="code-block">Monolithic server:
+  ✗ Deploy risk fix → accidentally break signal computation
+  ✗ Research intern needs filing access → gets trade execution tools too
+  ✗ Signal server needs real-time data → research server only needs daily
+  ✗ One crash takes down everything</pre>
+
+        <p>Separate servers solve these:</p>
+
+        <pre class="code-block">Multi-server:
+  ✓ Deploy independently — risk fix doesn't touch signals
+  ✓ Permission per server — research gets RAG only
+  ✓ Scale independently — signal server gets more resources
+  ✓ Fault isolation — research crash doesn't affect trading</pre>
+
+        <h3>The Shared Library Pattern</h3>
+
+        <p>Separate servers doesn't mean duplicated code. Extract common functionality into a shared library:</p>
+
+        <pre class="code-block">shared-library (trading-core):
+  ├── brokers/          <span class="comment"># Data provider clients (tastytrade, yfinance)</span>
+  ├── data/             <span class="comment"># CSV I/O, bar merging, staleness detection</span>
+  ├── risk/             <span class="comment"># Position sizing formulas</span>
+  ├── auth/             <span class="comment"># OAuth provider, user management</span>
+  └── transport.py      <span class="comment"># MCP server configuration (stdio vs HTTP)</span>
+
+signal-server:
+  └── Uses: brokers, data, transport
+      Adds: regime classification, signal tiers, trade plans
+
+risk-server:
+  └── Uses: brokers, data, risk, transport
+      Adds: limit checking, sector analysis, drawdown monitoring
+
+research-server:
+  └── Uses: data, transport
+      Adds: RAG indexing, document search, citation generation</pre>
+
+        <p>Each server depends on the shared library for infrastructure, then adds its domain-specific logic. When you fix a bug in the data layer, all servers benefit. When you add a new signal type, only the signal server changes.</p>
+
+        <h3>Data Sharing</h3>
+
+        <p>Multiple servers often need the same market data. Two approaches:</p>
+
+        <p><strong>Shared storage (simpler):</strong> Servers read/write to a common data directory. CSV files or a shared database. Works well when servers run on the same machine or share a volume.</p>
+
+        <p><strong>Event-driven (scalable):</strong> A data service fetches and publishes market data. Servers subscribe to what they need. More complex but avoids conflicts.</p>
+
+        <p>For most investment teams, shared storage is sufficient. The key is <strong>append-only data</strong> — servers add new bars, never modify existing ones (except for partial bar updates where newer data has significantly more volume).</p>
+
+        <!-- Section 3.2: Data Provider Strategy -->
+        <h2>Data Provider Strategy</h2>
+
+        <p>Your AI tools are only as good as the data feeding them. A production system needs a deliberate data provider strategy.</p>
+
+        <h3>Primary / Fallback Hierarchy</h3>
+
+        <p>Designate one provider as primary and one (or more) as fallback:</p>
+
+        <pre class="code-block"><span class="keyword">async def</span> <span class="string">get_daily_bars</span>(ticker: <span class="keyword">str</span>) -> <span class="keyword">dict</span>:
+    <span class="keyword">try</span>:
+        bars = <span class="keyword">await</span> primary_provider.fetch(ticker)  <span class="comment"># Real-time, full-featured</span>
+        <span class="keyword">return</span> {<span class="string">"bars"</span>: bars, <span class="string">"data_source"</span>: <span class="string">"primary"</span>}
+    <span class="keyword">except</span> DataUnavailableError:
+        bars = <span class="keyword">await</span> fallback_provider.fetch(ticker)  <span class="comment"># Delayed, limited</span>
+        <span class="keyword">return</span> {
+            <span class="string">"bars"</span>: bars,
+            <span class="string">"data_source"</span>: <span class="string">"fallback"</span>,
+            <span class="string">"stale_data_warning"</span>: <span class="string">"Using delayed data — primary feed unavailable"</span>,
+        }</pre>
+
+        <p>The <code>data_source</code> field is critical. When the AI sees <code>"data_source": "fallback"</code>, it can tell the user "Note: this analysis uses delayed data because the live feed is down." Without this, stale data looks identical to fresh data.</p>
+
+        <h3>Staleness Detection</h3>
+
+        <p>Market data goes stale in predictable ways:</p>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>After-hours fetch:</strong> Last bar is from market close, not "now"</li>
+          <li><strong>Partial session bar:</strong> Futures bar captured mid-session has low volume</li>
+          <li><strong>Weekend/holiday:</strong> Friday's data on a Monday morning</li>
+        </ul>
+
+        <p>Build staleness detection into your data layer:</p>
+
+        <pre class="code-block"><span class="keyword">def</span> <span class="string">is_stale</span>(bar: DailyBar) -> <span class="keyword">bool</span>:
+    <span class="string">"""A bar is stale if it's from before the most recent close."""</span>
+    now = datetime.now(timezone.utc)
+    market_close = get_last_market_close(now)
+    <span class="keyword">return</span> bar.date < market_close.date()
+
+<span class="keyword">def</span> <span class="string">is_partial</span>(bar: DailyBar) -> <span class="keyword">bool</span>:
+    <span class="string">"""A futures bar with very low volume was likely captured mid-session."""</span>
+    <span class="keyword">return</span> bar.volume < <span class="number">100_000</span></pre>
+
+        <p>When staleness is detected, include it in the tool return. The AI then decides how to qualify its analysis — "Based on Friday's close" vs. presenting it as if it's real-time.</p>
+
+        <h3>Provider Abstraction</h3>
+
+        <p>Don't leak provider details into your tools. Use an abstract interface:</p>
+
+        <pre class="code-block"><span class="keyword">from typing import</span> Protocol
+
+<span class="keyword">class</span> <span class="string">DataProvider</span>(Protocol):
+    <span class="keyword">async def</span> <span class="string">get_quote</span>(self, ticker: <span class="keyword">str</span>) -> Quote: ...
+    <span class="keyword">async def</span> <span class="string">get_daily_bars</span>(self, ticker: <span class="keyword">str</span>, days: <span class="keyword">int</span>) -> <span class="keyword">list</span>[DailyBar]: ...
+    <span class="keyword">async def</span> <span class="string">get_options_chain</span>(self, ticker: <span class="keyword">str</span>, expiry: <span class="keyword">str</span>) -> OptionsChain: ...
+
+<span class="keyword">class</span> <span class="string">TastytradeProvider</span>:
+    <span class="string">"""Full-featured: real-time quotes, options, futures, intraday."""</span>
+    <span class="keyword">async def</span> <span class="string">get_quote</span>(self, ticker: <span class="keyword">str</span>) -> Quote: ...
+
+<span class="keyword">class</span> <span class="string">YFinanceProvider</span>:
+    <span class="string">"""Fallback: daily bars only. No real-time, no options Greeks."""</span>
+    <span class="keyword">async def</span> <span class="string">get_quote</span>(self, ticker: <span class="keyword">str</span>) -> Quote: ...</pre>
+
+        <p>Tools call the <code>DataProvider</code> interface, not a specific implementation. Swapping providers means changing one configuration line, not rewriting tools.</p>
+
+        <!-- Section 3.3: Authentication, Deployment, and Cost -->
+        <h2>Authentication, Deployment, and Cost</h2>
+
+        <h3>OAuth 2.1 for MCP</h3>
+
+        <p>When your MCP servers run in the cloud, they need authentication. MCP uses OAuth 2.1 with dynamic client registration:</p>
+
+        <pre class="code-block">1. AI client discovers OAuth endpoint at your server URL
+2. Client redirects user to your login page
+3. User authenticates (username/password, SSO, etc.)
+4. Server issues access token (short-lived) + refresh token (long-lived)
+5. Client auto-refreshes tokens — no manual key management</pre>
+
+        <p>This is better than API keys because:</p>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Tokens expire</strong> — a leaked token is time-limited damage</li>
+          <li><strong>Per-user identity</strong> — audit trail shows *who* accessed what</li>
+          <li><strong>Standard protocol</strong> — any OAuth-capable client works</li>
+          <li><strong>No key rotation</strong> — refresh tokens handle lifecycle automatically</li>
+        </ul>
+
+        <h3>Cloud Deployment</h3>
+
+        <p>MCP servers are stateless HTTP services — they fit naturally into modern cloud platforms. Key considerations:</p>
+
+        <p><strong>Auto-suspend:</strong> If your AI tools are used during market hours only, choose a platform that suspends idle containers. This can reduce cost from $50/month to $2-5/month.</p>
+
+        <p><strong>Persistent storage:</strong> Auth databases and cached data need persistent volumes that survive container restarts and deploys.</p>
+
+        <p><strong>Health endpoints:</strong> Every server should expose <code>/health</code> that returns:</p>
+
+        <pre class="code-block">{
+  <span class="string">"status"</span>: <span class="string">"healthy"</span>,
+  <span class="string">"data_provider"</span>: <span class="string">"connected"</span>,
+  <span class="string">"last_data_update"</span>: <span class="string">"2026-03-15T16:05:00Z"</span>,
+  <span class="string">"uptime_seconds"</span>: <span class="number">3600</span>
+}</pre>
+
+        <p>This enables monitoring and alerting when a server loses its data connection.</p>
+
+        <h3>Cost Reality</h3>
+
+        <p>A common objection to AI tools: "How much does this cost?" The answer is usually surprisingly low:</p>
+
+        <pre class="code-block">Cloud hosting (auto-suspend):    $2-5/month per server
+LLM API calls (Claude):         $5-20/month typical usage
+Data provider (tastytrade):      $0 (free with brokerage account)
+Total for 4 MCP servers:         ~$30-50/month</pre>
+
+        <p>Compare this to: Bloomberg terminal ($24K/year), FactSet ($12K+/year), or hiring an additional analyst. AI tools are an order of magnitude cheaper for capabilities that complement (not replace) professional terminals.</p>
+
+        <!-- Section 3.4: Testing AI Tool Systems -->
+        <h2>Testing AI Tool Systems</h2>
+
+        <p>AI tools need testing at three levels:</p>
+
+        <h3>Unit Tests (per tool)</h3>
+
+        <p>Test each tool in isolation with known inputs:</p>
+
+        <pre class="code-block"><span class="keyword">async def</span> <span class="string">test_position_detail_known_ticker</span>():
+    result = <span class="keyword">await</span> get_position_detail(<span class="string">"AAPL"</span>)
+    <span class="keyword">assert</span> <span class="string">"error"</span> <span class="keyword">not in</span> result
+    <span class="keyword">assert</span> result[<span class="string">"ticker"</span>] == <span class="string">"AAPL"</span>
+    <span class="keyword">assert</span> <span class="keyword">isinstance</span>(result[<span class="string">"unrealized_pnl"</span>], <span class="keyword">float</span>)
+    <span class="keyword">assert</span> <span class="string">"data_source"</span> <span class="keyword">in</span> result
+    <span class="keyword">assert</span> <span class="string">"as_of"</span> <span class="keyword">in</span> result
+
+<span class="keyword">async def</span> <span class="string">test_position_detail_unknown_ticker</span>():
+    result = <span class="keyword">await</span> get_position_detail(<span class="string">"INVALID"</span>)
+    <span class="keyword">assert</span> <span class="string">"error"</span> <span class="keyword">in</span> result
+    <span class="keyword">assert</span> <span class="string">"No position found"</span> <span class="keyword">in</span> result[<span class="string">"error"</span>]</pre>
+
+        <h3>Integration Tests (data pipeline)</h3>
+
+        <p>Test that data flows correctly from provider to tool:</p>
+
+        <pre class="code-block"><span class="keyword">async def</span> <span class="string">test_data_refresh_updates_signal</span>():
+    <span class="comment"># Refresh data from provider</span>
+    <span class="keyword">await</span> refresh_data([<span class="string">"SPY"</span>, <span class="string">"TLT"</span>])
+    <span class="comment"># Signal should reflect new data</span>
+    signal = <span class="keyword">await</span> get_current_signal()
+    <span class="keyword">assert</span> signal[<span class="string">"as_of"</span>]  <span class="comment"># Has a timestamp</span>
+    <span class="keyword">assert</span> signal[<span class="string">"data_source"</span>] != <span class="string">"cached"</span>  <span class="comment"># Used fresh data</span></pre>
+
+        <h3>Smoke Tests (server startup)</h3>
+
+        <p>Verify that servers start without import errors:</p>
+
+        <pre class="code-block"><span class="keyword">def</span> <span class="string">test_server_imports</span>():
+    <span class="string">"""Catch missing dependencies or broken imports early."""</span>
+    <span class="keyword">import</span> signal_server.mcp_server.server  <span class="comment"># Should not raise</span>
+    <span class="keyword">import</span> risk_server.mcp_server.server
+    <span class="keyword">import</span> research_server.mcp_server.server</pre>
+
+        <p>This catches a surprisingly common failure: you add a new dependency to one package but forget to include it in the server's requirements.</p>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways">
+          <h2>Key Takeaways</h2>
+          <ol>
+            <li>Separate servers per domain — independent deployment, permissions, and scaling.</li>
+            <li>Shared library for infrastructure — don't duplicate broker/data/auth code.</li>
+            <li>Tag data provenance — every tool return includes <code>data_source</code> and freshness.</li>
+            <li>Staleness detection — build it into the data layer, not the tool layer.</li>
+            <li>Provider abstraction — tools call interfaces, not implementations.</li>
+            <li>OAuth over API keys — expiring tokens, per-user identity, standard protocol.</li>
+            <li>Auto-suspend hosting — production AI tools can cost $30-50/month total.</li>
+            <li>Test at three levels — unit (tools), integration (pipelines), smoke (imports).</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- TAB 2: Exercise -->
+      <div id="tab-exercise" class="tab-content">
+        <h2>Design a Multi-Server System</h2>
+
+        <p>This week is different. Instead of building one more tool, you'll step back and think about how to organize multiple MCP servers for your organization. Then you'll use Claude to help design and build the architecture.</p>
+
+        <p>You'll use <strong>Claude Desktop</strong> for the design thinking and <strong>Claude Code</strong> for building the result.</p>
+
+        <!-- Step 1 -->
+        <div class="step" data-step="1">
+          <div class="step-title">Brainstorm with Claude Desktop</div>
+          <div class="step-time">10 minutes</div>
+          <p>Open Claude Desktop (not Claude Code) and have a design conversation. This is about thinking, not building.</p>
+          <p>Try a prompt like:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>I'm designing an AI tool system for my investment team. We currently have
+one MCP server that tracks a stock watchlist and gives morning briefings.
+
+I want to expand this into a multi-server system. Here's what our team does:
+- [Describe your team's workflows — e.g., "We manage a portfolio of 30
+  stocks across 6 sectors. Every morning we review positions, check risk
+  limits, and look for new ideas."]
+- [List the roles — e.g., "2 portfolio managers, 3 analysts, 1 risk
+  manager"]
+- [Mention data sources — e.g., "We use StockAnalysis.com for fundamentals,
+  Yahoo Finance for prices, and read SEC filings"]
+
+Help me think about:
+1. What separate MCP servers would make sense?
+2. What tools would each server have?
+3. What should be shared across servers vs. server-specific?
+4. Who needs access to what?</pre>
+          </div>
+          <p>If you're not sure what to describe, use this scenario:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Default Scenario</div>
+            <pre>I work at a mid-size investment firm. We manage equity portfolios.
+Our main workflows are:
+- Morning review: check positions, P&L, risk limits, market conditions
+- Research: read SEC filings, analyze earnings, track investment theses
+- Trading: evaluate opportunities, size positions, review trade ideas
+
+We have portfolio managers, analysts, and a risk manager.
+We use free data sources: Yahoo Finance, StockAnalysis.com, SEC EDGAR.</pre>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step" data-step="2">
+          <div class="step-title">Fill In the Architecture Template</div>
+          <div class="step-time">5 minutes</div>
+          <p>Based on your conversation with Claude Desktop, document the key decisions:</p>
+          <ul style="margin-left: 1.5rem;">
+            <li>How many servers and what each covers</li>
+            <li>What goes in a shared library</li>
+            <li>Data sources with primary/fallback designation</li>
+            <li>Who accesses what</li>
+          </ul>
+          <p>You can do this by hand or ask Claude Desktop to help format it.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step" data-step="3">
+          <div class="step-title">Build the Skeleton with Claude Code</div>
+          <div class="step-time">10 minutes</div>
+          <p>Now switch to Claude Code and have it build what you designed:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>I've designed a multi-server MCP system. Create the file structure
+and basic tools for each server. Don't worry about full implementations
+yet, just the structure.
+
+Here's what I need:
+
+Server 1: [name] — [purpose]
+  Tools: [list from your template]
+
+Server 2: [name] — [purpose]
+  Tools: [list from your template]
+
+Server 3: [name] — [purpose] (if applicable)
+  Tools: [list from your template]
+
+Shared across all servers:
+  - [list shared components]
+
+Create each server as a separate .py file in my project folder.
+Each server should have a get_[name]_guide tool that describes
+its tools. Use yfinance for any market data.</pre>
+          </div>
+          <p>Claude Code will create the file structure and basic implementations.</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step" data-step="4">
+          <div class="step-title">Connect and Test Multiple Servers</div>
+          <div class="step-time">5 minutes</div>
+          <p>Ask Claude Code to help you connect multiple servers to Claude Desktop:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>I now have multiple MCP servers. Can you update my Claude Desktop
+config to include all of them? Show me what the config should look like
+with multiple servers.</pre>
+          </div>
+          <p>Then test in Claude Desktop:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Test 1</div>
+            <pre>What tools do I have available?</pre>
+          </div>
+          <p>Claude should see tools from all your servers. Try asking a question that requires tools from multiple servers:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Test 2</div>
+            <pre>Give me a morning briefing including risk analysis.</pre>
+          </div>
+        </div>
+
+        <!-- What You Learned -->
+        <div class="callout">
+          <div class="callout-title">What You Learned</div>
+          <ul style="margin-left: 1.5rem;">
+            <li>How to use Claude Desktop as a thinking partner for system design</li>
+            <li>How to decompose a complex system into separate, focused servers</li>
+            <li>The shared library pattern — what to centralize vs. keep separate</li>
+            <li>How to connect multiple MCP servers to Claude Desktop</li>
+            <li>That design thinking is YOUR job — Claude helps execute it</li>
+          </ul>
+        </div>
+
+        <!-- Design Principles -->
+        <div class="callout">
+          <div class="callout-title">Architecture Design Principles</div>
+          <ol style="margin-left: 1.5rem;">
+            <li><strong>One server per domain.</strong> Portfolio analytics, risk, research — each gets its own server.</li>
+            <li><strong>Each server is independently deployable.</strong> A bug fix in risk doesn't touch the signal server.</li>
+            <li><strong>Shared library for infrastructure.</strong> Data access, auth, and common utilities are shared. Domain logic is not.</li>
+            <li><strong>Least privilege.</strong> The research intern's Claude Desktop connects to the research server only, not the trading server.</li>
+            <li><strong>Guide tool per server.</strong> Each server describes itself so the AI knows what it's working with.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- TAB 3: Prompts -->
+      <div id="tab-prompts" class="tab-content">
+        <h2>Prompt Patterns for Week 3</h2>
+
+        <p>This section shows you how to talk to Claude about system design and multi-server architecture.</p>
+
+        <!-- Design Conversations -->
+        <h3>Design Conversations in Claude Desktop</h3>
+
+        <p><strong>Starting the architecture brainstorm:</strong></p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Pattern</div>
+          <pre>I'm designing an AI tool system for my investment team. We currently have
+a simple stock watchlist server. I want to expand to a full system.
+
+Here's our team and workflow:
+- [Your team description]
+- [Your key workflows]
+- [Your data sources]
+
+Help me think about what separate MCP servers I should build. For each
+server, suggest 5-7 tools it should have.</pre>
+        </div>
+
+        <p><strong>Going deeper on a specific server:</strong></p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Pattern</div>
+          <pre>Let's go deeper on the research server. Our analysts spend most of their
+time reading SEC filings and earnings transcripts. What tools would help
+them? Think about:
+- Finding relevant sections in filings
+- Comparing this quarter to last quarter
+- Tracking investment theses over time</pre>
+        </div>
+
+        <p><strong>Deciding what to share:</strong></p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Pattern</div>
+          <pre>I'm trying to decide what should be shared across all servers vs. specific
+to one server. Here's my list — can you help me classify each one?
+
+- Market data fetching (yfinance calls)
+- Portfolio position data
+- Risk limit calculations
+- SEC filing parser
+- Stock fundamentals lookup
+- Authentication</pre>
+        </div>
+
+        <!-- Building with Claude Code -->
+        <h3>Building with Claude Code</h3>
+
+        <p><strong>Creating the multi-server structure:</strong></p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Pattern</div>
+          <pre>I've designed a 3-server system. Create the file structure:
+
+1. portfolio_server.py — Portfolio analytics (positions, P&L, sectors)
+2. risk_server.py — Risk management (limits, concentration, drawdown)
+3. research_server.py — SEC filing analysis and earnings data
+
+Each server should:
+- Use FastMCP
+- Have a guide tool
+- Have placeholder tools (just return sample data for now)
+- Use yfinance for any market data needed
+
+Also create a shared_utils.py with common functions like fetching
+stock data and formatting timestamps.</pre>
+        </div>
+
+        <p><strong>Connecting multiple servers to Claude Desktop:</strong></p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Pattern</div>
+          <pre>I now have 3 server files:
+- ~/ai-finance-tools/portfolio_server.py
+- ~/ai-finance-tools/risk_server.py
+- ~/ai-finance-tools/research_server.py
+
+Show me the exact Claude Desktop config JSON to add all three.
+Each server needs its own entry in the config.</pre>
+        </div>
+
+        <!-- Evaluating Your Design -->
+        <h3>Evaluating Your Design</h3>
+
+        <p>After building, test these in Claude Desktop:</p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test: Does Claude know what's available?</div>
+          <pre>What tools do I have across all my servers?</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test: Can Claude route to the right server?</div>
+          <pre>What are my biggest risk exposures right now?
+(Should use risk server tools, not portfolio tools)</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test: Can Claude cross-reference servers?</div>
+          <pre>Give me a morning briefing that covers my portfolio performance
+AND my current risk status.
+(Should use tools from multiple servers)</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test: Does the separation make sense?</div>
+          <pre>I want to add a tool that checks if a proposed trade would breach
+any risk limits. Which server should this go in?
+(Good test: does your architecture have a natural home for this?)</pre>
+        </div>
+
+        <!-- Tips for Week 3 -->
+        <h3>Tips for Week 3</h3>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Design first, build second.</strong> Spend the first 15 minutes thinking with Claude Desktop. The building goes fast once you know what you want.</li>
+          <li><strong>Two servers is fine.</strong> Don't force a three-server architecture if two makes more sense. Simpler is better.</li>
+          <li><strong>Shared code prevents drift.</strong> If two servers need the same data, put the data fetching in a shared file. Otherwise you'll fix a bug in one server and forget the other.</li>
+          <li><strong>Test cross-server questions.</strong> The real power of multiple servers is when the AI combines data from different domains. Make sure this works.</li>
+        </ul>
+      </div>
+
+      <!-- TAB 4: Checklist -->
+      <div id="tab-checklist" class="tab-content">
+        <h2>Self-Evaluation Checklist</h2>
+
+        <p>Use this checklist to verify your architecture design and multi-server implementation.</p>
+
+        <!-- Architecture Design -->
+        <div class="checklist">
+          <h3>Architecture Design</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">2-3 servers with clear boundaries. Each server covers a distinct domain. You can explain in one sentence what each server does.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">No tool belongs in two servers. If you're unsure where a tool goes, your boundaries may be unclear.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Shared components identified. Data fetching, common utilities, and cross-cutting concerns are in a shared file, not duplicated.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Each server has a guide tool. Every server describes its own capabilities so the AI knows how to use it.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Access makes sense. You can articulate who needs which server. Not everyone needs access to everything.</div>
+          </div>
+        </div>
+
+        <!-- Multi-Server Setup -->
+        <div class="checklist">
+          <h3>Multi-Server Setup</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">All servers run without errors. Test each server independently with the MCP inspector.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">All servers connected to Claude Desktop. The config file has entries for each server.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Claude Desktop sees all tools. Ask "What tools do I have?" — Claude should list tools from all servers.</div>
+          </div>
+        </div>
+
+        <!-- Cross-Server Functionality -->
+        <div class="checklist">
+          <h3>Cross-Server Functionality</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Claude routes correctly. Ask a risk question — Claude uses risk server tools. Ask a portfolio question — Claude uses portfolio tools.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Claude cross-references. Ask a question that spans servers (e.g., "Give me a briefing with risk analysis") — Claude calls tools from multiple servers.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Shared code works. If both servers use shared utilities, both return consistent data (same prices, same timestamps).</div>
+          </div>
+        </div>
+
+        <!-- Design Quality -->
+        <div class="checklist">
+          <h3>Design Quality</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Trade-off documented. You identified at least one decision where you chose between options and can explain why.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Data sources specified. You know which free data source each server uses and what happens if it's unavailable.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Architecture template filled in. The key sections are complete.</div>
+          </div>
+        </div>
+
+        <!-- Self-Reflection -->
+        <div class="checklist">
+          <h3>Self-Reflection Questions</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">If I add a new analyst to the team, which servers do they need?</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">If yfinance goes down, which servers are affected?</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">If I want to add a new tool for bond analysis, does my architecture have a natural home for it, or do I need a new server?</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Could I explain this architecture to my manager in 2 minutes?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/nav.js" data-current="week-3"></script>
+
+  <script>
+    // Section tabs functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.section-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+
+          // Remove active class from all buttons and contents
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+
+          // Add active class to clicked button and corresponding content
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

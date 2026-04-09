@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 2: AI Reasoning and Guardrails | AI-Powered Investment Management</title>
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="content">
+      <!-- Chapter Header -->
+      <div class="chapter-header">
+        <div class="chapter-label">Chapter 2</div>
+        <h1>AI Reasoning and Guardrails</h1>
+        <div class="chapter-meta">
+          <span>Reading: 30 minutes</span>
+          <span>Exercise: 30 minutes</span>
+        </div>
+      </div>
+
+      <!-- Demo Launch Card -->
+      <div class="demo-card">
+        <div class="demo-info">
+          <h3>Interactive Demo: Morning Briefing Simulator</h3>
+          <p>See how AI cross-references multiple data sources with guardrails to produce a morning briefing.</p>
+        </div>
+        <a href="demo-week-2.html" class="demo-btn">Launch Demo →</a>
+      </div>
+
+      <!-- Section Tabs -->
+      <div class="section-tabs">
+        <button class="section-tab active" data-tab="tab-reading">Reading</button>
+        <button class="section-tab" data-tab="tab-exercise">Exercise</button>
+        <button class="section-tab" data-tab="tab-prompts">Prompts</button>
+        <button class="section-tab" data-tab="tab-checklist">Checklist</button>
+      </div>
+
+      <!-- TAB 1: Reading -->
+      <div id="tab-reading" class="tab-content active">
+        <!-- Section 2.1: Structured Data In, Reasoned Analysis Out -->
+        <h2>Structured Data In, Reasoned Analysis Out</h2>
+
+        <p class="lead">The tool-use pattern from Week 1 gives Claude access to structured data. But Week 2 is about the next step: how to design tools and prompts so that Claude synthesizes multiple data sources into coherent, reasoned analysis. This is where AI truly adds value in investment management.</p>
+
+        <h3>The Synthesis Pattern</h3>
+
+        <p>Instead of asking Claude to analyze one dataset at a time, you ask it to cross-reference multiple tools in a single reasoning pass. Here's the pattern:</p>
+
+        <pre class="code-block"><span class="keyword">def</span> <span class="string">get_current_signal</span>():
+    <span class="string">"""
+    Returns today's trading signal from the strategy framework.
+    Combines market color classification, signal tier, exposure target.
+    """</span>
+    <span class="keyword">return</span> {
+        <span class="string">"signal_name"</span>: <span class="string">"T1_BOTH_STRONG_BLUE"</span>,
+        <span class="string">"signal_tier"</span>: 1,
+        <span class="string">"color"</span>: <span class="string">"Blue"</span>,
+        <span class="string">"exposure_target"</span>: 2.0,
+        <span class="string">"as_of_date"</span>: <span class="string">"2025-03-07"</span>
+    }
+
+<span class="keyword">def</span> <span class="string">get_es_levels</span>():
+    <span class="string">"""
+    Returns ES futures pivot points, VWAP, and regime classification.
+    Anchors directional trading levels.
+    """</span>
+    <span class="keyword">return</span> {
+        <span class="string">"pivot"</span>: 5125.50,
+        <span class="string">"s1"</span>: 5110.25,
+        <span class="string">"r1"</span>: 5140.75,
+        <span class="string">"vwap"</span>: 5132.10,
+        <span class="string">"regime"</span>: <span class="string">"bull"</span>
+    }
+
+<span class="keyword">def</span> <span class="string">get_risk_report</span>(account_size: <span class="keyword">int</span>):
+    <span class="string">"""
+    Synthesizes signal + levels to produce position sizing and trade plans.
+    This is the output Claude should reason about.
+    """</span>
+    <span class="keyword">return</span> {
+        <span class="string">"signal"</span>: <span class="string">"T1_BOTH_STRONG_BLUE"</span>,
+        <span class="string">"long_plan"</span>: { <span class="string">"entry"</span>: <span class="string">"5115-5120"</span>, <span class="string">"stop"</span>: 5105, <span class="string">"target_1"</span>: 5140 },
+        <span class="string">"contracts"</span>: 2,
+        <span class="string">"total_risk_usd"</span>: 500
+    }</pre>
+
+        <p>When Claude sees a user question like "What should I do in ES today?", it can call these tools in sequence and synthesize the result:</p>
+
+        <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li>Call <code>get_current_signal()</code> to understand the market signal</li>
+          <li>Call <code>get_es_levels()</code> to get current technical context</li>
+          <li>Call <code>get_risk_report()</code> to get the complete trade plan</li>
+          <li>Synthesize: "Here's today's signal (Tier 1 Blue), ES is at VWAP with bullish regime, and the trade plan is..."</li>
+        </ol>
+
+        <p>The key: you don't make Claude do the math. All three tools return pre-computed, decision-ready information. Claude's job is to <strong>understand the narrative</strong> — why this signal matters, what the technicals support, when to execute.</p>
+
+        <h3>Why This Beats Dashboards</h3>
+
+        <p>A static dashboard shows you numbers. Claude can do something dashboards can't: cross-reference multiple signals and explain them in natural language.</p>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Dashboard approach:</strong>
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li>You see: Signal = Blue, ES Pivot = 5125.50, Regime = Bull</li>
+            <li>You have to synthesize: "These all align, so I should go long"</li>
+            <li>If something's wrong, you have to figure out why</li>
+          </ul>
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>AI reasoning approach:</strong>
+          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li>Claude sees the same data and explains it: "Signal is Tier 1 Blue, meaning strong risk-on. ES is trading at VWAP with confirmation above the 50-day SMA. Regime is bull. All three align."</li>
+            <li>Claude flags misalignments: "Signal says Blue, but ES just broke below VWAP. Caution."</li>
+            <li>Claude suggests follow-ups: "Before entering, check duration of this Blue streak to assess risk."</li>
+          </ul>
+        </div>
+
+        <!-- Section 2.2: RAG for Financial Documents -->
+        <h2>RAG for Financial Documents</h2>
+
+        <p>Retrieval-Augmented Generation (RAG) is how you let Claude reason about financial documents: 10-Ks, earnings transcripts, SEC filings. But standard RAG fails for structured finance docs. Here's why.</p>
+
+        <h3>The Problem with Standard RAG</h3>
+
+        <p>Vector-based RAG (the most common approach) has a critical weakness for structured financial documents:</p>
+
+        <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Chunking destroys hierarchy:</strong> A 10-K is a tree (chapters, sections, subsections). Vector RAG chunks it into flat pieces, losing structure.</li>
+          <li><strong>Summaries hide nuance:</strong> A vector DB stores summaries to save space. But finance docs need precise quotes, exact figures, exact dates.</li>
+          <li><strong>Context mismatch:</strong> You ask "What are the company's risk factors?" Vector RAG returns 5 loosely relevant chunks. The real Risk Factors section is buried.</li>
+          <li><strong>Cross-section reasoning fails:</strong> Questions like "How did this risk factor change from last year?" require comparing multiple sections. Vector RAG gives you fragments.</li>
+          <li><strong>No audit trail:</strong> When Claude cites a fact, can you verify it came from the document? Vector RAG makes this hard.</li>
+        </ol>
+
+        <h3>Structure-First RAG (PageIndex)</h3>
+
+        <p>Structure-First RAG (also called PageIndex) inverts the problem: instead of summarizing and vectorizing, you preserve the document's hierarchy and let Claude navigate it.</p>
+
+        <p>Here's a 10-K tree structure:</p>
+
+        <pre class="code-block">10-K
+├── Item 1: Business
+│   ├── Overview
+│   ├── Products & Services
+│   └── Market Position
+├── Item 1A: Risk Factors
+│   ├── Market Risk
+│   ├── Regulatory Risk
+│   └── Technology Risk
+├── Item 7: Management's Discussion & Analysis
+│   ├── Results of Operations
+│   ├── Liquidity & Capital Resources
+│   └── Segment Performance
+└── Item 8: Financial Statements
+    ├── Consolidated Balance Sheet
+    ├── Consolidated Income Statement
+    └── Footnotes</pre>
+
+        <p>Instead of summarizing the Risk Factors section, you give Claude access to the tree. Claude can:</p>
+
+        <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li>Ask: "What are the top risk factors?"</li>
+          <li>Claude calls: <code>get_document_section(doc_id, node_id="Item1A")</code></li>
+          <li>You return: The complete, raw text of Item 1A</li>
+          <li>Claude reasons over the actual text, not a summary</li>
+        </ol>
+
+        <p>The critical rule: <strong>summaries are for navigation only. Answers must come from raw text.</strong> Your tools describe the structure (tree view, summaries). But when Claude needs to reason, it gets the full section.</p>
+
+        <h3>Vector RAG vs Structure-First vs Hybrid</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Approach</th>
+              <th>Best For</th>
+              <th>Accuracy</th>
+              <th>Audit Trail</th>
+              <th>Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Vector RAG</strong></td>
+              <td>General Q&A, blog posts</td>
+              <td>Moderate (fuzzy matches)</td>
+              <td>Poor (chunk IDs)</td>
+              <td>Low (pre-embedded)</td>
+            </tr>
+            <tr>
+              <td><strong>Structure-First</strong></td>
+              <td>Finance, legal, structured docs</td>
+              <td>High (exact sections)</td>
+              <td>Excellent (doc_id + node_id)</td>
+              <td>Medium (fetches on demand)</td>
+            </tr>
+            <tr>
+              <td><strong>Hybrid</strong></td>
+              <td>Mixed: some navigation, some search</td>
+              <td>High (best of both)</td>
+              <td>Good (with metadata)</td>
+              <td>Medium-High</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>For finance, Structure-First is the standard. PageIndex (a Structure-First system) achieved 98.7% accuracy on FinanceBench, a benchmark of finance document Q&A. Vector RAG scored 75%.</p>
+
+        <!-- Section 2.3: Where AI Reasoning Adds Value -->
+        <h2>Where AI Reasoning Adds Value (and Where It Doesn't)</h2>
+
+        <p>AI is powerful but not magic. It excels at certain tasks and fails at others. Understanding this boundary is critical for building reliable financial AI.</p>
+
+        <h3>High-Value Tasks for AI</h3>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Cross-signal synthesis:</strong> "Here's SPY/TLT signal, ES technicals, and bond correlation. What does it mean?" Claude excels at this narrative reasoning.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Natural language trade plans:</strong> Instead of a grid of numbers, Claude can say: "Tier 1 Blue signal with bullish ES regime. Buy dip to S1 (5110), stop 5105, target 5140. Conviction: High."
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Pattern explanation:</strong> "You've seen 3 consecutive Red days. Historically, the next day averages a 0.5% bounce. That's mean reversion."
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Document Q&A:</strong> "What were the company's main risk factors last year vs this year?" Claude reads the raw 10-K sections and compares.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Anomaly narration:</strong> "This position is down 15% vs 2% benchmark loss. Unusual. Let me check if there's a specific event..." Claude can reason about outliers.
+        </div>
+
+        <h3>Low-Value (Keep in Python)</h3>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Numerical computation:</strong> Portfolio Greeks, VaR, correlations. Python is faster and exact. Don't make Claude calculate.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Precise pricing:</strong> Option valuations, bond yields, spreads. Claude will hallucinate. Use your pricing library.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Backtesting:</strong> Historical performance, returns distribution. Claude can't run backtest logic. Compute it in Python.
+        </div>
+
+        <div style="margin: var(--md) 0;">
+          <strong>Order execution:</strong> Actually placing trades. Too risky. Claude generates orders, your system executes them after approval.
+        </div>
+
+        <h3>The Pre-Formatted Template Pattern</h3>
+
+        <p>The best way to separate AI reasoning from computation is the pre-formatted template pattern. Instead of giving Claude raw numbers to assemble, you give it a formatted briefing:</p>
+
+        <pre class="code-block"><span class="keyword">def</span> <span class="string">get_trade_briefing</span>(symbol: <span class="keyword">str</span> = <span class="string">"ES"</span>):
+    <span class="string">"""
+    Returns a pre-formatted, ready-to-display morning briefing.
+    All numbers are pre-computed. Claude reads and reasons about it.
+    """</span>
+    <span class="keyword">return</span> {
+        <span class="string">"briefing"</span>: <span class="string">"""
+MARKET BRIEFING — March 7, 2025 — ES Futures
+
+STRATEGY SIGNAL: Tier 1 Blue
+Conviction: HIGH | Exposure: 2.0x
+
+ES TECHNICALS
+Current: 5127.50 | Pivot: 5125.50 | VWAP: 5132.10
+Regime: Bull (above SMA50=5100, above SMA200=5080)
+Yesterday: Close 5130, High 5145, Low 5120
+
+TRADE PLAN: LONG
+Entry: 5115-5120 (dip toward S1)
+Stop: 5105 (12.5 pts = $625/contract)
+Target 1: 5140 (R1, +25 pts = $1250)
+Target 2: 5155 (R2, +40 pts = $2000)
+Risk/Reward: 1:2
+
+POSITIONING
+2 ES contracts | 500 USD at risk | R:R = 1:2
+        """</span>,
+        <span class="string">"as_of_date"</span>: <span class="string">"2025-03-07 08:30 ET"</span>,
+        <span class="string">"stale_warning"</span>: <span class="keyword">None</span>
+    }</pre>
+
+        <p>Claude sees this formatted briefing and can reason about it: "Signal is strong, technicals align, risk/reward is good. Proceed." It's not calculating; it's <strong>interpreting and explaining</strong>.</p>
+
+        <!-- Section 2.4: Prompt Engineering for Financial AI -->
+        <h2>Prompt Engineering for Financial AI</h2>
+
+        <p>The art of getting Claude to reason well about finance comes down to two factors: tool docstrings and return field names. These act as implicit prompts.</p>
+
+        <h3>Tool Docstrings Are Prompts</h3>
+
+        <p>When you write a tool docstring, Claude reads it before deciding whether to call the tool. A weak docstring confuses Claude. A strong one guides it.</p>
+
+        <div class="callout callout-guardrail">
+          <div class="callout-title">Weak Docstring</div>
+          <pre class="code-block"><span class="keyword">def</span> <span class="string">get_data</span>(ticker):
+    <span class="string">"""Get market data."""</span></pre>
+          <p>Claude doesn't know what "market data" means. Is it price? Volume? Fundamentals?</p>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">Strong Docstring</div>
+          <pre class="code-block"><span class="keyword">def</span> <span class="string">get_equity_snapshot</span>(ticker: <span class="keyword">str</span>):
+    <span class="string">"""
+    Fetch live price, technicals, and context for a US stock or ETF.
+
+    Returns: last price, bid/ask, 52-week high/low, SMA50, SMA200, ATR14,
+    pivots (P, R1-R3, S1-S3), and regime classification (bull/bear).
+
+    Use this when you need to: assess current valuation vs levels,
+    check technical regime, size a trade entry/stop.
+    """</span></pre>
+          <p>Claude knows exactly what this tool returns and when to use it.</p>
+        </div>
+
+        <h3>Return Field Names Are Prompts</h3>
+
+        <p>How you name fields in the return value teaches Claude what to focus on.</p>
+
+        <div class="callout callout-guardrail">
+          <div class="callout-title">Weak Return Fields</div>
+          <pre class="code-block"><span class="keyword">return</span> {
+    <span class="string">"v1"</span>: 5125.50,
+    <span class="string">"v2"</span>: 5110.25,
+    <span class="string">"v3"</span>: 5140.75,
+    <span class="string">"v4"</span>: <span class="string">"bull"</span>
+}</pre>
+          <p>Claude has no idea what v1, v2, v3 are. It can't reason about them.</p>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">Strong Return Fields</div>
+          <pre class="code-block"><span class="keyword">return</span> {
+    <span class="string">"pivot"</span>: 5125.50,
+    <span class="string">"support_1"</span>: 5110.25,
+    <span class="string">"resistance_1"</span>: 5140.75,
+    <span class="string">"regime"</span>: <span class="string">"bull"</span>,
+    <span class="string">"context"</span>: <span class="string">"Price at VWAP, above SMA50, strong uptrend."</span>
+}</pre>
+          <p>Now Claude immediately understands: these are price levels, regime, and context. It can reason about them.</p>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways">
+          <h2>Key Takeaways</h2>
+          <ol>
+            <li>The synthesis pattern lets Claude cross-reference multiple tools to produce reasoned analysis, not just aggregated data.</li>
+            <li>Structure-First RAG (PageIndex) preserves document hierarchy and gives Claude access to raw text for accurate reasoning.</li>
+            <li>Vector RAG fails for finance docs because it flattens hierarchy and returns summaries instead of exact sections.</li>
+            <li>AI reasoning adds value for narrative synthesis, trade planning, pattern explanation, and document Q&A.</li>
+            <li>Keep numerical computation, pricing, backtesting, and order execution in Python, not Claude.</li>
+            <li>Pre-formatted templates separate computation from reasoning, letting Claude focus on interpretation.</li>
+            <li>Tool docstrings and return field names act as implicit prompts, shaping how Claude reasons about your data.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- TAB 2: Exercise -->
+      <div id="tab-exercise" class="tab-content">
+        <h2>Build a Morning Briefing with Guardrails</h2>
+
+        <p>This exercise walks you through adding market context tools and building a pre-formatted morning briefing. By the end, you'll have a system that synthesizes multiple data sources with built-in guardrails.</p>
+
+        <!-- Step 1 -->
+        <div class="step" data-step="1">
+          <div class="step-title">Open Your Project</div>
+          <div class="step-time">1 minute</div>
+          <p>Start Claude Code on your Week 1 MCP server:</p>
+          <pre class="code-block">$ cd my-first-mcp
+$ claude code .</pre>
+          <p>You should see your existing MCP server with portfolio tools ready to extend.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step" data-step="2">
+          <div class="step-title">Add Market Context Tools</div>
+          <div class="step-time">8 minutes</div>
+          <p>Ask Claude Code to add three new tools for market-wide context:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Add three market context tools to my MCP server:
+
+1. get_market_overview() — returns SPY price, market regime (bull/bear), VIX, market breadth (advance/decline ratio)
+
+2. get_sector_heatmap() — returns performance and strength for each major sector (Tech, Financials, Healthcare, etc.). Include relative strength vs SPY.
+
+3. get_watchlist_movers() — returns top 5 gainers and losers among a predefined watchlist (include AAPL, MSFT, NVDA, TSLA, GLD, SHV)
+
+Each tool should return:
+- Pre-computed, decision-ready values (not raw data)
+- Metadata: as_of_date, data_source, stale_warning
+- Clear field names so Claude understands what each value means
+
+Make sure they integrate with your existing portfolio tools.</pre>
+          </div>
+          <p>Claude Code will extend your server with these tools. Test them with the MCP Inspector to verify they return properly structured data.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step" data-step="3">
+          <div class="step-title">Add Pre-Formatted Briefing Tool</div>
+          <div class="step-time">7 minutes</div>
+          <p>Now ask Claude Code to build the star tool — the pre-formatted briefing:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Add a get_morning_briefing() tool that synthesizes everything:
+
+Return a dictionary with a "briefing" field containing a pre-formatted markdown briefing like:
+
+MORNING BRIEFING — [DATE] — [TIME]
+
+MARKET REGIME
+SPY: [price] ([change]%) | Regime: [bull/bear] | VIX: [value]
+
+SECTOR STRENGTH
+[Top 2 sectors by performance]
+[Bottom 2 sectors]
+
+PORTFOLIO CONTEXT
+Your portfolio exposure to top sectors
+Risk posture vs market breadth
+
+WATCHLIST MOVERS
+Top 3 gainers (with % change)
+Top 3 losers (with % change)
+
+Also return: as_of_date, data_source, stale_warning
+
+This tool should call your market context tools internally and format everything nicely. Claude will read this briefing and reason about what to do.</pre>
+          </div>
+          <p>Once built, test it. Call get_morning_briefing() and verify the output is readable and well-formatted.</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step" data-step="4">
+          <div class="step-title">Update the Guide Tool</div>
+          <div class="step-time">3 minutes</div>
+          <p>Update your guide tool to include the new market context and briefing tools:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Update the get_portfolio_tools_guide() tool. Add sections for:
+- Market context tools (market_overview, sector_heatmap, watchlist_movers)
+- Briefing tools (morning_briefing)
+
+For each tool, include:
+- Name
+- What it returns
+- When Claude should use it
+
+Example format:
+"market_context": [
+  {
+    "name": "get_market_overview",
+    "returns": "SPY price, regime, VIX, breadth",
+    "when": "Need to assess overall market health before making portfolio decisions"
+  }
+]</pre>
+          </div>
+          <p>Test the guide tool to make sure it's clear and useful.</p>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step" data-step="5">
+          <div class="step-title">Test the Briefing in Claude Desktop</div>
+          <div class="step-time">6 minutes</div>
+          <p>Now test your complete system in Claude Desktop:</p>
+          <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li>Restart Claude Desktop to load your updated server</li>
+            <li>Start a new conversation</li>
+            <li>Ask: "Give me a morning briefing and tell me if we should rebalance our tech exposure"</li>
+          </ol>
+          <p>Claude should call get_morning_briefing(), synthesize the data, and give you a reasoned answer.</p>
+          <p>Now try these tricky prompts:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Tricky Prompt 1</div>
+            <pre>"The briefing shows tech is down, but our portfolio is heavy tech. Should we hedge?"</pre>
+          </div>
+          <div class="prompt-block">
+            <div class="prompt-label">Tricky Prompt 2</div>
+            <pre>"What if the VIX spiked 50% overnight? How would that change your recommendation?"</pre>
+          </div>
+          <div class="prompt-block">
+            <div class="prompt-label">Tricky Prompt 3</div>
+            <pre>"Compare our portfolio's sector exposure to the market heatmap. Where are we overweight and underweight?"</pre>
+          </div>
+          <p>These prompts test whether Claude is truly synthesizing data or just echoing individual tool outputs.</p>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step" data-step="6">
+          <div class="step-title">Add Stale Data Warning</div>
+          <div class="step-time">5 minutes</div>
+          <p>Ask Claude Code to add a guardrail for stale data:</p>
+          <div class="prompt-block">
+            <div class="prompt-label">Prompt</div>
+            <pre>Add a guardrail: if any market context tool returns data older than 15 minutes, include a stale_warning in get_morning_briefing(). The warning should say:
+
+"WARNING: Market data is [X minutes] old. Prices may have moved. Refresh before making trading decisions."
+
+Also, if VIX shows data older than 1 minute, flag it specifically:
+"WARNING: VIX data is stale. Volatility may have spiked. Check current levels before hedging."
+
+This should be returned in the stale_warning field, and Claude will see it and mention it to the user.</pre>
+          </div>
+          <p>Test this by manually setting old timestamps in your mock data and verifying the warning appears.</p>
+        </div>
+
+        <!-- What You Learned -->
+        <div class="callout">
+          <div class="callout-title">What You Learned</div>
+          <ul style="margin-left: 1.5rem;">
+            <li>How to design market context tools that pre-compute aggregated, decision-ready values</li>
+            <li>How to build a pre-formatted briefing tool that synthesizes multiple data sources</li>
+            <li>How to update the guide tool to help Claude navigate a larger tool ecosystem</li>
+            <li>How to test synthesis: does Claude reason across tools or just aggregate them?</li>
+            <li>How to add guardrails (stale data warnings) that Claude will surface to users</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 3: Prompts -->
+      <div id="tab-prompts" class="tab-content">
+        <h2>Prompt Patterns for Week 2</h2>
+
+        <p>This section shows you how to talk to Claude about more complex synthesis and guardrails. These patterns build on Week 1.</p>
+
+        <!-- Building on Existing Code -->
+        <h3>Building on Existing Code</h3>
+
+        <div class="convo-block">
+          <div class="convo-label">Good</div>
+          <div class="convo-good">
+            <strong>You:</strong> "I have a get_portfolio_summary() tool from Week 1. Now add a get_market_sentiment() tool that returns VIX, put/call ratio, and breadth. Both should return as_of_date and stale_warning. Make sure stale_warning triggers if data is older than the market open time."
+          </div>
+          <div class="convo-why">References existing code, specifies new tool clearly, explains the guardrail requirement (stale data warning for pre-market data).</div>
+        </div>
+
+        <div class="convo-block">
+          <div class="convo-label">Less effective</div>
+          <div class="convo-weak">
+            <strong>You:</strong> "Add more tools."
+          </div>
+          <div class="convo-why">Claude doesn't know what tools, what they should return, or what guardrails to include.</div>
+        </div>
+
+        <!-- Describing Guardrails -->
+        <h3>Describing Guardrails</h3>
+
+        <p>Guardrails are special logic that protects Claude from making bad decisions. Here's how to describe them:</p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Pre-Formatted Templates</div>
+          <pre>All tools should return data in a consistent format. Use this template:
+
+{
+  "data": [...],
+  "as_of_date": "ISO timestamp",
+  "data_source": "where this came from",
+  "stale_warning": "null or a warning message"
+}
+
+Claude will see stale_warning and mention it when talking to the user.</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Stale Data Warnings</div>
+          <pre>If data is older than [X minutes], return a stale_warning like:
+"Market close was 4.5 hours ago. This data may be outdated. Refresh for current levels."
+
+This helps Claude know not to make real-time trading decisions with EOD data.</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">No-Compute Rule</div>
+          <pre>Tools should NOT:
+- Calculate VaR or Greeks (too complex for tool return types)
+- Place orders (too risky)
+- Modify database state (only read)
+- Return raw data (only decision-ready summaries)
+
+If Claude asks "can this tool compute X?", the answer is: "No, X is computed in Python. The tool returns pre-computed X for Claude to reason about."</pre>
+        </div>
+
+        <!-- When AI Gets Something Wrong -->
+        <h3>When AI Gets Something Wrong</h3>
+
+        <p>Claude will sometimes hallucinate, ignore your formatted sections, or fail to cross-reference tools. Here's how to recover:</p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">When Claude Makes Up Numbers</div>
+          <pre>Claude: "Your VIX exposure jumped 200%."
+You: "That's not right. Call get_market_overview() to get current VIX. What does it actually say?"
+
+Claude will call the tool and see real data.</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">When Claude Ignores the Formatted Section</div>
+          <pre>Claude: "I'll analyze your positions in detail." [ignores the pre-formatted briefing]
+You: "Actually, I sent you a pre-formatted morning briefing. Please use that as your base and reason about it. Then explain if anything is missing."
+
+Claude will re-read the briefing and reason properly.</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">When Claude Doesn't Cross-Reference</div>
+          <pre>Claude: [calls get_portfolio_summary() but not get_market_overview()]
+You: "Also check get_market_overview() — I want to know if our sector exposure aligns with market regime."
+
+This teaches Claude to use multiple tools together.</pre>
+        </div>
+
+        <!-- Testing Prompts for Claude Desktop -->
+        <h3>Testing Prompts for Claude Desktop</h3>
+
+        <p>Use these prompts to verify your briefing system is working correctly:</p>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test 1: Basic Synthesis</div>
+          <pre>"Give me today's morning briefing and tell me if our portfolio aligns with the market."</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test 2: Cross-Tool Reasoning</div>
+          <pre>"VIX just spiked. Show me the current market overview and tell me what sectors are defensive."</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test 3: Stale Data Handling</div>
+          <pre>"What if the briefing shows data from 2 hours ago? Should we still trade?"</pre>
+        </div>
+
+        <div class="prompt-block">
+          <div class="prompt-label">Test 4: Guardrail Activation</div>
+          <pre>"Our tech holdings are down 5%. Is this a buy opportunity?"</pre>
+        </div>
+
+        <!-- Tips for Week 2 -->
+        <h3>Tips for Week 2</h3>
+
+        <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+          <li><strong>Field names matter:</strong> Use clear names like "pivot", "support_1", "regime". Avoid "v1", "x", "data". Claude reads field names as hints about what the values mean.</li>
+          <li><strong>Always include context fields:</strong> as_of_date, data_source, stale_warning. These teach Claude to think about data freshness and provenance.</li>
+          <li><strong>Test the guide tool first:</strong> If Claude isn't using new tools, the guide might not mention them clearly. Check that the guide explains when to use each tool.</li>
+          <li><strong>Pre-format outputs for complex reasoning:</strong> Instead of returning raw numbers, structure them in markdown. Claude will reason better about formatted text.</li>
+        </ul>
+      </div>
+
+      <!-- TAB 4: Checklist -->
+      <div id="tab-checklist" class="tab-content">
+        <h2>Self-Evaluation Checklist</h2>
+
+        <p>Use this checklist to verify your briefing system is production-ready. Aim for all boxes checked.</p>
+
+        <!-- New Tools Work Correctly -->
+        <div class="checklist">
+          <h3>New Tools Work Correctly</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Market context tools (overview, sector heatmap, watchlist) start without errors</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">get_morning_briefing() synthesizes all market tools and returns formatted text</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Guide tool mentions all new tools and explains when to use them</div>
+          </div>
+        </div>
+
+        <!-- Pre-Formatted Briefing -->
+        <div class="checklist">
+          <h3>Pre-Formatted Briefing</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Briefing includes market regime, sector strength, portfolio context, watchlist movers</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Text is human-readable (markdown format, clear sections, no cryptic abbreviations)</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">All numbers are pre-computed (Claude doesn't have to calculate anything)</div>
+          </div>
+        </div>
+
+        <!-- Guardrails Working -->
+        <div class="checklist">
+          <h3>Guardrails Working</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">stale_warning appears when data is older than threshold (e.g., 15 min for markets, 1 min for VIX)</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Claude mentions the warning when presenting briefing to user</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">No tool returns raw data — everything is aggregated, decision-ready, and clearly labeled</div>
+          </div>
+        </div>
+
+        <!-- Cross-Referencing -->
+        <div class="checklist">
+          <h3>Cross-Referencing</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">When you ask about portfolio alignment with market, Claude calls both portfolio AND market tools</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Claude synthesizes findings: "Portfolio is heavy tech, but tech is down. Risk/reward is poor."</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Claude explains connections across tools, not just reports individual results</div>
+          </div>
+        </div>
+
+        <!-- Guide Tool Updated -->
+        <div class="checklist">
+          <h3>Guide Tool Updated</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Guide tool lists all tools in clear categories (portfolio, market, briefing)</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">For each tool, guide explains what it returns and when Claude should use it</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Guide suggests tool combinations for common tasks (e.g., "for rebalancing advice, call portfolio AND market tools")</div>
+          </div>
+        </div>
+
+        <!-- Testing Methodology -->
+        <div class="checklist">
+          <h3>Testing Methodology</h3>
+          <p>Before considering Week 2 done, test these scenarios:</p>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Ask a question that requires 2+ tools. Does Claude call them all?</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Ask about a conflict (e.g., "Market is bullish, but our sector is down"). Does Claude reason about both?</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Set stale data in a tool. Does Claude warn you before recommending action?</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text">Ask Claude to explain a metric. Does it reference the tool it came from (audit trail)?</div>
+          </div>
+        </div>
+
+        <!-- Common Issues -->
+        <div class="callout callout-guardrail">
+          <div class="callout-title">Common Issues & Fixes</div>
+          <ul style="margin-left: 1.5rem;">
+            <li><strong>Claude only calls one tool:</strong> Check guide tool. If it doesn't explain combinations, Claude won't use multiple tools.</li>
+            <li><strong>Briefing format is messy:</strong> Use markdown with clear sections. Test output manually before hooking it to Claude.</li>
+            <li><strong>Stale warnings don't appear:</strong> Verify the logic in get_morning_briefing(). Ensure stale_warning field is populated.</li>
+            <li><strong>Claude ignores stale warnings:</strong> Include them prominently in the briefing text, not just in metadata. Claude reads the narrative.</li>
+            <li><strong>Tools work but Claude won't call them:</strong> Docstrings are weak. Make them specific: instead of "Get data", say "Get current sector performance vs SPY to assess relative strength."</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/nav.js" data-current="week-2"></script>
+
+  <script>
+    // Section tabs functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.section-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+
+          // Remove active class from all buttons and contents
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+
+          // Add active class to clicked button and corresponding content
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

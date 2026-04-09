@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foundations 2: Claude on Desktop &amp; Mobile | AI-Powered Investment Management</title>
+  <link rel="stylesheet" href="css/course.css">
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="content">
+      <div class="chapter-header">
+        <div class="chapter-label">Foundations 2</div>
+        <h1>Claude on Desktop and Mobile — Your Workspace Setup</h1>
+        <div class="chapter-meta">
+          <span>Reading: 20 minutes</span>
+          <span>Exercise: 25 minutes</span>
+        </div>
+      </div>
+
+      <div class="section-tabs">
+        <button class="section-tab active" data-tab="tab-reading">Reading</button>
+        <button class="section-tab" data-tab="tab-exercise">Exercise</button>
+        <button class="section-tab" data-tab="tab-checklist">Checklist</button>
+      </div>
+
+      <!-- TAB 1: Reading -->
+      <div id="tab-reading" class="tab-content active">
+
+        <div class="callout">
+          <div class="callout-title">Building on Foundations 1</div>
+          <p>In Foundations 1, you learned how Claude works — context windows, tokens, prompting patterns, and projects. Now let's set up your workspace. You'll install Claude on your desktop and phone, organize your projects, and locate the Developer menu that powers everything from Week 1 onward.</p>
+        </div>
+
+        <h2>Why Desktop and Mobile?</h2>
+
+        <p class="lead">In Foundations 1, you used Claude through a web browser. That works fine for quick conversations. But for the work ahead — connecting real data tools, analyzing documents, building workflows — you need a proper workspace.</p>
+
+        <p>Claude comes in three forms:</p>
+
+        <ul style="margin-left: 1.5rem;">
+          <li><strong>claude.ai (web)</strong> — Quick access from any browser. Good for one-off questions, light research, sharing a conversation link with a colleague. Think of it as your Bloomberg terminal's web client.</li>
+          <li><strong>Claude Desktop (Mac/Windows app)</strong> — Your primary workstation. Same Claude, but with one critical capability the browser doesn't have: <strong>MCP server connections.</strong> In Week 1, you'll connect Claude Desktop to a live trading strategy that feeds it real market data. That only works in the desktop app.</li>
+          <li><strong>Claude Mobile (iOS/Android)</strong> — Your field notebook. Same account, same projects. Best for quick lookups, voice input, and continuing conversations you started on desktop. Not ideal for heavy analysis, but valuable when you're away from your desk.</li>
+        </ul>
+
+        <p>Why does this matter? Because the entire arc of this course — connecting Claude to market data, building custom tools, designing multi-server systems — runs through Claude Desktop. If you only use the browser, you'll hit a wall in Week 1. Installing the desktop app now means Week 1 is setup, not troubleshooting.</p>
+
+        <p>The three platforms share everything: your account, your projects, your conversation history, your custom instructions. Work you do in one place is available everywhere. The difference is capability, not content.</p>
+
+        <h2>Installing Claude Desktop</h2>
+
+        <h3>Download and Install</h3>
+
+        <ol style="margin-left: 1.5rem;">
+          <li>Go to <a href="https://claude.ai/download">claude.ai/download</a>.</li>
+          <li>Download the installer for your platform (Mac or Windows).</li>
+          <li>Run the installer. On Mac, drag Claude to Applications. On Windows, follow the standard install wizard.</li>
+          <li>Open Claude Desktop and sign in with the same Anthropic account you used on claude.ai.</li>
+        </ol>
+
+        <p>That's it. You should see a clean conversation window that looks similar to the web interface but feels snappier.</p>
+
+        <h3>Quick Tour of the Interface</h3>
+
+        <p>The desktop app has a few elements worth noting:</p>
+
+        <ul style="margin-left: 1.5rem;">
+          <li><strong>Sidebar (left):</strong> Your conversation history and project list. Click any conversation to resume it. Click a project to scope your work.</li>
+          <li><strong>Project selector:</strong> At the top of the sidebar. Switch between projects to change context. Each project carries its own custom instructions.</li>
+          <li><strong>Model selector:</strong> Choose which Claude model to use. For this course, the default model works fine.</li>
+          <li><strong>Attachment button:</strong> The paperclip icon in the message bar. This is how you'll add PDFs, CSVs, images, and other files to your conversations.</li>
+          <li><strong>Settings (gear icon):</strong> General preferences, account info, and — critically — the <strong>Developer</strong> menu.</li>
+        </ul>
+
+        <h3>The Developer Menu</h3>
+
+        <p>Open <strong>Settings &gt; Developer</strong>. You'll see a section for MCP server configuration. Right now, it's empty. In Week 1, you'll add a configuration here that connects Claude to a live trading strategy server. For now, just note where it lives.</p>
+
+        <p>Think of it like this: the Developer menu is where you plug in your data feeds. The browser version of Claude doesn't have this menu. That's the fundamental reason we're installing the desktop app.</p>
+
+        <h2>Projects Across Devices</h2>
+
+        <p class="lead">You already created a project in Foundations 1. If you open Claude Desktop now and check the sidebar, that project should be there — along with its custom instructions and conversation history. This sync happens automatically through your Anthropic account.</p>
+
+        <h3>What Syncs</h3>
+
+        <ul style="margin-left: 1.5rem;">
+          <li>Projects and their names</li>
+          <li>Custom instructions (the system-level context you set for each project)</li>
+          <li>Conversation history within each project</li>
+          <li>Starred or bookmarked conversations</li>
+        </ul>
+
+        <h3>What Doesn't Sync</h3>
+
+        <ul style="margin-left: 1.5rem;">
+          <li>MCP server connections (these are local to Claude Desktop on a specific machine — the config file lives on your hard drive)</li>
+          <li>Files on your local disk that you've referenced in conversations</li>
+        </ul>
+
+        <h3>A Practical Workflow</h3>
+
+        <p>Here's a pattern that works well for investment professionals:</p>
+
+        <ol style="margin-left: 1.5rem;">
+          <li><strong>Desktop (morning):</strong> Open your "Equity Research" project. Upload an earnings transcript. Have a detailed conversation analyzing guidance, margins, and capital allocation. Claude remembers the full context.</li>
+          <li><strong>Mobile (commute or meeting):</strong> Open the same project on your phone. Ask "What were the three biggest risks management highlighted in that transcript?" Claude has the full conversation history and answers immediately.</li>
+          <li><strong>Web (quick check):</strong> At a colleague's desk, open claude.ai in a browser. Pull up the same project to reference a point from your earlier analysis.</li>
+        </ol>
+
+        <p>The project is the container. The device is just the access point.</p>
+
+        <h2>Working with Attachments</h2>
+
+        <p class="lead">One of the most practical capabilities for investment work: you can give Claude documents to read and analyze. This turns a generic AI assistant into something closer to a junior analyst who actually reads the source material.</p>
+
+        <h3>How to Add Files</h3>
+
+        <ul style="margin-left: 1.5rem;">
+          <li><strong>Desktop:</strong> Drag and drop a file directly into the conversation, or click the paperclip icon to browse. You can add multiple files to a single message.</li>
+          <li><strong>Mobile:</strong> Tap the attachment icon and select files from your device. Works with files stored locally, in iCloud, or in Google Drive.</li>
+          <li><strong>Web:</strong> Click the paperclip icon or drag and drop.</li>
+        </ul>
+
+        <h3>Supported Formats</h3>
+
+        <table style="width: 100%; margin-bottom: var(--md); border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 0.5rem; border-bottom: 2px solid var(--border);">Format</th>
+              <th style="text-align: left; padding: 0.5rem; border-bottom: 2px solid var(--border);">Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>PDF</strong></td>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">Earnings reports, 10-Ks, research notes, pitch books</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>CSV</strong></td>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">Price data, portfolio holdings, transaction history</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>Images</strong> (PNG, JPG)</td>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">Chart screenshots, whiteboard photos, slide decks</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>Text files</strong> (.txt, .md)</td>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">Notes, meeting minutes, model assumptions</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);"><strong>Code files</strong> (.py, .json, etc.)</td>
+              <td style="padding: 0.5rem; border-bottom: 1px solid var(--border);">Configuration files, scripts (relevant in later weeks)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Tips for Finance Documents</h3>
+
+        <p><strong>Earnings PDFs:</strong> Upload the full transcript or press release. Ask Claude to extract specific metrics: "What was free cash flow guidance for FY25?" or "Compare gross margins to last quarter." Claude reads the actual document — it's not guessing from training data.</p>
+
+        <p><strong>Spreadsheet data:</strong> Save a sheet as CSV before uploading. Claude handles tabular data well: "Which positions have the highest concentration risk?" or "Calculate the weighted average P/E of this portfolio."</p>
+
+        <p><strong>Chart screenshots:</strong> Take a screenshot of a chart from your Bloomberg terminal, TradingView, or broker platform. Ask Claude to describe what it sees: "What pattern do you see in this chart?" or "Is this a head-and-shoulders formation?" Note: Claude can describe visual patterns, but it cannot read exact pixel-level values from charts. Pair chart screenshots with the underlying data when precision matters.</p>
+
+        <h3>Size Limits and Workarounds</h3>
+
+        <p>Claude can handle substantial documents — a typical 10-K or earnings transcript is well within limits. For very large documents (100+ pages), consider:</p>
+
+        <ul style="margin-left: 1.5rem;">
+          <li>Uploading just the relevant sections (MD&amp;A, risk factors, financial statements)</li>
+          <li>Splitting the document across multiple messages</li>
+          <li>Asking Claude to focus on specific sections: "Read pages 45-60 and summarize the segment reporting"</li>
+        </ul>
+
+        <h2>The Claude Mobile App</h2>
+
+        <h3>Getting Started</h3>
+
+        <ol style="margin-left: 1.5rem;">
+          <li>Download from the <a href="https://apps.apple.com/app/claude/id6473753684">App Store</a> (iOS) or <a href="https://play.google.com/store/apps/details?id=com.anthropic.claude">Google Play</a> (Android).</li>
+          <li>Sign in with your Anthropic account.</li>
+          <li>Your projects and conversations appear automatically.</li>
+        </ol>
+
+        <h3>What Works Well on Mobile</h3>
+
+        <p><strong>Quick questions with existing context.</strong> If you've been analyzing a company on desktop, you can ask follow-up questions on mobile without re-uploading anything. The conversation history is already there.</p>
+
+        <p><strong>Voice input.</strong> Use your phone's dictation to speak your prompts instead of typing. This is surprisingly effective for analytical questions: "What's the bull case for this stock based on what we discussed?" is faster to speak than type.</p>
+
+        <p><strong>Morning prep.</strong> Before you sit down at your desk, ask Claude to summarize where you left off yesterday. "What were the key takeaways from our analysis of MSFT's earnings?" while you're getting coffee.</p>
+
+        <p><strong>Meeting follow-up.</strong> After a portfolio review meeting, dictate your notes into Claude: "Here are my notes from the investment committee meeting. Can you organize these into action items and flag anything that contradicts our earlier analysis?"</p>
+
+        <h3>What's Better on Desktop</h3>
+
+        <p><strong>Long documents.</strong> Reading and analyzing a 50-page 10-K is a desktop task. The larger screen, easier file management, and ability to drag and drop files make desktop the right choice for document-heavy work.</p>
+
+        <p><strong>Complex multi-step analysis.</strong> If you're building a thesis that requires multiple attachments, several rounds of back-and-forth, and detailed numerical work — do it on desktop.</p>
+
+        <p><strong>MCP tool connections.</strong> Only Claude Desktop supports connecting to external data servers. Your live market data tools (Week 1 and beyond) only work on desktop.</p>
+
+        <h3>The Right Mental Model</h3>
+
+        <p>Mobile isn't a lesser version of desktop. It's a different tool for different moments. A portfolio manager who reviews analysis on the train, a trader who checks a thesis before placing an order, an analyst who captures an idea between meetings — these are all legitimate use cases that desktop can't serve.</p>
+
+        <h2>Building Your Workspace</h2>
+
+        <p class="lead">Now that you have Claude on every device, the question is: how do you organize your work? The answer is projects — and the key is making each project focused enough to be useful.</p>
+
+        <h3>Recommended Project Structure</h3>
+
+        <p>Here's a starting point for an investment professional. You don't need all of these — pick the ones that match your role:</p>
+
+        <p><strong>"Equity Research"</strong> — For company-specific analysis, earnings reviews, competitive comparisons.</p>
+
+        <p>Custom instructions example:</p>
+
+        <pre class="code-block">I'm an equity analyst covering technology stocks. When I share
+earnings data or financial documents, extract key metrics and
+compare them to prior periods. Flag anything that deviates
+significantly from consensus or historical trends.
+
+Always note the source and date of any data you reference.
+If I ask about a company, use only the documents I've provided
+in this conversation — don't rely on training data for specific
+financial figures.</pre>
+
+        <p><strong>"Macro / Rates"</strong> — For interest rate analysis, economic data interpretation, cross-asset themes.</p>
+
+        <p>Custom instructions example:</p>
+
+        <pre class="code-block">I focus on macro strategy and fixed income. Help me interpret
+economic data releases, Fed communications, and cross-asset
+signals. When I share data, present it in the context of the
+current rate cycle.
+
+Be precise with basis points and percentage changes. Don't
+round unless I ask you to.</pre>
+
+        <p><strong>"Portfolio Review"</strong> — For position-level analysis, risk assessment, rebalancing decisions.</p>
+
+        <p>Custom instructions example:</p>
+
+        <pre class="code-block">I manage a multi-asset portfolio. When I share holdings data,
+calculate concentration metrics, sector exposures, and factor
+tilts. Flag positions that exceed 5% of the portfolio.
+
+Present risk metrics clearly: max drawdown, Sharpe ratio, and
+correlation to SPY. When suggesting changes, always note the
+tax implications.</pre>
+
+        <p><strong>"Compliance / Ops"</strong> — For regulatory questions, policy drafts, operational workflows.</p>
+
+        <p>Custom instructions example:</p>
+
+        <pre class="code-block">I work in investment compliance. Help me draft policies, review
+procedures, and interpret regulatory requirements. When I share
+regulatory text, summarize the key obligations and deadlines.
+
+Be conservative in interpretations. When something is ambiguous,
+flag it rather than assuming.</pre>
+
+        <h3>Iterating on Instructions</h3>
+
+        <p>Your first set of custom instructions will be imperfect. That's fine. Use this process:</p>
+
+        <ol style="margin-left: 1.5rem;">
+          <li>Start with basic instructions (role, preferences, constraints).</li>
+          <li>Use the project for a few conversations.</li>
+          <li>Notice when Claude does something you don't like — gives too much detail, uses the wrong format, makes wrong assumptions.</li>
+          <li>Update the instructions to address those patterns.</li>
+          <li>Repeat.</li>
+        </ol>
+
+        <p>This is exactly like onboarding a new analyst. You don't hand them a 50-page manual on day one. You give them basic guidance, observe their work, and refine expectations over time.</p>
+
+        <div class="takeaways">
+          <h3>Key Takeaways</h3>
+          <ol>
+            <li><strong>Claude Desktop is not optional for this course.</strong> The MCP tool connections that power Week 1 through Week 4 only work in the desktop app. Install it now.</li>
+            <li><strong>Projects are your organizational unit.</strong> Create focused projects with clear custom instructions. They sync across all devices.</li>
+            <li><strong>Attachments turn Claude into a document analyst.</strong> Upload earnings transcripts, spreadsheets, and research notes. Claude reads the actual content — it's not guessing.</li>
+            <li><strong>Mobile extends your workspace.</strong> Use it for follow-up questions, voice input, and capturing ideas on the go. Don't try to do heavy analysis on your phone.</li>
+            <li><strong>The Developer menu is your Week 1 on-ramp.</strong> You don't need to touch it yet, but knowing where it is means you're ready when the time comes.</li>
+            <li><strong>Custom instructions improve with use.</strong> Start simple, observe what works, and refine. The best instructions come from real interactions, not upfront planning.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- TAB 2: Exercise -->
+      <div id="tab-exercise" class="tab-content">
+
+        <h2>Setting Up Your Workspace</h2>
+
+        <p class="lead">You'll install Claude on your desktop and phone, set up purpose-specific projects for your investment work, and practice a cross-device workflow with a real finance document. By the end, you'll have a workspace ready for Week 1 — when you'll connect Claude Desktop to live market data.</p>
+
+        <p><strong>Time:</strong> 25 minutes</p>
+
+        <p><strong>What you need:</strong></p>
+        <ul style="margin-left: 1.5rem;">
+          <li>A Mac or PC</li>
+          <li>An iPhone or Android phone</li>
+          <li>Your Anthropic account (the same one you used on claude.ai)</li>
+          <li>A finance document to test with — an earnings PDF, research note, or any document from your actual work</li>
+        </ul>
+
+        <div class="step" data-step="1">
+          <h3>Install Claude Desktop (3 min)</h3>
+          <ol style="margin-left: 1.5rem;">
+            <li>Go to <a href="https://claude.ai/download">claude.ai/download</a>.</li>
+            <li>Download and install the app for your platform (Mac or Windows).</li>
+            <li>Open Claude Desktop and sign in with your Anthropic account.</li>
+            <li>Verify you can see the sidebar with your conversation history and any projects you created in Foundations 1.</li>
+          </ol>
+          <p>If you created a project in Foundations 1 on claude.ai, it should appear in the sidebar automatically. Open it and confirm your custom instructions are there.</p>
+        </div>
+
+        <div class="step" data-step="2">
+          <h3>Verify Project Sync (2 min)</h3>
+          <p>If you have an existing project from Foundations 1:</p>
+          <ol style="margin-left: 1.5rem;">
+            <li>Open it in Claude Desktop.</li>
+            <li>Check that your custom instructions carried over (click the project name and look at the project settings).</li>
+            <li>Open a previous conversation in that project and confirm the history is intact.</li>
+          </ol>
+          <p>If you don't have an existing project, create one now:</p>
+          <ol style="margin-left: 1.5rem;">
+            <li>Click "New Project" in the sidebar.</li>
+            <li>Name it "Course Sandbox."</li>
+            <li>Add a simple custom instruction: "I'm an investment professional taking a course on AI tools. Help me learn by explaining things clearly and using finance examples."</li>
+          </ol>
+        </div>
+
+        <div class="step" data-step="3">
+          <h3>Try an Attachment Workflow (5 min)</h3>
+          <p>Find a finance document on your computer. Good options:</p>
+          <ul style="margin-left: 1.5rem;">
+            <li>An earnings report or press release (PDF)</li>
+            <li>A research note from your firm or a public source</li>
+            <li>A spreadsheet of holdings or transactions (save as CSV)</li>
+            <li>A screenshot of a chart</li>
+          </ul>
+          <p>Drag the document into a Claude Desktop conversation (or use the paperclip icon). Then try these prompts in sequence:</p>
+
+          <p><strong>Prompt 1 — Summarize:</strong></p>
+          <pre class="code-block">Summarize the key points of this document in 5 bullet points.
+Focus on what an equity analyst would care about most.</pre>
+
+          <p><strong>Prompt 2 — Extract specifics:</strong></p>
+          <pre class="code-block">Extract the following from this document:
+- Revenue and revenue growth
+- Operating margin
+- Free cash flow
+- Forward guidance (if any)
+- Any mentions of risk factors
+
+Present this as a table.</pre>
+
+          <p><strong>Prompt 3 — Analyze:</strong></p>
+          <pre class="code-block">Based on this document, what are the two most important things
+an investor should focus on? Why?</pre>
+
+          <p>Notice how Claude's answers reference the actual content of your document — not generic information from its training data. This is the difference between asking "tell me about this company" and giving Claude the primary source.</p>
+        </div>
+
+        <div class="step" data-step="4">
+          <h3>Go Mobile (3 min)</h3>
+          <ol style="margin-left: 1.5rem;">
+            <li>Download the Claude app from the <a href="https://apps.apple.com/app/claude/id6473753684">App Store</a> (iOS) or <a href="https://play.google.com/store/apps/details?id=com.anthropic.claude">Google Play</a> (Android).</li>
+            <li>Sign in with the same Anthropic account.</li>
+            <li>Open the same project you were just using on desktop.</li>
+            <li>In the same conversation where you analyzed your document, ask a follow-up question:</li>
+          </ol>
+          <pre class="code-block">Based on our earlier discussion of this document, what's the
+single most important question I should ask management on the
+next earnings call?</pre>
+          <p>You didn't re-upload anything. You didn't repeat context. The conversation history carried over. This is the cross-device workflow in practice.</p>
+        </div>
+
+        <div class="step" data-step="5">
+          <h3>Set Up Your Work Projects (5 min)</h3>
+          <p>Create 2-3 projects tailored to your actual role. Use the templates below as starting points — customize them for your coverage, your instruments, and your firm's terminology.</p>
+
+          <p><strong>For an Equity Analyst:</strong></p>
+          <p>Project: "Equity Research"</p>
+          <pre class="code-block">I'm an equity analyst covering [your sector]. When I share
+earnings data, 10-Ks, or research notes, extract key financial
+metrics and compare them to prior periods.
+
+Format preferences:
+- Use tables for financial comparisons
+- Flag deviations from consensus estimates
+- Note data sources and dates
+- Don't speculate on stock price direction
+
+My coverage: [list your stocks]</pre>
+
+          <p><strong>For a Portfolio Manager:</strong></p>
+          <p>Project: "Portfolio Management"</p>
+          <pre class="code-block">I manage a [describe your strategy — e.g., long/short equity,
+multi-asset, fixed income]. When I share portfolio data, analyze
+position sizing, concentration risk, and factor exposures.
+
+Key constraints:
+- Max position size: [X]% of NAV
+- Benchmark: [your benchmark]
+- Risk budget: [your framework]
+
+Always present risk metrics alongside return metrics.</pre>
+
+          <p><strong>For a Macro Strategist:</strong></p>
+          <p>Project: "Macro Strategy"</p>
+          <pre class="code-block">I'm a macro strategist focused on [rates/FX/commodities/cross-asset].
+Help me interpret economic data, central bank communications,
+and cross-asset signals.
+
+Preferences:
+- Be precise with basis points and decimal places
+- Frame analysis in terms of the current cycle
+- When I share data, compare to historical analogs
+- Distinguish between levels and changes</pre>
+
+          <p>Don't overthink these instructions. You'll refine them over the coming weeks as you discover what works. The important thing is to have the projects created so you can start using them.</p>
+        </div>
+
+        <div class="step" data-step="6">
+          <h3>Find the Developer Menu (2 min)</h3>
+          <p>This step is simple but important:</p>
+          <ol style="margin-left: 1.5rem;">
+            <li>In Claude Desktop, open <strong>Settings</strong> (gear icon).</li>
+            <li>Find the <strong>Developer</strong> section.</li>
+            <li>Look at the MCP server configuration area. It should be empty.</li>
+          </ol>
+          <p>You don't need to change anything. But in Week 1, this is exactly where you'll paste a configuration that connects Claude to a live trading strategy server. When you do, Claude will gain the ability to answer questions like "What's today's market signal?" using real computed data instead of its training knowledge.</p>
+          <p>Knowing where this menu lives saves you five minutes of searching next week.</p>
+        </div>
+
+        <h3>What You Learned</h3>
+        <ul style="margin-left: 1.5rem;">
+          <li>How to install and navigate Claude Desktop</li>
+          <li>How projects and conversations sync across web, desktop, and mobile</li>
+          <li>How to use attachments for document analysis — the most immediately useful capability for investment professionals</li>
+          <li>How to set up purpose-specific projects with custom instructions tailored to your role</li>
+          <li>Where the Developer menu lives — your entry point for Week 1's MCP tool connections</li>
+        </ul>
+
+        <div class="callout callout-guardrail">
+          <div class="callout-title">Looking Ahead to Week 1</div>
+          <p>In Week 1, you'll install a pre-built MCP server called the <strong>SPY/TLT Course Edition</strong>. This server connects Claude Desktop to a real trading strategy with live market data. You'll open Claude Desktop, ask "What's today's signal?", and get a real answer — based on a real strategy — computed from real data.</p>
+          <p>The Developer menu you just found is where that connection gets configured. You'll open <strong>Settings &gt; Developer</strong>, paste a short JSON configuration, and restart Claude Desktop. That's all it takes to give Claude access to live market tools.</p>
+          <p>The projects you just created are where you'll use those tools. Everything you set up today makes Week 1 smoother.</p>
+        </div>
+      </div>
+
+      <!-- TAB 3: Checklist -->
+      <div id="tab-checklist" class="tab-content">
+
+        <h2>Readiness Checklist</h2>
+        <p class="lead">Use this to verify you're ready for Week 1. Every item here directly supports what comes next.</p>
+
+        <div class="checklist">
+          <h3>Installation</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Claude Desktop is installed and running.</strong> You can open the app and see the conversation interface.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You're signed in with your Anthropic account.</strong> The same account you use on claude.ai.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>The Claude mobile app is installed.</strong> You can open it on your phone and see your conversations.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Sync and Projects</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You can access the same project from web, desktop, and mobile.</strong> Open a project on one platform, then verify it appears on the others.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Custom instructions carry over.</strong> Check that the instructions you set in a project are visible when you open that project on a different device.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Conversation history syncs.</strong> Start a conversation on desktop, then open it on mobile and verify the full history is there.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Attachments</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You've successfully uploaded a document.</strong> A PDF, CSV, image, or text file — dragged into a conversation or added via the paperclip icon.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Claude referenced the actual document content.</strong> Its response cited specific details from your file, not generic information.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Workspace Organization</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You have 2-3 purpose-specific projects.</strong> Each with a clear name and custom instructions tailored to your role.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>Instructions include your preferences.</strong> Format preferences, coverage scope, risk parameters, or other role-specific details.</div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <h3>Week 1 Readiness</h3>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You can find Settings &gt; Developer in Claude Desktop.</strong> You know where the MCP server configuration lives.</div>
+          </div>
+          <div class="checklist-item">
+            <div class="checklist-box"></div>
+            <div class="checklist-text"><strong>You understand why Claude Desktop (not web) is needed for Week 1.</strong> The desktop app is the only platform that supports MCP server connections — the mechanism for connecting Claude to live data tools.</div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">If Something Isn't Working</div>
+          <p><strong>Projects don't appear on another device:</strong> Make sure you're signed in with the same Anthropic account on all devices. Sign out and back in if needed.</p>
+          <p><strong>Attachment upload fails:</strong> Check the file size and format. Try saving the document in a different format (e.g., export a spreadsheet as CSV rather than uploading the Excel file).</p>
+          <p><strong>Claude doesn't reference your document:</strong> Be specific in your prompt. Instead of "what do you think?", try "Based on the document I just uploaded, what was the revenue growth rate?"</p>
+          <p><strong>Developer menu is missing:</strong> Make sure you have the latest version of Claude Desktop. Update the app from claude.ai/download if needed.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/nav.js" data-current="foundations-2"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.section-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetTab = this.getAttribute('data-tab');
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          this.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
