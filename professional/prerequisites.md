@@ -1,8 +1,8 @@
 # Prerequisites
 
-Everything you need before starting the course. Week 1 requires
-minimal setup (15 minutes). Additional tools for Week 2 can be
-installed later.
+Everything you need before starting the course. The Foundations modules
+require zero installation — just a Claude account and a web browser.
+Additional tools are installed progressively as you need them.
 
 ---
 
@@ -10,22 +10,36 @@ installed later.
 
 ### Anthropic Account (required)
 
-You need an Anthropic account with a Claude plan to use Claude Desktop
-and Claude Code.
+You need an Anthropic account with a Claude plan to use Claude's
+full features, including Claude Desktop and Claude Code.
 
 1. Go to [claude.ai](https://claude.ai) and create an account
 2. Subscribe to a Claude plan (Pro or Team)
-3. You'll use the same account for both Claude Desktop and Claude Code
+3. You'll use the same account for Claude web, Desktop, Mobile, and Code
 
 ---
 
-## Software for Week 1
+## What You Need for Foundations (Modules 1-2)
 
-You only need three things to start. Install these in order.
+**Nothing to install.** You only need:
+
+- A Claude account (see above)
+- A web browser — [claude.ai](https://claude.ai) works on any device
+- Optionally, the Claude mobile app ([iOS](https://apps.apple.com/app/claude-by-anthropic/id6473753684) / [Android](https://play.google.com/store/apps/details?id=com.anthropic.claude))
+
+The Foundations modules teach you how Claude works, how to set up
+projects with custom instructions, and how to use Claude effectively
+across web, desktop, and mobile. No terminal, no code, no installs.
+
+---
+
+## Software for Week 1 (MCP Tools)
+
+Install these before starting Week 1. Not needed for Foundations.
 
 ### 1. Claude Desktop
 
-The AI assistant app where you'll use the tools you build.
+The AI assistant app where you'll connect to MCP tool servers.
 
 - Download from [claude.ai/download](https://claude.ai/download)
 - Install and sign in with your Anthropic account
@@ -100,7 +114,8 @@ That's it. You're ready for Week 1.
 
 ## Additional Software for Week 2
 
-Install these before starting Week 2. Not needed for Week 1.
+Install these before starting Week 2. Not needed for Foundations or
+Week 1.
 
 ### 5. Node.js
 
@@ -195,6 +210,10 @@ topics. All are optional.
 
 **Terminal basics (if you've never used a command line):**
 - [Learn Enough Command Line to Be Dangerous](https://www.learnenough.com/command-line-tutorial/basics) — practical, covers only what you need
+
+**Claude fundamentals (alongside Foundations modules):**
+- [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview) — official tips for writing effective prompts
+- [Claude Help Center](https://support.anthropic.com) — setup guides, feature explanations
 
 **MCP and tool-use (deeper dive after Week 1):**
 - [Anthropic: Introduction to MCP](https://anthropic.skilljar.com/introduction-to-model-context-protocol) — free official course with certificate
