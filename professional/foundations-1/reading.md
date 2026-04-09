@@ -47,6 +47,54 @@ understand how Claude works well enough to use it effectively even
 without live data --- because the reasoning capabilities alone are
 remarkably powerful for the right tasks.
 
+### How AI Gets Things Wrong
+
+Before we go further, you need a mental model for the specific ways AI
+fails in investment contexts. These aren't theoretical — they're
+patterns you will encounter, and recognizing them is a core skill.
+
+**Stale magnitude errors.** AI may quote the S&P 500 index in the
+5,000s when it's actually trading in the 6,000s. This happens because
+the model's training data reflects an earlier period. The format looks
+correct — it's a plausible number for an index level — which makes it
+dangerous. You won't get a 6-digit number that's obviously wrong. You'll
+get a 4-digit number that *was* right six months ago.
+
+**Confabulated company facts.** AI will confidently state that a company
+made an acquisition that never happened, name a wrong CEO, or cite a
+financial metric that doesn't match reality. The language is fluent and
+authoritative — there's nothing in the tone that signals "I'm making
+this up." This is called *hallucination*, and it's an inherent property
+of how language models work: they generate plausible text, and sometimes
+plausible text is wrong.
+
+**Hallucinated reasoning chains.** This is the most dangerous failure
+mode. The AI builds an investment thesis on a premise that is simply
+false — "Given that Company X recently acquired Y..." when no such
+acquisition happened. The logic from that point forward is internally
+consistent and may even be insightful. But the foundation is fabricated,
+and the conclusion is worthless. The reasoning *quality* masks the data
+*quality* problem.
+
+**Numerical plausibility traps.** The AI generates numbers that are in
+the right ballpark but wrong — revenue of $4.2B when it's actually
+$6.8B, or a P/E ratio of 18 when it's actually 28. These are close
+enough to not trigger alarm bells, but wrong enough to change an
+investment decision. Unlike a blatant error, a plausible-but-wrong
+number can survive casual review.
+
+**The core problem:** AI does not signal uncertainty the way humans do.
+A hallucinated fact and a correct fact are presented with identical
+confidence. There is no "I'm guessing" flag. This means the burden of
+verification falls entirely on you, and you need to know where to look.
+
+Throughout this course, you'll learn engineering solutions to many of
+these problems — tools that feed live data to AI, guardrails that
+prevent it from doing math, templates that lock in exact numbers. But
+the engineering only works if you also develop the habit of critical
+verification. The tools are the first line of defense. You are the
+second.
+
 ---
 
 ## F1.2 The Context Window
@@ -344,3 +392,9 @@ a compliance document rather than useful analysis.
   instruments, and analysis types. Tell Claude your framework. Ask it
   to show its reasoning so you can evaluate where the logic is sound
   and where the data might be stale.
+
+- **AI fails silently — verification is your responsibility.** AI
+  presents hallucinated facts with the same confidence as correct ones.
+  Any specific number, date, name, or claim from AI output should be
+  verified against a primary source before you act on it. This habit
+  matters more than any technical feature.

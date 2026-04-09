@@ -97,6 +97,23 @@ Three reasons to always keep a human in the loop:
    misinterpreted data point could lead to a catastrophic trade. Human
    review catches "this doesn't feel right" moments.
 
+   This risk is amplified in agent workflows because errors can
+   **cascade**. Consider: an agent queries a tool, gets valid data, but
+   misinterprets the signal. It then builds a trade thesis on the
+   misinterpretation, proposes a position, and writes a justification
+   in its audit log. Each step looks reasonable in isolation. The
+   narrative quality of the justification can actually make the error
+   harder to spot — well-written reasoning feels trustworthy even when
+   the premise is wrong.
+
+   Approval workflows exist precisely for this reason. When reviewing
+   an agent's trade proposal, don't just evaluate the reasoning chain —
+   **verify the source data independently**. Check that the signal the
+   agent cited actually matches what the tool returned. Check that the
+   price level is in the right range. The human reviewer's job isn't to
+   judge whether the argument is persuasive — it's to confirm that the
+   facts are real.
+
 3. **Trust:** Building trust with AI is incremental. Starting with full
    autonomy means the first mistake destroys confidence. Starting with
    approve-everything and gradually expanding autonomy builds trust.

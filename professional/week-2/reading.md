@@ -236,6 +236,80 @@ field. The AI uses the pre-computed number instead of doing bad math.
 This is the iterative nature of guardrail design: test, find a gap,
 pre-compute the answer, repeat.
 
+### Real-World Errors That Guardrails Catch
+
+The patterns above aren't theoretical. Here are errors observed in
+practice with financial AI systems:
+
+**The handle error.** An AI quoting the S&P 500 in the 5,000s when the
+index is trading in the 6,000s. This happens because the model's
+training data distribution includes a period when the 5,000 level was
+current. The number has the right format and the right number of digits
+— it just reflects a different era. A pre-formatted template with a
+live API price eliminates this entirely.
+
+**Cross-asset confusion.** ES futures (~6,800) and the SPY ETF (~$670)
+track the same index but differ by roughly 10x. AI sometimes conflates
+them because they're contextually similar — both represent "the S&P
+500." If your tool returns an ES level and the AI presents it as a SPY
+price (or vice versa), position sizing could be off by an order of
+magnitude. The fix: tools should include the `instrument` field in every
+return value so the AI knows exactly which asset it's quoting.
+
+**Hallucinated comparisons.** A tool returns correct Q3 earnings data.
+The AI, wanting to add context, "remembers" the Q2 number for comparison
+— but the remembered number is wrong. The trend analysis looks
+reasonable, but the baseline is fabricated. The fix: if your tool wants
+the AI to discuss trends, pre-compute the comparison yourself (e.g.,
+return both `current_quarter` and `prior_quarter` fields, plus a
+`change_pct` field). Don't leave gaps that invite the AI to fill in
+from memory.
+
+**Confidently wrong thesis construction.** The AI builds an investment
+case starting from a false premise — "Given that Company X generates 40%
+of revenue from China..." when the real figure is 12%. Every conclusion
+that follows is internally consistent and sounds smart. The premise was
+hallucinated. This is the hardest error to catch because the *reasoning
+quality* masks the *data quality* problem. Guardrails help (tools should
+return the actual revenue breakdown), but human verification of key
+premises remains essential.
+
+### Verification Discipline: The Human Layer
+
+Engineering guardrails are the first line of defense. But even
+well-designed tools have gaps — and you'll also use AI outside of your
+custom tools (in general Claude conversations, in other AI products,
+in third-party platforms). You need a personal verification discipline.
+
+**Magnitude check.** Does the number have the right handle? Is the S&P
+in the 6,000s (not 5,000s)? Is AAPL around $200 (not $150)? Is
+revenue in the right order of magnitude? This is a two-second sanity
+check that catches the most common errors.
+
+**Fact check key premises.** When AI builds a thesis, identify the 2–3
+factual claims the conclusion depends on. Verify those against a primary
+source (a filing, a Bloomberg terminal, a company IR page). If the
+premises are right, the reasoning is usually sound. If one premise is
+hallucinated, the entire thesis collapses.
+
+**Recency check.** Does the information match the current period? AI may
+reference an earnings report from two quarters ago as if it were the
+latest, or cite a CEO who has since been replaced. Ask yourself: "When
+was this actually true?"
+
+**The specificity trap.** Counter-intuitively, the more specific and
+confident an AI claim is — exact dates, exact percentages, specific
+names — the more important it is to verify. In human conversation,
+specificity correlates with knowledge. In AI output, it doesn't. A
+confidently stated "revenue of $4.237B in Q3 2025" is no more likely to
+be accurate than a vague "revenue in the low single-digit billions."
+
+**Cross-reference rule of thumb.** Before acting on any AI-sourced
+data point in a real investment decision, verify it against one
+independent source. This doesn't mean distrusting every word — it means
+building a habit of checking the data that matters before the data
+becomes a position.
+
 ---
 
 ## 2.4 Running AI Locally with Ollama

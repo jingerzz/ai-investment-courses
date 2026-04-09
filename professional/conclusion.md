@@ -65,6 +65,47 @@ professionals who use AI effectively from those who just talk about it.
 
 ---
 
+## The Practitioner's Compact
+
+Throughout this course, you learned engineering defenses against AI
+errors — pre-computed math, live data feeds, stale data warnings,
+verbatim templates. These are powerful. But they don't cover every
+situation, and you'll use AI tools beyond the ones you built here.
+
+These five principles are your personal defense layer. They apply to
+every AI tool you use — not just the ones from this course.
+
+1. **Never trust a number you didn't source.** If AI states a price,
+   level, ratio, or metric, verify it came from a tool call or primary
+   source. If you can't trace where the number came from, don't use it.
+
+2. **Fluency is not accuracy.** A well-written AI response is not more
+   likely to be correct than an awkwardly phrased one. The quality of
+   the language tells you nothing about the quality of the data. This is
+   the single hardest habit to internalize because our brains are wired
+   to trust articulate sources.
+
+3. **Verify the premise, not just the logic.** When AI builds an
+   investment thesis, the reasoning chain is usually sound — it's what
+   AI does best. The vulnerability is the starting facts. Identify the
+   2–3 claims the conclusion depends on and check them. A perfectly
+   reasoned conclusion built on a hallucinated fact is still wrong.
+
+4. **Magnitude-check everything.** Is the S&P 500 in the right
+   thousands? Is the stock price in the right range? Is revenue in the
+   right order of magnitude? This two-second sanity check catches the
+   most common errors — and they're the easiest to miss because the
+   format looks correct.
+
+5. **AI improves, but the discipline doesn't change.** Models will get
+   better — they'll hallucinate less often, handle numbers more
+   reliably, and cite sources more accurately. But "less often" is not
+   "never." The verification habits you build today protect you from the
+   errors that remain, no matter how infrequent they become. The cost of
+   checking is low. The cost of a wrong position is not.
+
+---
+
 ## The Bigger Picture
 
 The tools you built in this course are practical and immediately useful.

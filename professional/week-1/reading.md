@@ -387,6 +387,27 @@ pre-formatted section with all prices Python-inserted.
 proposes; a separate system (with human approval) executes. We'll cover
 this in Week 4.
 
+### Why These Patterns Exist: Connecting Back to AI Failure Modes
+
+In Foundations 1, you learned the specific ways AI gets things wrong in
+investment contexts — stale magnitudes, confabulated facts, hallucinated
+reasoning chains, numerical plausibility traps. The tool-use patterns
+you learned this week are direct engineering responses to those failure
+modes:
+
+| Failure Mode | Tool Design Response |
+|---|---|
+| Stale magnitude errors (SPX in 5,000s vs 6,000s) | Tools call live APIs — AI never relies on training-data prices |
+| Confabulated company facts | Tools return structured data from authoritative sources — AI interprets, doesn't invent |
+| Hallucinated numbers (12% vs 1.2%) | Python pre-computes all math — AI never calculates |
+| Plausible-but-wrong numbers | Pre-formatted templates lock in exact figures — AI presents them verbatim |
+| Stale data presented as current | `stale_data_warning` field flags when data isn't fresh |
+
+This isn't accidental. Every design principle in this course exists
+because of a specific failure mode that was observed in practice. When
+you build your own tools in Week 2, you'll implement these patterns
+yourself.
+
 ---
 
 ## Key Takeaways
