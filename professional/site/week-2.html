@@ -619,6 +619,25 @@ You: "Also check get_market_overview() — I want to know if our sector exposure
 This teaches Claude to use multiple tools together.</pre>
         </div>
 
+        
+        <h3>Real-World Errors That Guardrails Catch</h3>
+        <p>The patterns above aren't theoretical. Here are errors observed in practice with financial AI systems:</p>
+        <ul>
+          <li><strong>The handle error.</strong> An AI quoting the S&P 500 in the 5,000s when the index is trading in the 6,000s. This happens because the model's training data distribution includes a period when the 5,000 level was current. The number has the right format and the right number of digits — it just reflects a different era. A pre-formatted template with a live API price eliminates this entirely.</li>
+          <li><strong>Cross-asset confusion.</strong> ES futures (~6,800) and the SPY ETF (~$670) track the same index but differ by roughly 10x. AI sometimes conflates them because they're contextually similar — both represent "the S&P 500." If your tool returns an ES level and the AI presents it as a SPY price (or vice versa), position sizing could be off by an order of magnitude. The fix: tools should include the instrument field in every return value so the AI knows exactly which asset it's quoting.</li>
+          <li><strong>Hallucinated comparisons.</strong> A tool returns correct Q3 earnings data. The AI, wanting to add context, "remembers" the Q2 number for comparison — but the remembered number is wrong. The trend analysis looks reasonable, but the baseline is fabricated. The fix: if your tool wants the AI to discuss trends, pre-compute the comparison yourself (return both current_quarter and prior_quarter fields, plus a change_pct field). Don't leave gaps that invite the AI to fill in from memory.</li>
+          <li><strong>Confidently wrong thesis construction.</strong> The AI builds an investment case starting from a false premise — "Given that Company X generates 40% of revenue from China..." when the real figure is 12%. Every conclusion that follows is internally consistent and sounds smart. The premise was hallucinated. This is the hardest error to catch because the reasoning quality masks the data quality problem.</li>
+        </ul>
+        <h3>Verification Discipline: The Human Layer</h3>
+        <p>Engineering guardrails are the first line of defense. But even well-designed tools have gaps — and you'll also use AI outside of your custom tools (in general Claude conversations, in other AI products, in third-party platforms). You need a personal verification discipline.</p>
+        <ul>
+          <li><strong>Magnitude check.</strong> Does the number have the right handle? Is the S&P in the 6,000s (not 5,000s)? Is AAPL around $200 (not $150)? Is revenue in the right order of magnitude? This is a two-second sanity check that catches the most common errors.</li>
+          <li><strong>Fact check key premises.</strong> When AI builds a thesis, identify the 2–3 factual claims the conclusion depends on. Verify those against a primary source (a filing, a Bloomberg terminal, a company IR page). If the premises are right, the conclusion is worth examining. If they're wrong, the conclusion is wrong — no matter how sound the reasoning.</li>
+          <li><strong>Trace where every number came from.</strong> If you can't trace a number back to a source, don't use it.</li>
+        </ul>
+        <p>Verification isn't optional. The cost of checking is low. The cost of a wrong position is not.</p>
+
+
         <!-- Testing Prompts for Claude Desktop -->
         <h3>Testing Prompts for Claude Desktop</h3>
 

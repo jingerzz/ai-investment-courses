@@ -130,7 +130,11 @@
 
         <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
           <li><strong>Regulatory:</strong> Most jurisdictions require human oversight of algorithmic trading decisions. A fully autonomous AI trading system may violate regulations (MiFID II, SEC Rule 15c3-5, etc.).</li>
-          <li><strong>Risk:</strong> AI can be confidently wrong. A hallucinated signal or misinterpreted data point could lead to a catastrophic trade. Human review catches "this doesn't feel right" moments.</li>
+          <li><strong>Risk:</strong> AI can be confidently wrong. A hallucinated signal or misinterpreted data point could lead to a catastrophic trade. Human review catches "this doesn't feel right" moments. But human review only helps if the human knows what to look for — which means developing the same mental model for AI failure modes that the tools are built to prevent. In Week 1, you saw how pre-formatted templates, live APIs, and pre-computed values are engineering responses to hallucinated numbers, stale prices, and confabulated comparisons. Week 4 applies the same logic: your approval workflow is a guardrail, and the human in the loop is only effective when they know what questions to ask.</li>
+            <ul>
+              <li>AI presents hallucinated facts with identical confidence to correct ones — fluency is not accuracy. A well-written response is not more likely to be correct than an awkwardly phrased one.</li>
+              <li>Verify the premise, not just the logic. The reasoning chain is usually sound — that's what AI does best. The vulnerability is the starting facts. Identify the 2–3 claims the conclusion depends on and check them first.</li>
+            </ul>
           <li><strong>Trust:</strong> Building trust with AI is incremental. Starting with full autonomy means the first mistake destroys confidence. Starting with approve-everything and gradually expanding autonomy builds trust.</li>
         </ol>
 
