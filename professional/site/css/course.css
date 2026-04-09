@@ -446,6 +446,14 @@ td.negative { color: var(--danger); }
   font-weight: 600;
 }
 
+/* Tab content visibility */
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+
 /* --- Key Takeaways --- */
 .takeaways {
   background: var(--surface-alt);
