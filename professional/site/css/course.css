@@ -80,6 +80,7 @@ strong { font-weight: 600; }
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .content {
@@ -87,6 +88,8 @@ strong { font-weight: 600; }
   margin: 0 auto;
   padding: var(--xl) var(--page-padding);
   flex: 1;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .content-wide {
@@ -94,6 +97,8 @@ strong { font-weight: 600; }
   margin: 0 auto;
   padding: var(--xl) var(--page-padding);
   flex: 1;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 /* --- Top Navigation --- */
@@ -131,6 +136,7 @@ strong { font-weight: 600; }
   align-items: center;
   list-style: none;
   overflow-x: auto;
+  padding-right: var(--sm);
 }
 
 .site-nav .nav-links a {
@@ -691,7 +697,7 @@ td.negative { color: var(--danger); }
   :root {
     --page-padding: 24px;
   }
-  h1 { font-size: 1.75rem; }
+  h1 { font-size: 1.75rem; overflow-wrap: break-word; }
   h2 { font-size: 1.375rem; }
   .hero h1 { font-size: 2rem; }
 
