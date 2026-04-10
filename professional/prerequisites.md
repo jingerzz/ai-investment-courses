@@ -60,6 +60,12 @@ Be Dangerous](https://www.learnenough.com/command-line-tutorial/basics)
 covers everything you'll need in about 10 minutes. You only need the
 basics: navigating folders (`cd`) and running commands.
 
+> **You won't need to be a terminal expert.** Once you install Claude
+> Code (step 6 below), it runs terminal commands for you. You can point
+> Claude Code at the course folder and ask it to handle setup — it will
+> install dependencies, find file paths, and configure Claude Desktop
+> automatically. You'll rarely need to type terminal commands yourself.
+
 ### 3. uv (Python Package Manager)
 
 This installs the course servers and their dependencies. You don't
@@ -98,25 +104,6 @@ cd ai-investment-courses/professional
 2. Click the green **Code** button, then **Download ZIP**
 3. Unzip to your home folder and rename the folder to `ai-investment-courses`
 
-### Week 1 Verification Checklist
-
-Before starting Week 1, confirm:
-
-- [ ] Claude Desktop opens and you can chat with Claude
-- [ ] Terminal opens and you can type commands
-- [ ] `uv --version` shows a version number
-- [ ] Course files exist: `ls ~/ai-investment-courses/professional/servers/`
-      shows `spy-tlt-course` and `page-index-rag-course`
-
-That's it. You're ready for Week 1.
-
----
-
-## Additional Software for Week 2
-
-Install these before starting Week 2. Not needed for Foundations or
-Week 1.
-
 ### 5. Node.js
 
 Required to install Claude Code. You may already have it.
@@ -129,10 +116,12 @@ Required to install Claude Code. You may already have it.
   ```
   You should see a version number like `v20.x.x` or higher.
 
-### 6. Claude Code
+### 6. Claude Code (Recommended)
 
-The AI-powered CLI that builds tools for you. In Week 2, you'll use
-Claude Code to create your own MCP server.
+The AI-powered CLI that can help you set up the course servers and,
+in Week 2, build your own MCP server from scratch. Installing it now
+means Claude Code can handle most of the setup work for you — finding
+paths, installing dependencies, and writing config files.
 
 Open your terminal and run:
 ```bash
@@ -143,6 +132,26 @@ Verify it installed:
 ```bash
 claude --version
 ```
+
+### Week 1 Verification Checklist
+
+Before starting Week 1, confirm:
+
+- [ ] Claude Desktop opens and you can chat with Claude
+- [ ] Terminal opens and you can type commands
+- [ ] `uv --version` shows a version number
+- [ ] `claude --version` shows a version number
+- [ ] Course files exist: `ls ~/ai-investment-courses/professional/servers/`
+      shows `spy-tlt-course` and `page-index-rag-course`
+
+That's it. You're ready for Week 1.
+
+---
+
+## Additional Software for Week 2
+
+Install these before starting Week 2. Not needed for Foundations or
+Week 1.
 
 ### 7. Ollama (Local AI Models)
 
@@ -171,7 +180,6 @@ document search, Claude Desktop does the sophisticated reasoning.
 
 Before starting Week 2, confirm the Week 1 items plus:
 
-- [ ] `claude --version` shows a version number
 - [ ] `ollama --version` shows a version number
 - [ ] `ollama list` shows `qwen3.5:0.8b`
 

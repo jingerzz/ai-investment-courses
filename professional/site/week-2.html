@@ -43,11 +43,28 @@
 
         <p class="lead">The tool-use pattern from Week 1 gives Claude access to structured data. But Week 2 is about the next step: how to design tools and prompts so that Claude synthesizes multiple data sources into coherent, reasoned analysis. This is where AI truly adds value in investment management.</p>
 
-        <h3>The Synthesis Pattern</h3>
+        <div class="callout">
+          <div class="callout-title">Two Tracks, Same Concepts</div>
+          <p>The examples below come from the course's two server types. <strong>Systematic Trading</strong> uses market signals and technical levels. <strong>Stock Research</strong> uses SEC filing analysis and document search. The underlying pattern — structured data in, reasoned analysis out — is identical in both.</p>
+        </div>
 
-        <p>Instead of asking Claude to analyze one dataset at a time, you ask it to cross-reference multiple tools in a single reasoning pass. Here's the pattern:</p>
+        <div class="track-toggle">
+          <span class="track-label">Choose your track:</span>
+          <div class="track-pills">
+            <button class="track-btn active" data-track="systematic">Systematic Trading</button>
+            <button class="track-btn" data-track="research">Stock Research</button>
+          </div>
+        </div>
 
-        <pre class="code-block"><span class="keyword">def</span> <span class="string">get_current_signal</span>():
+        <!-- Section 2.1 — Systematic Track -->
+        <div class="track-content active" data-track="systematic">
+          <h3>The Synthesis Pattern</h3>
+
+          <p>Here's an example using the SPY/TLT strategy server. <strong>ES</strong> (E-mini S&amp;P 500) is a futures contract that tracks the S&amp;P 500 index — it's widely used by institutional traders alongside the SPY ETF. <strong>VWAP</strong> is the volume-weighted average price, and <strong>pivot points</strong> (S1, R1) are support/resistance levels derived from the prior session's price range.</p>
+
+          <p>Instead of asking Claude to analyze one dataset at a time, you ask it to cross-reference multiple tools in a single reasoning pass:</p>
+
+          <pre class="code-block"><span class="keyword">def</span> <span class="string">get_current_signal</span>():
     <span class="string">"""
     Returns today's trading signal from the strategy framework.
     Combines market color classification, signal tier, exposure target.
@@ -57,7 +74,7 @@
         <span class="string">"signal_tier"</span>: 1,
         <span class="string">"color"</span>: <span class="string">"Blue"</span>,
         <span class="string">"exposure_target"</span>: 2.0,
-        <span class="string">"as_of_date"</span>: <span class="string">"2025-03-07"</span>
+        <span class="string">"as_of_date"</span>: <span class="string">"2026-03-07"</span>
     }
 
 <span class="keyword">def</span> <span class="string">get_es_levels</span>():
@@ -85,40 +102,120 @@
         <span class="string">"total_risk_usd"</span>: 2500
     }</pre>
 
-        <p>When Claude sees a user question like "What should I do in ES today?", it can call these tools in sequence and synthesize the result:</p>
+          <p>When Claude sees a question like "What's the market outlook today?", it calls these tools in sequence and synthesizes the result:</p>
 
-        <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
-          <li>Call <code>get_current_signal()</code> to understand the market signal</li>
-          <li>Call <code>get_es_levels()</code> to get current technical context</li>
-          <li>Call <code>get_risk_report()</code> to get the complete trade plan</li>
-          <li>Synthesize: "Here's today's signal (Tier 1 Blue), ES is at VWAP with bullish regime, and the trade plan is..."</li>
-        </ol>
+          <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li>Call <code>get_current_signal()</code> to understand the market regime</li>
+            <li>Call <code>get_es_levels()</code> to get current technical context</li>
+            <li>Call <code>get_risk_report()</code> to get the complete trade plan</li>
+            <li>Synthesize: "Today's signal is Tier 1 Blue (strong risk-off). ES is near VWAP with a bullish regime. The trade plan suggests..."</li>
+          </ol>
 
-        <p>The key: you don't make Claude do the math. All three tools return pre-computed, decision-ready information. Claude's job is to <strong>understand the narrative</strong> — why this signal matters, what the technicals support, when to execute.</p>
+          <p>The key: you don't make Claude do the math. All three tools return pre-computed, decision-ready information. Claude's job is to <strong>understand the narrative</strong> — why this signal matters, what the technicals support, when to act.</p>
 
-        <h3>Why This Beats Dashboards</h3>
+          <h3>Why This Beats Dashboards</h3>
 
-        <p>A static dashboard shows you numbers. Claude can do something dashboards can't: cross-reference multiple signals and explain them in natural language.</p>
+          <p>A static dashboard shows you numbers. Claude can do something dashboards can't: cross-reference multiple signals and explain them in natural language.</p>
 
-        <div style="margin: var(--md) 0;">
-          <strong>Dashboard approach:</strong>
-          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
-            <li>You see: Signal = Blue, ES Pivot = 6825.00, Regime = Bull</li>
-            <li>You have to synthesize: "These all align, so I should go long"</li>
-            <li>If something's wrong, you have to figure out why</li>
-          </ul>
+          <div style="margin: var(--md) 0;">
+            <strong>Dashboard approach:</strong>
+            <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+              <li>You see: Signal = Blue, ES Pivot = 6825.00, Regime = Bull</li>
+              <li>You have to synthesize: "These all align, so I should go long"</li>
+              <li>If something's wrong, you have to figure out why</li>
+            </ul>
+          </div>
+
+          <div style="margin: var(--md) 0;">
+            <strong>AI reasoning approach:</strong>
+            <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+              <li>Claude sees the same data and explains: "Signal is Tier 1 Blue, meaning strong risk-off. ES is trading at VWAP with confirmation above the 50-day SMA. Regime is bull. All three align."</li>
+              <li>Claude flags misalignments: "Signal says Blue, but ES just broke below VWAP. Caution."</li>
+              <li>Claude suggests follow-ups: "Check duration of this Blue streak to assess risk before entering."</li>
+            </ul>
+          </div>
         </div>
 
-        <div style="margin: var(--md) 0;">
-          <strong>AI reasoning approach:</strong>
-          <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
-            <li>Claude sees the same data and explains it: "Signal is Tier 1 Blue, meaning strong risk-on. ES is trading at VWAP with confirmation above the 50-day SMA. Regime is bull. All three align."</li>
-            <li>Claude flags misalignments: "Signal says Blue, but ES just broke below VWAP. Caution."</li>
-            <li>Claude suggests follow-ups: "Before entering, check duration of this Blue streak to assess risk."</li>
-          </ul>
+        <!-- Section 2.1 — Research Track -->
+        <div class="track-content" data-track="research">
+          <h3>The Synthesis Pattern</h3>
+
+          <p>Here's an example using the page-index-rag server for SEC filing analysis. These tools let Claude search company filings, retrieve specific sections, and compare disclosures across companies — all with citations you can verify.</p>
+
+          <p>Instead of asking Claude to analyze one filing at a time, you ask it to cross-reference multiple documents in a single reasoning pass:</p>
+
+          <pre class="code-block"><span class="keyword">def</span> <span class="string">search_with_citations</span>(query, doc_id):
+    <span class="string">"""
+    Search a company filing for relevant passages.
+    Returns text with section citations you can verify.
+    """</span>
+    <span class="keyword">return</span> {
+        <span class="string">"passages"</span>: [
+            {<span class="string">"text"</span>: <span class="string">"Market volatility may adversely affect..."</span>,
+             <span class="string">"section"</span>: <span class="string">"Item 1A: Risk Factors"</span>,
+             <span class="string">"page"</span>: 23}
+        ],
+        <span class="string">"doc_id"</span>: <span class="string">"BLK-10K"</span>,
+        <span class="string">"query"</span>: query
+    }
+
+<span class="keyword">def</span> <span class="string">get_document_section</span>(doc_id, node_id):
+    <span class="string">"""
+    Read the full text of a specific section from a filing.
+    Use after search to get complete context around a passage.
+    """</span>
+    <span class="keyword">return</span> {
+        <span class="string">"section_title"</span>: <span class="string">"Item 1A: Risk Factors"</span>,
+        <span class="string">"full_text"</span>: <span class="string">"The company is subject to..."</span>,
+        <span class="string">"word_count"</span>: 4250,
+        <span class="string">"doc_id"</span>: <span class="string">"BLK-10K"</span>
+    }
+
+<span class="keyword">def</span> <span class="string">batch_query</span>(query, doc_ids):
+    <span class="string">"""
+    Search across multiple company filings simultaneously.
+    Compare disclosures, risk factors, or financials across companies.
+    """</span>
+    <span class="keyword">return</span> {
+        <span class="string">"results"</span>: {<span class="string">"BLK-10K"</span>: [...], <span class="string">"HOOD-10K"</span>: [...]},
+        <span class="string">"companies_searched"</span>: [<span class="string">"BLK"</span>, <span class="string">"HOOD"</span>]
+    }</pre>
+
+          <p>When Claude sees a question like "How does BlackRock's risk profile compare to Robinhood's?", it calls these tools in sequence and synthesizes the result:</p>
+
+          <ol style="margin-left: 1.5rem; margin-bottom: var(--md);">
+            <li>Call <code>search_with_citations()</code> to find risk factor sections in each filing</li>
+            <li>Call <code>get_document_section()</code> to read the full text of relevant sections</li>
+            <li>Call <code>batch_query()</code> to cross-reference across both companies</li>
+            <li>Synthesize: "BlackRock's primary risks center on market volatility and fee compression, while Robinhood faces regulatory and revenue concentration risks..."</li>
+          </ol>
+
+          <p>The key: you don't make Claude guess. All three tools return passages from the actual filings with citations. Claude's job is to <strong>synthesize the narrative</strong> — connecting disclosures across companies, identifying patterns, and citing its sources.</p>
+
+          <h3>Why This Beats Manual Filing Review</h3>
+
+          <p>Manually reviewing SEC filings is slow and hard to cross-reference. Claude can do something spreadsheets and CTRL-F can't: navigate document structure and synthesize across filings in natural language.</p>
+
+          <div style="margin: var(--md) 0;">
+            <strong>Manual approach:</strong>
+            <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+              <li>You open two 10-Ks in browser tabs and search for "risk factors"</li>
+              <li>You manually compare the language and categorize the differences</li>
+              <li>Cross-referencing takes 30-60 minutes per pair of companies</li>
+            </ul>
+          </div>
+
+          <div style="margin: var(--md) 0;">
+            <strong>AI reasoning approach:</strong>
+            <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
+              <li>Claude searches both filings and explains: "BlackRock discloses 14 risk factors in Item 1A. The top three by page length are market risk, regulatory risk, and operational risk."</li>
+              <li>Claude identifies gaps: "Robinhood discloses crypto-specific regulatory risk that has no equivalent in BlackRock's filing."</li>
+              <li>Claude cites sources: "See BLK 10-K, Item 1A, page 23; HOOD 10-K, Item 1A, page 31."</li>
+            </ul>
+          </div>
         </div>
 
-        <!-- Section 2.2: RAG for Financial Documents -->
+        <!-- Section 2.2: RAG for Financial Documents (shared across both tracks) -->
         <h2>RAG for Financial Documents</h2>
 
         <p>Retrieval-Augmented Generation (RAG) is how you let Claude reason about financial documents: 10-Ks, earnings transcripts, SEC filings. But standard RAG fails for structured finance docs. Here's why.</p>
@@ -810,6 +907,7 @@ This teaches Claude to use multiple tools together.</pre>
   </div>
 
   <!-- Scripts -->
+  <script src="js/track-toggle.js"></script>
 
   <script>
     // Section tabs functionality

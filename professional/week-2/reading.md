@@ -3,10 +3,11 @@
 ## 2.1 From User to Builder
 
 Last week you installed a pre-built MCP server, connected it to Claude
-Desktop, and experienced what it feels like to have a conversation with
-live market data. You saw the SPY/TLT strategy server answer questions,
-cross-reference signals with technical levels, and present pre-computed
-trade briefings.
+Desktop, and experienced what it feels like to ask questions backed by
+real data — not training data. Whether you explored the SPY/TLT
+strategy server (systematic trading track) or the page-index-rag server
+(stock research track), you saw the same pattern: tools return
+structured, pre-computed results; Claude interprets and explains them.
 
 This week, you build your own.
 

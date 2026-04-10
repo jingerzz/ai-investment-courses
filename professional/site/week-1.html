@@ -465,6 +465,20 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             </ul>
           </div>
 
+          <div class="callout callout-guardrail">
+            <div class="callout-title">Recommended: Let Claude Code Handle Setup</div>
+            <p>If you have Claude Code installed (see <a href="https://code.claude.com/docs/en/overview">Prerequisites</a>), it can handle the entire setup for you. Open your terminal and run:</p>
+            <pre class="code-block">cd ~/ai-investment-courses/professional
+claude</pre>
+            <p>Then tell Claude Code:</p>
+            <div class="prompt-block">
+              <div class="prompt-label">Prompt</div>
+              <pre>Help me set up the spy-tlt-course MCP server for Claude Desktop. The server is in the servers/spy-tlt-course directory. Please run uv sync to install dependencies, find the absolute path, and add it to my Claude Desktop config file (claude_desktop_config.json) so it runs via uv. Tell me when to restart Claude Desktop.</pre>
+            </div>
+            <p>Claude Code handles the rest. When it's done, restart Claude Desktop and skip to <strong>Step 4: Your First Conversation</strong>.</p>
+            <p>If you prefer to set things up manually, continue with the steps below.</p>
+          </div>
+
           <!-- Step 1 -->
           <div class="step" data-step="1">
             <h3>Download the Course Materials</h3>
@@ -720,6 +734,20 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
               <li>Claude Desktop installed (<a href="https://claude.ai/download">claude.ai/download</a>)</li>
               <li>A terminal application (Terminal on Mac, PowerShell on Windows)</li>
             </ul>
+          </div>
+
+          <div class="callout callout-guardrail">
+            <div class="callout-title">Recommended: Let Claude Code Handle Setup</div>
+            <p>If you have Claude Code installed (see <a href="https://code.claude.com/docs/en/overview">Prerequisites</a>), it can handle the entire setup for you. Open your terminal and run:</p>
+            <pre class="code-block">cd ~/ai-investment-courses/professional
+claude</pre>
+            <p>Then tell Claude Code:</p>
+            <div class="prompt-block">
+              <div class="prompt-label">Prompt</div>
+              <pre>Help me set up the page-index-rag-course MCP server for Claude Desktop. The server is in the servers/page-index-rag-course directory. Please run uv sync to install dependencies, find the absolute path, and add it to my Claude Desktop config file (claude_desktop_config.json) so it runs via uv. Tell me when to restart Claude Desktop.</pre>
+            </div>
+            <p>Claude Code handles the rest. When it's done, restart Claude Desktop and skip to <strong>Step 4: Your First Conversation</strong>.</p>
+            <p>If you prefer to set things up manually, continue with the steps below.</p>
           </div>
 
           <!-- Step 1 -->

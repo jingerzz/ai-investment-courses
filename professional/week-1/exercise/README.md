@@ -24,6 +24,49 @@ from its training data.
 
 ---
 
+## Recommended: Let Claude Code Handle Setup
+
+The fastest way to get started. Claude Code can install dependencies,
+find the right file paths, and configure Claude Desktop for you —
+no manual JSON editing required.
+
+**1. Open your terminal and navigate to the course folder:**
+
+```bash
+cd ~/ai-investment-courses/professional
+```
+
+**2. Start Claude Code:**
+
+```bash
+claude
+```
+
+**3. Tell Claude Code what you need:**
+
+```
+Help me set up the spy-tlt-course MCP server for Claude Desktop.
+The server is in the servers/spy-tlt-course directory. Please:
+1. Run uv sync to install its dependencies
+2. Find the absolute path to this server
+3. Add it to my Claude Desktop config file
+   (claude_desktop_config.json) so it runs via uv
+4. Tell me when to restart Claude Desktop
+```
+
+Claude Code will handle everything — installing packages, resolving
+your username and path, and writing the config file. When it's done,
+restart Claude Desktop and look for the hammer icon at the bottom of
+the chat input area.
+
+**If Claude Code is set up, skip to Step 4: Your First Conversation**
+after it finishes.
+
+**If you prefer to set things up manually**, or don't have Claude Code
+installed yet, continue with the step-by-step instructions below.
+
+---
+
 ## Step 1: Install the Package Manager (3 min)
 
 We use `uv` — a fast Python package manager. You don't need to know
