@@ -26,11 +26,11 @@ from its training data.
 
 ## Recommended: Let Claude Code Handle Setup
 
-The fastest way to get started. **Claude Code** is Anthropic's
-AI-powered command line tool — it can install dependencies, find the
-right file paths, and configure Claude Desktop for you.
+**Claude Code** is Anthropic's AI-powered command line tool. Give it
+the instructions below and it will download the course materials,
+install everything, and configure Claude Desktop for you.
 
-If you don't have it yet, run this in your terminal:
+**1. Install Claude Code** (skip if you already have it):
 
 **Mac/Linux:**
 ```bash
@@ -42,40 +42,33 @@ curl -fsSL https://claude.ai/install.sh | bash
 irm https://claude.ai/install.ps1 | iex
 ```
 
-**1. Open your terminal and navigate to the course folder:**
+Close and reopen your terminal after installing.
 
-```bash
-cd ~/ai-investment-courses/professional
-```
-
-**2. Start Claude Code:**
+**2. Run Claude Code:**
 
 ```bash
 claude
 ```
 
-**3. Tell Claude Code what you need:**
+**3. Paste this prompt:**
 
 ```
-Help me set up the spy-tlt-course MCP server for Claude Desktop.
-The server is in the servers/spy-tlt-course directory. Please:
-1. Run uv sync to install its dependencies
-2. Find the absolute path to this server
-3. Add it to my Claude Desktop config file
+Help me set up a course exercise. Here's what I need:
+1. Clone https://github.com/jingerzz/ai-investment-courses.git
+   into my home directory (skip if already cloned)
+2. Install uv (https://astral.sh/uv/) if I don't have it
+3. In the repo, go to professional/servers/spy-tlt-course
+   and run uv sync
+4. Add this server to my Claude Desktop MCP config
    (claude_desktop_config.json) so it runs via uv
-4. Tell me when to restart Claude Desktop
+5. Verify everything works, then tell me to restart Claude Desktop
 ```
 
-Claude Code will handle everything — installing packages, resolving
-your username and path, and writing the config file. When it's done,
-restart Claude Desktop and look for the hammer icon at the bottom of
-the chat input area.
+When Claude Code finishes, restart Claude Desktop and skip to
+**Step 4: Your First Conversation**.
 
-**If Claude Code is set up, skip to Step 4: Your First Conversation**
-after it finishes.
-
-**If you prefer to set things up manually**, or don't have Claude Code
-installed yet, continue with the step-by-step instructions below.
+**If you prefer to set things up manually**, continue with the
+step-by-step instructions below.
 
 ---
 

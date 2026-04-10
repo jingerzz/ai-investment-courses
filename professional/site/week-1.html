@@ -467,19 +467,25 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
 
           <div class="callout callout-guardrail">
             <div class="callout-title">Recommended: Let Claude Code Handle Setup</div>
-            <p><strong>Claude Code</strong> is Anthropic's AI-powered command line tool — it can handle the entire setup for you. If you don't have it yet, run this in your terminal:</p>
+            <p><strong>Claude Code</strong> is Anthropic's AI-powered command line tool. Give it the instructions below and it will download the course materials, install everything, and configure Claude Desktop for you.</p>
+            <p><strong>1. Install Claude Code</strong> (skip if you already have it):</p>
             <p><strong>Mac/Linux:</strong> <code>curl -fsSL https://claude.ai/install.sh | bash</code><br>
             <strong>Windows:</strong> <code>irm https://claude.ai/install.ps1 | iex</code></p>
-            <p>Once installed, open your terminal and run:</p>
-            <pre class="code-block">cd ~/ai-investment-courses/professional
-claude</pre>
-            <p>Then tell Claude Code:</p>
+            <p>Close and reopen your terminal after installing.</p>
+            <p><strong>2. Run Claude Code:</strong></p>
+            <pre class="code-block">claude</pre>
+            <p><strong>3. Paste this prompt:</strong></p>
             <div class="prompt-block">
               <div class="prompt-label">Prompt</div>
-              <pre>Help me set up the spy-tlt-course MCP server for Claude Desktop. The server is in the servers/spy-tlt-course directory. Please run uv sync to install dependencies, find the absolute path, and add it to my Claude Desktop config file (claude_desktop_config.json) so it runs via uv. Tell me when to restart Claude Desktop.</pre>
+              <pre>Help me set up a course exercise. Here's what I need:
+1. Clone https://github.com/jingerzz/ai-investment-courses.git into my home directory (skip if already cloned)
+2. Install uv (https://astral.sh/uv/) if I don't have it
+3. In the repo, go to professional/servers/spy-tlt-course and run uv sync
+4. Add this server to my Claude Desktop MCP config (claude_desktop_config.json) so it runs via uv
+5. Verify everything works, then tell me to restart Claude Desktop</pre>
             </div>
-            <p>Claude Code handles the rest. When it's done, restart Claude Desktop and skip to <strong>Step 4: Your First Conversation</strong>.</p>
-            <p>If you prefer to set things up manually, continue with the steps below.</p>
+            <p>When Claude Code finishes, restart Claude Desktop and skip to <strong>Your First Conversation</strong> below.</p>
+            <p>If you prefer to set things up manually, continue with the step-by-step instructions.</p>
           </div>
 
           <!-- Step 1 -->
@@ -741,19 +747,25 @@ claude</pre>
 
           <div class="callout callout-guardrail">
             <div class="callout-title">Recommended: Let Claude Code Handle Setup</div>
-            <p><strong>Claude Code</strong> is Anthropic's AI-powered command line tool — it can handle the entire setup for you. If you don't have it yet, run this in your terminal:</p>
+            <p><strong>Claude Code</strong> is Anthropic's AI-powered command line tool. Give it the instructions below and it will download the course materials, install everything, and configure Claude Desktop for you.</p>
+            <p><strong>1. Install Claude Code</strong> (skip if you already have it):</p>
             <p><strong>Mac/Linux:</strong> <code>curl -fsSL https://claude.ai/install.sh | bash</code><br>
             <strong>Windows:</strong> <code>irm https://claude.ai/install.ps1 | iex</code></p>
-            <p>Once installed, open your terminal and run:</p>
-            <pre class="code-block">cd ~/ai-investment-courses/professional
-claude</pre>
-            <p>Then tell Claude Code:</p>
+            <p>Close and reopen your terminal after installing.</p>
+            <p><strong>2. Run Claude Code:</strong></p>
+            <pre class="code-block">claude</pre>
+            <p><strong>3. Paste this prompt:</strong></p>
             <div class="prompt-block">
               <div class="prompt-label">Prompt</div>
-              <pre>Help me set up the page-index-rag-course MCP server for Claude Desktop. The server is in the servers/page-index-rag-course directory. Please run uv sync to install dependencies, find the absolute path, and add it to my Claude Desktop config file (claude_desktop_config.json) so it runs via uv. Tell me when to restart Claude Desktop.</pre>
+              <pre>Help me set up a course exercise. Here's what I need:
+1. Clone https://github.com/jingerzz/ai-investment-courses.git into my home directory (skip if already cloned)
+2. Install uv (https://astral.sh/uv/) if I don't have it
+3. In the repo, go to professional/servers/page-index-rag-course and run uv sync
+4. Add this server to my Claude Desktop MCP config (claude_desktop_config.json) so it runs via uv
+5. Verify everything works, then tell me to restart Claude Desktop</pre>
             </div>
-            <p>Claude Code handles the rest. When it's done, restart Claude Desktop and skip to <strong>Step 4: Your First Conversation</strong>.</p>
-            <p>If you prefer to set things up manually, continue with the steps below.</p>
+            <p>When Claude Code finishes, restart Claude Desktop and skip to <strong>Your First Conversation</strong> below.</p>
+            <p>If you prefer to set things up manually, continue with the step-by-step instructions.</p>
           </div>
 
           <!-- Step 1 -->
