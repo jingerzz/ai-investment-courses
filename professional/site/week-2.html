@@ -66,10 +66,10 @@
     Anchors directional trading levels.
     """</span>
     <span class="keyword">return</span> {
-        <span class="string">"pivot"</span>: 5125.50,
-        <span class="string">"s1"</span>: 5110.25,
-        <span class="string">"r1"</span>: 5140.75,
-        <span class="string">"vwap"</span>: 5132.10,
+        <span class="string">"pivot"</span>: 6825.00,
+        <span class="string">"s1"</span>: 6790.00,
+        <span class="string">"r1"</span>: 6860.00,
+        <span class="string">"vwap"</span>: 6830.00,
         <span class="string">"regime"</span>: <span class="string">"bull"</span>
     }
 
@@ -80,9 +80,9 @@
     """</span>
     <span class="keyword">return</span> {
         <span class="string">"signal"</span>: <span class="string">"T1_BOTH_STRONG_BLUE"</span>,
-        <span class="string">"long_plan"</span>: { <span class="string">"entry"</span>: <span class="string">"5115-5120"</span>, <span class="string">"stop"</span>: 5105, <span class="string">"target_1"</span>: 5140 },
+        <span class="string">"long_plan"</span>: { <span class="string">"entry"</span>: <span class="string">"6790-6800"</span>, <span class="string">"stop"</span>: 6770, <span class="string">"target_1"</span>: 6860 },
         <span class="string">"contracts"</span>: 2,
-        <span class="string">"total_risk_usd"</span>: 500
+        <span class="string">"total_risk_usd"</span>: 2500
     }</pre>
 
         <p>When Claude sees a user question like "What should I do in ES today?", it can call these tools in sequence and synthesize the result:</p>
@@ -103,7 +103,7 @@
         <div style="margin: var(--md) 0;">
           <strong>Dashboard approach:</strong>
           <ul style="margin-left: 1.5rem; margin-bottom: var(--md);">
-            <li>You see: Signal = Blue, ES Pivot = 5125.50, Regime = Bull</li>
+            <li>You see: Signal = Blue, ES Pivot = 6825.00, Regime = Bull</li>
             <li>You have to synthesize: "These all align, so I should go long"</li>
             <li>If something's wrong, you have to figure out why</li>
           </ul>
@@ -221,7 +221,7 @@
         </div>
 
         <div style="margin: var(--md) 0;">
-          <strong>Natural language trade plans:</strong> Instead of a grid of numbers, Claude can say: "Tier 1 Blue signal with bullish ES regime. Buy dip to S1 (5110), stop 5105, target 5140. Conviction: High."
+          <strong>Natural language trade plans:</strong> Instead of a grid of numbers, Claude can say: "Tier 1 Blue signal with bullish ES regime. Buy dip to S1 (6790), stop 6770, target 6860. Conviction: High."
         </div>
 
         <div style="margin: var(--md) 0;">
@@ -271,19 +271,19 @@ STRATEGY SIGNAL: Tier 1 Blue
 Conviction: HIGH | Exposure: 2.0x
 
 ES TECHNICALS
-Current: 5127.50 | Pivot: 5125.50 | VWAP: 5132.10
-Regime: Bull (above SMA50=5100, above SMA200=5080)
-Yesterday: Close 5130, High 5145, Low 5120
+Current: 6828.50 | Pivot: 6825.00 | VWAP: 6830.00
+Regime: Bull (above SMA50=6700, above SMA200=6550)
+Yesterday: Close 6830, High 6850, Low 6800
 
 TRADE PLAN: LONG
-Entry: 5115-5120 (dip toward S1)
-Stop: 5105 (12.5 pts = $625/contract)
-Target 1: 5140 (R1, +25 pts = $1250)
-Target 2: 5155 (R2, +40 pts = $2000)
-Risk/Reward: 1:2
+Entry: 6790-6800 (dip toward S1)
+Stop: 6770 (25 pts = $1,250/contract)
+Target 1: 6860 (R1, +65 pts = $3,250)
+Target 2: 6895 (R2, +100 pts = $5,000)
+Risk/Reward: 1:2.6
 
 POSITIONING
-2 ES contracts | 500 USD at risk | R:R = 1:2
+2 ES contracts | 2,500 USD at risk | R:R = 1:2.6
         """</span>,
         <span class="string">"as_of_date"</span>: <span class="string">"2025-03-07 08:30 ET"</span>,
         <span class="string">"stale_warning"</span>: <span class="keyword">None</span>
@@ -329,9 +329,9 @@ POSITIONING
         <div class="callout callout-guardrail">
           <div class="callout-title">Weak Return Fields</div>
           <pre class="code-block"><span class="keyword">return</span> {
-    <span class="string">"v1"</span>: 5125.50,
-    <span class="string">"v2"</span>: 5110.25,
-    <span class="string">"v3"</span>: 5140.75,
+    <span class="string">"v1"</span>: 6825.00,
+    <span class="string">"v2"</span>: 6790.00,
+    <span class="string">"v3"</span>: 6860.00,
     <span class="string">"v4"</span>: <span class="string">"bull"</span>
 }</pre>
           <p>Claude has no idea what v1, v2, v3 are. It can't reason about them.</p>
@@ -340,9 +340,9 @@ POSITIONING
         <div class="callout">
           <div class="callout-title">Strong Return Fields</div>
           <pre class="code-block"><span class="keyword">return</span> {
-    <span class="string">"pivot"</span>: 5125.50,
-    <span class="string">"support_1"</span>: 5110.25,
-    <span class="string">"resistance_1"</span>: 5140.75,
+    <span class="string">"pivot"</span>: 6825.00,
+    <span class="string">"support_1"</span>: 6790.00,
+    <span class="string">"resistance_1"</span>: 6860.00,
     <span class="string">"regime"</span>: <span class="string">"bull"</span>,
     <span class="string">"context"</span>: <span class="string">"Price at VWAP, above SMA50, strong uptrend."</span>
 }</pre>

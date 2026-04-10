@@ -88,7 +88,7 @@
         </div>
 
         <div style="margin: var(--md) 0;">
-          <strong>Propose:</strong> The agent formats a specific proposal: "Buy 2 MES contracts at 5385, stop at 5340, target 5420. Risk: $225."
+          <strong>Propose:</strong> The agent formats a specific proposal: "Buy 2 MES contracts at 6790, stop at 6750, target 6850. Risk: $200."
         </div>
 
         <div style="margin: var(--md) 0;">
@@ -146,11 +146,11 @@
           <div class="callout-title">Telegram/Slack Integration</div>
           <pre class="code-block">Bot: Trade Proposal
      Signal: T2_STRONG_BLUE (Tier 2)
-     Action: BUY 2 MES @ 5385
-     Stop: 5340 (45 pts, $225 risk)
-     Target: 5420 (35 pts, $175 reward)
-     R:R = 1:0.78
-     Account risk: 0.45%
+     Action: BUY 2 MES @ 6790
+     Stop: 6750 (40 pts, $200 risk)
+     Target: 6850 (60 pts, $300 reward)
+     R:R = 1:1.5
+     Account risk: 0.40%
 
      [Approve]  [Reject]  [Modify]</pre>
           <p>The proposal includes everything the PM needs to decide: what the signal is and why, exact order details with pre-computed risk, risk as a percentage of account, and one-tap approve/reject.</p>
@@ -270,7 +270,7 @@
     <span class="string">"""Agent should propose a long trade in Blue regime near support."""</span>
     <span class="comment"># Mock tools to return Blue regime + ES near S1</span>
     mock_signal = {<span class="string">"color"</span>: <span class="string">"Blue"</span>, <span class="string">"signal"</span>: <span class="string">"T2_STRONG_BLUE"</span>, <span class="string">"exposure"</span>: 1.5}
-    mock_levels = {<span class="string">"pivot"</span>: 5420, <span class="string">"s1"</span>: 5385, <span class="string">"current"</span>: 5390}
+    mock_levels = {<span class="string">"pivot"</span>: 6850, <span class="string">"s1"</span>: 6790, <span class="string">"current"</span>: 6795}
     mock_risk = {<span class="string">"status"</span>: <span class="string">"OK"</span>, <span class="string">"available_risk_pct"</span>: 2.0}
 
     proposal = <span class="keyword">await</span> agent.reason(mock_signal, mock_levels, mock_risk)

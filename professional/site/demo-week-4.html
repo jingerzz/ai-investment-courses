@@ -564,10 +564,10 @@
                     </div>
                     <div class="telegram-content">
                         <div><strong>Signal:</strong> T2_STRONG_BLUE (Tier 2)</div>
-                        <div><strong>Action:</strong> BUY 2 MES @ 5385</div>
-                        <div><strong>Stop:</strong> 5340 (45 pts, $225 risk)</div>
-                        <div><strong>Target:</strong> 5420 (35 pts, $175 reward)</div>
-                        <div><strong>R:R:</strong> 1:0.78</div>
+                        <div><strong>Action:</strong> BUY 2 MES @ 6790</div>
+                        <div><strong>Stop:</strong> 6750 (40 pts, $400 risk)</div>
+                        <div><strong>Target:</strong> 6850 (60 pts, $600 reward)</div>
+                        <div><strong>R:R:</strong> 1:1.50</div>
                         <div><strong>Account risk:</strong> 0.45%</div>
                     </div>
                     <div class="telegram-buttons">
@@ -592,7 +592,7 @@
                 title: "Call MCP tools for current state",
                 detail: "The agent connects to your signal, risk, and research servers — the same ones you built in Weeks 1-3. It's an MCP client, just like Claude Desktop.",
                 example: `get_current_signal() → Blue, T2_STRONG_BLUE, 1.5x
-get_es_levels()      → pivot 5420, S1 5385, last 5398
+get_es_levels()      → pivot 6850, S1 6790, last 6808
 get_risk_report()    → HEDGED, 0.85% risk used`,
             },
             {
@@ -601,7 +601,7 @@ get_risk_report()    → HEDGED, 0.85% risk used`,
                 number: 2,
                 title: "AI synthesizes across tool results",
                 detail: "The AI cross-references all data points: regime signal + price vs. support + available risk capacity. This is the same synthesis from Week 2, but running autonomously.",
-                example: `"Blue regime + ES near S1 (5385) + risk below limits
+                example: `"Blue regime + ES near S1 (6790) + risk below limits
 → Mean-reversion buying opportunity aligned with signal.
    Bond hedge is working (TLT up in Blue regime).
    Available risk capacity: 1.15% of account."`,
@@ -614,10 +614,10 @@ get_risk_report()    → HEDGED, 0.85% risk used`,
                 detail: "The agent formats a specific, fully-sized proposal. Every number is pre-computed by Python. The proposal includes everything the PM needs to make a decision in 10 seconds.",
                 example: `[BELL] Trade Proposal
    Signal: T2_STRONG_BLUE (Tier 2)
-   Action: BUY 2 MES @ 5385
-   Stop: 5340 (45 pts, $225 risk)
-   Target: 5420 (35 pts, $175 reward)
-   R:R = 1:0.78
+   Action: BUY 2 MES @ 6790
+   Stop: 6750 (40 pts, $400 risk)
+   Target: 6850 (60 pts, $600 reward)
+   R:R = 1:1.50
    Account risk: 0.45%`,
             },
             {
@@ -637,9 +637,9 @@ PM taps APPROVE at 9:42 AM ET
                 number: 5,
                 title: "Send order to broker (if approved)",
                 detail: "Only after approval, the agent calls the execution server. Remember: signal servers are read-only, execution is write-only. The most dangerous capability is isolated.",
-                example: `submit_order("MES", "BUY", 2, limit=5385)
+                example: `submit_order("MES", "BUY", 2, limit=6790)
 → Order ID: MES-20260307-001
-→ Status: FILLED @ 5384.75 (2 contracts)`,
+→ Status: FILLED @ 6789.75 (2 contracts)`,
             },
             {
                 id: "log",
@@ -650,10 +650,10 @@ PM taps APPROVE at 9:42 AM ET
                 example: `INSERT INTO trade_journal:
   signal_name: T2_STRONG_BLUE
   ai_reasoning: "Blue regime + ES near S1..."
-  proposed: BUY 2 MES @ 5385
+  proposed: BUY 2 MES @ 6790
   approved_by: PM_Smith
-  fill_price: 5384.75
-  dollar_risk: $225`,
+  fill_price: 6789.75
+  dollar_risk: $400`,
             },
         ];
 

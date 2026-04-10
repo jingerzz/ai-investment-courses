@@ -401,13 +401,13 @@
       </div>
       <div class="tool-body" id="tool2-body">
         <pre>{
-  <span class="key">"pivot"</span>: <span class="num">5420.25</span>,
-  <span class="key">"r1"</span>: <span class="num">5455.50</span>,
-  <span class="key">"r2"</span>: <span class="num">5478.75</span>,
-  <span class="key">"s1"</span>: <span class="num">5385.00</span>,
-  <span class="key">"s2"</span>: <span class="num">5362.25</span>,
-  <span class="key">"atr14"</span>: <span class="num">45.3</span>,
-  <span class="key">"last"</span>: <span class="num">5398.50</span>,
+  <span class="key">"pivot"</span>: <span class="num">6830.25</span>,
+  <span class="key">"r1"</span>: <span class="num">6865.50</span>,
+  <span class="key">"r2"</span>: <span class="num">6888.75</span>,
+  <span class="key">"s1"</span>: <span class="num">6790.00</span>,
+  <span class="key">"s2"</span>: <span class="num">6767.25</span>,
+  <span class="key">"atr14"</span>: <span class="num">48.5</span>,
+  <span class="key">"last"</span>: <span class="num">6808.50</span>,
   <span class="key">"data_source"</span>: <span class="str">"live_feed"</span>
 }</pre>
       </div>
@@ -438,7 +438,7 @@
 
       <p style="color: var(--muted); margin: 1rem 0; font-size: 0.95rem;">
         We're in a <strong style="color: var(--accent);">Blue regime</strong> (flight-to-safety) with a Tier 2 signal suggesting
-        1.5x exposure. ES last traded at 5398.50, below the pivot at 5420.25. Current posture is
+        1.5x exposure. ES last traded at 6808.50, below the pivot at 6830.25. Current posture is
         <strong style="color: var(--text);">HEDGED</strong> with 2 ES contracts and a long bond position — the bond leg is providing
         the expected hedge. Account risk is 0.85% with 1.15% available.
       </p>
@@ -446,20 +446,20 @@
       <table class="levels-table">
         <thead><tr><th>Level</th><th>Price</th><th>Distance</th></tr></thead>
         <tbody>
-          <tr><td>R2</td><td>5478.75</td><td style="color: var(--green);">+80.25 pts</td></tr>
-          <tr><td>R1</td><td>5455.50</td><td style="color: var(--green);">+57.00 pts</td></tr>
-          <tr><td>Pivot</td><td style="font-weight:600">5420.25</td><td style="color: var(--green);">+21.75 pts</td></tr>
-          <tr><td style="font-weight:600">Current</td><td style="font-weight:600; color: var(--accent);">5398.50</td><td>—</td></tr>
-          <tr><td>S1</td><td>5385.00</td><td style="color: var(--red);">-13.50 pts</td></tr>
-          <tr><td>S2</td><td>5362.25</td><td style="color: var(--red);">-36.25 pts</td></tr>
+          <tr><td>R2</td><td>6888.75</td><td style="color: var(--green);">+80.25 pts</td></tr>
+          <tr><td>R1</td><td>6865.50</td><td style="color: var(--green);">+57.00 pts</td></tr>
+          <tr><td>Pivot</td><td style="font-weight:600">6830.25</td><td style="color: var(--green);">+21.75 pts</td></tr>
+          <tr><td style="font-weight:600">Current</td><td style="font-weight:600; color: var(--accent);">6808.50</td><td>—</td></tr>
+          <tr><td>S1</td><td>6790.00</td><td style="color: var(--red);">-18.50 pts</td></tr>
+          <tr><td>S2</td><td>6767.25</td><td style="color: var(--red);">-41.25 pts</td></tr>
         </tbody>
       </table>
 
       <div style="margin-top:1.25rem">
-        <div class="plan-item"><span class="plan-label">Entry zone:</span> 5385.00 - 5420.25 (mean-reversion dip)</div>
-        <div class="plan-item"><span class="plan-label">Stop:</span> 5362.25 (36.25 pts risk)</div>
-        <div class="plan-item"><span class="plan-label">Target 1:</span> 5455.50 (1:1.6 R:R)</div>
-        <div class="plan-item"><span class="plan-label">Target 2:</span> 5478.75 (1:2.2 R:R)</div>
+        <div class="plan-item"><span class="plan-label">Entry zone:</span> 6790.00 - 6830.25 (mean-reversion dip)</div>
+        <div class="plan-item"><span class="plan-label">Stop:</span> 6767.25 (41.25 pts risk)</div>
+        <div class="plan-item"><span class="plan-label">Target 1:</span> 6865.50 (1:1.4 R:R)</div>
+        <div class="plan-item"><span class="plan-label">Target 2:</span> 6888.75 (1:1.9 R:R)</div>
       </div>
 
       <div class="callout">
@@ -480,12 +480,12 @@
         <div class="comp-label">Without Guardrails</div>
         <pre style="font-size:0.82rem;">User: "What's the ES trade plan?"
 
-AI: "ES is currently at 5,423.50.
-I'd suggest buying at 5,400 with a
-stop at 5,370 and target at 5,480."
+AI: "ES is currently at 6,823.50.
+I'd suggest buying at 6,800 with a
+stop at 6,770 and target at 6,880."
 
 Problems:
-• 5,423.50 — where did this come from?
+• 6,823.50 — where did this come from?
   (AI hallucinated the price)
 • "I'd suggest" — AI is giving advice
 • No data source or timestamp
@@ -515,7 +515,7 @@ Risk is pre-sized</pre>
     <div class="comparison" style="margin-top:1.5rem;">
       <div class="comp-card bad">
         <div class="comp-label">Stale data (no detection)</div>
-        <pre style="font-size:0.82rem;">AI: "Current ES price is 5,398.50,
+        <pre style="font-size:0.82rem;">AI: "Current ES price is 6,808.50,
 suggesting a buying opportunity near
 support."
 
@@ -530,7 +530,7 @@ decisions on 3-day-old data.</pre>
         <div class="comp-label">Stale data (with detection)</div>
         <pre style="font-size:0.82rem;">Tool returns:
 {
-  "last": 5398.50,
+  "last": 6808.50,
   "data_source": "end_of_day",
   "as_of": "2026-03-06T16:00:00Z",
   "stale_data_warning":
