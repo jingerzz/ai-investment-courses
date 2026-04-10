@@ -8,7 +8,7 @@ and are pushed to GitHub before deployment.
 
 ## Current State
 
-**Latest deployed commit:** `408f814`
+**Latest deployed commit:** `04c8188`
 **Route:** `/course` serves `/course-content/v2/`
 **Files managed:** HTML files in `professional/site/` deploy to `/course-content/v2/`
 
@@ -41,6 +41,22 @@ These apply to ALL deployments:
 ---
 
 ## Deployment History
+
+### V2.2.2 — 2026-04-10 (commit `04c8188`)
+
+**Files deployed:**
+```
+update_space_asset("/course-content/v2/week-1.html",
+    source="https://raw.githubusercontent.com/jingerzz/ai-investment-courses/04c8188/professional/site/week-1.html")
+
+update_space_asset("/course-content/v2/week-2.html",
+    source="https://raw.githubusercontent.com/jingerzz/ai-investment-courses/04c8188/professional/site/week-2.html")
+```
+
+**Changes:**
+- Replaced Node.js + npm install instructions with Claude Code's native installer (`curl`/`irm`) in Week 1 exercise callouts (both tracks) and Week 2 exercise "What is Claude Code?" callout
+
+**Rollback to:** `408f814`
 
 ### V2.2.1 — 2026-04-10 (commit `408f814`)
 
