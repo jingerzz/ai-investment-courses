@@ -8,7 +8,7 @@ and are pushed to GitHub before deployment.
 
 ## Current State
 
-**Latest deployed commit:** `04c8188`
+**Latest deployed commit:** `bff88ef`
 **Route:** `/course` serves `/course-content/v2/`
 **Files managed:** HTML files in `professional/site/` deploy to `/course-content/v2/`
 
@@ -41,6 +41,20 @@ These apply to ALL deployments:
 ---
 
 ## Deployment History
+
+### V2.2.3 — 2026-04-10 (commit `bff88ef`)
+
+**Files deployed:**
+```
+update_space_asset("/course-content/v2/week-1.html",
+    source="https://raw.githubusercontent.com/jingerzz/ai-investment-courses/bff88ef/professional/site/week-1.html")
+```
+
+**Changes:**
+- Rewrote Claude Code setup callout (both tracks) to be fully self-contained: prompt now includes the repo URL, uv installation, server setup, and Claude Desktop config — no assumption that user has already cloned the repo or knows any paths
+- Removed `cd ~/ai-investment-courses/professional` from the callout — Claude Code handles everything from a bare terminal
+
+**Rollback to:** `04c8188`
 
 ### V2.2.2 — 2026-04-10 (commit `04c8188`)
 
