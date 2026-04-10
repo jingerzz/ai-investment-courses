@@ -643,7 +643,7 @@ This should be returned in the stale_warning field, and Claude will see it and m
         <div class="convo-block">
           <div class="convo-label">Good</div>
           <div class="convo-good">
-            <strong>You:</strong> "I have a get_portfolio_summary() tool from Week 1. Now add a get_market_sentiment() tool that returns VIX, put/call ratio, and breadth. Both should return as_of_date and stale_warning. Make sure stale_warning triggers if data is older than the market open time."
+            <strong>You:</strong> "I have a get_market_overview() tool that returns SPY price, regime, and daily change. Now add a get_market_sentiment() tool that returns VIX, put/call ratio, and breadth. Both should return as_of_date and stale_warning. Make sure stale_warning triggers if data is older than the market open time."
           </div>
           <div class="convo-why">References existing code, specifies new tool clearly, explains the guardrail requirement (stale data warning for pre-market data).</div>
         </div>
@@ -717,8 +717,8 @@ Claude will re-read the briefing and reason properly.</pre>
 
         <div class="prompt-block">
           <div class="prompt-label">When Claude Doesn't Cross-Reference</div>
-          <pre>Claude: [calls get_portfolio_summary() but not get_market_overview()]
-You: "Also check get_market_overview() — I want to know if our sector exposure aligns with market regime."
+          <pre>Claude: [calls get_market_overview() but not get_sector_heatmap()]
+You: "Also check get_sector_heatmap() — I want to know if our sector exposure aligns with market regime."
 
 This teaches Claude to use multiple tools together.</pre>
         </div>

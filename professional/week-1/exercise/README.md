@@ -26,9 +26,12 @@ from its training data.
 
 ## Recommended: Let Claude Code Handle Setup
 
-The fastest way to get started. Claude Code can install dependencies,
-find the right file paths, and configure Claude Desktop for you —
-no manual JSON editing required.
+The fastest way to get started. **Claude Code** is Anthropic's
+AI-powered command line tool — it can install dependencies, find the
+right file paths, and configure Claude Desktop for you.
+
+If you don't have it yet, install [Node.js](https://nodejs.org) first,
+then run `npm install -g @anthropic-ai/claude-code` in your terminal.
 
 **1. Open your terminal and navigate to the course folder:**
 
