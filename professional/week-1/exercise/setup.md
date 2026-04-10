@@ -24,13 +24,17 @@ This is the command line. You type commands here and press Enter to run them.
 
 Copy and paste this command into your terminal, then press Enter:
 
+**Mac / Linux:**
 ```bash
-npm install -g @anthropic-ai/claude-code
+curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-If you see an error about `npm` not being found, you need to install Node.js
-first. Go to [nodejs.org](https://nodejs.org), download the LTS version,
-install it, close and reopen your terminal, then try the command again.
+**Windows (PowerShell):**
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+Close and reopen your terminal after installing.
 
 To verify it worked, type:
 ```bash

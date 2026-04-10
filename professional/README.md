@@ -36,9 +36,9 @@ hardware requirements, and troubleshooting).
 Quick version — install these before Week 1:
 1. **Claude Desktop** — [claude.ai/download](https://claude.ai/download)
 2. **A terminal application** — Terminal (Mac) or PowerShell (Windows)
+3. **Claude Code** (recommended) — `curl -fsSL https://claude.ai/install.sh | bash` (Mac/Linux) or `irm https://claude.ai/install.ps1 | iex` (Windows)
 
 Week 2 additionally requires:
-3. **Claude Code** — `npm install -g @anthropic-ai/claude-code`
 4. **Ollama** — `brew install ollama` (Mac) or [ollama.com/download](https://ollama.com/download)
 
 ## Included Servers

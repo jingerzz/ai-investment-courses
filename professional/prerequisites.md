@@ -61,7 +61,7 @@ covers everything you'll need in about 10 minutes. You only need the
 basics: navigating folders (`cd`) and running commands.
 
 > **You won't need to be a terminal expert.** Once you install Claude
-> Code (step 6 below), it runs terminal commands for you. You can point
+> Code (step 5 below), it runs terminal commands for you. You can point
 > Claude Code at the course folder and ask it to handle setup — it will
 > install dependencies, find file paths, and configure Claude Desktop
 > automatically. You'll rarely need to type terminal commands yourself.
@@ -104,31 +104,24 @@ cd ai-investment-courses/professional
 2. Click the green **Code** button, then **Download ZIP**
 3. Unzip to your home folder and rename the folder to `ai-investment-courses`
 
-### 5. Node.js
-
-Required to install Claude Code. You may already have it.
-
-- Download the LTS version from [nodejs.org](https://nodejs.org)
-- Run the installer (accept all defaults)
-- To verify, open your terminal and type:
-  ```bash
-  node --version
-  ```
-  You should see a version number like `v20.x.x` or higher.
-
-### 6. Claude Code (Recommended)
+### 5. Claude Code (Recommended)
 
 The AI-powered CLI that can help you set up the course servers and,
 in Week 2, build your own MCP server from scratch. Installing it now
 means Claude Code can handle most of the setup work for you — finding
 paths, installing dependencies, and writing config files.
 
-Open your terminal and run:
+**Mac / Linux:**
 ```bash
-npm install -g @anthropic-ai/claude-code
+curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-Verify it installed:
+**Windows (PowerShell):**
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+Close and reopen your terminal, then verify:
 ```bash
 claude --version
 ```
@@ -153,7 +146,7 @@ That's it. You're ready for Week 1.
 Install these before starting Week 2. Not needed for Foundations or
 Week 1.
 
-### 7. Ollama (Local AI Models)
+### 6. Ollama (Local AI Models)
 
 Runs AI models locally on your machine for private document Q&A. In
 Week 2, you'll use Ollama with the page-index-rag server to analyze
@@ -244,14 +237,10 @@ topics. All are optional.
 
 ## Troubleshooting
 
-**"npm: command not found"**
-Install Node.js from [nodejs.org](https://nodejs.org), then close and
-reopen your terminal. (Only needed for Week 2.)
-
 **"claude: command not found"**
-Run `npm install -g @anthropic-ai/claude-code` again. If it still fails,
-try `sudo npm install -g @anthropic-ai/claude-code` (Mac/Linux) or run
-your terminal as Administrator (Windows).
+Run the installer again (see step 5 above), then close and reopen your
+terminal. The installer adds claude to your path, but the current
+terminal session doesn't pick it up.
 
 **"uv: command not found"**
 Close and reopen your terminal after installing uv. The installer adds

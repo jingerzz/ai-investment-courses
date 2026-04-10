@@ -14,7 +14,7 @@ Robinhood filings from Claude Desktop.
 
 ## What You Need
 
-- Claude Code installed (`npm install -g @anthropic-ai/claude-code`)
+- Claude Code installed (see [Week 1 setup](../week-1/exercise/README.md#recommended-let-claude-code-handle-setup))
 - Claude Desktop installed
 - A terminal application
 - `uv` installed (from Week 1)

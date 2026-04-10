@@ -30,8 +30,17 @@ The fastest way to get started. **Claude Code** is Anthropic's
 AI-powered command line tool — it can install dependencies, find the
 right file paths, and configure Claude Desktop for you.
 
-If you don't have it yet, install [Node.js](https://nodejs.org) first,
-then run `npm install -g @anthropic-ai/claude-code` in your terminal.
+If you don't have it yet, run this in your terminal:
+
+**Mac/Linux:**
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
 
 **1. Open your terminal and navigate to the course folder:**
 
