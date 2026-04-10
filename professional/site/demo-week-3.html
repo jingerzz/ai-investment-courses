@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 3 Interactive Demo - Architecture Explorer</title>
+  <link rel="stylesheet" href="css/course.css">
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --surface: #F5F6F8;
+      --surface-alt: #F5F6F8;
+      --text: #1A1A2E;
+      --text-muted: #6B7280;
+      --border: #E2E4E9;
+      --primary: #1B2A4A;
+      --primary-light: #2D4A7A;
+      --accent: #4A9BA8;
+      --code-bg: #1E293B;
+      --success: #0D7C5F;
+      --danger: #C4272E;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Demo Navigation Bar */
+    .demo-nav {
+      background: var(--primary);
+      color: #FFFFFF;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: opacity 0.3s;
+    }
+
+    .demo-nav a:hover {
+      opacity: 0.8;
+    }
+
+    .demo-nav-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .demo-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 3rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Architecture Diagram */
+    .arch-diagram {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 180px 1fr;
+      grid-template-rows: auto auto auto auto auto;
+      gap: 1rem;
+      margin: 2rem 0;
+      min-height: 600px;
+    }
+
+    /* AI Client at top center */
+    .ai-client {
+      grid-column: 2;
+      grid-row: 1;
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      padding: 1.25rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 2;
+    }
+
+    .ai-client:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(27, 42, 74, 0.1);
+    }
+
+    .ai-client.active {
+      border-color: var(--accent);
+      background: rgba(74, 155, 168, 0.05);
+    }
+
+    .ai-client .icon {
+      font-size: 0;
+      width: 2rem;
+      height: 2rem;
+      margin: 0 auto 0.5rem;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    .ai-client .icon::before {
+      content: "AI";
+      font-size: 0.75rem;
+    }
+
+    .ai-client .name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .ai-client .desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Server cards */
+    .server {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .server::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+    }
+
+    .server:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(27, 42, 74, 0.08);
+    }
+
+    .server.active {
+      border: 2px solid var(--accent);
+      background: rgba(74, 155, 168, 0.05);
+    }
+
+    .srv-signal::before {
+      background: #4A90E2;
+    }
+
+    .srv-risk::before {
+      background: var(--danger);
+    }
+
+    .srv-research::before {
+      background: #9B7EBD;
+    }
+
+    .srv-execution::before {
+      background: var(--success);
+    }
+
+    .server .s-icon {
+      font-size: 0;
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-bottom: 0.5rem;
+      background: var(--accent);
+      color: #FFFFFF;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .srv-signal .s-icon {
+      background: #4A90E2;
+    }
+
+    .srv-signal .s-icon::before {
+      content: "SIG";
+    }
+
+    .srv-risk .s-icon {
+      background: var(--danger);
+    }
+
+    .srv-risk .s-icon::before {
+      content: "RIS";
+    }
+
+    .srv-research .s-icon {
+      background: #9B7EBD;
+    }
+
+    .srv-research .s-icon::before {
+      content: "RAG";
+    }
+
+    .srv-execution .s-icon {
+      background: var(--success);
+    }
+
+    .srv-execution .s-icon::before {
+      content: "EXE";
+    }
+
+    .server .s-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .server .s-mode {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0;
+      border-left: 2px solid;
+    }
+
+    .mode-read {
+      background: rgba(13, 124, 95, 0.1);
+      color: var(--success);
+      border-left-color: var(--success);
+    }
+
+    .mode-write {
+      background: rgba(196, 39, 46, 0.1);
+      color: var(--danger);
+      border-left-color: var(--danger);
+    }
+
+    .mode-both {
+      background: rgba(155, 126, 189, 0.1);
+      color: #9B7EBD;
+      border-left-color: #9B7EBD;
+    }
+
+    .server .s-tools {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Position servers in grid */
+    .srv-signal {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .srv-risk {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    .srv-research {
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    .srv-execution {
+      grid-column: 3;
+      grid-row: 3;
+    }
+
+    /* Shared library */
+    .shared-lib {
+      grid-column: 1 / 4;
+      grid-row: 4;
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      padding: 1.25rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .shared-lib:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(74, 155, 168, 0.1);
+    }
+
+    .shared-lib.active {
+      border-color: var(--accent);
+      background: rgba(74, 155, 168, 0.05);
+    }
+
+    .shared-lib .sl-name {
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .shared-lib .sl-modules {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .sl-mod {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    /* Connection lines */
+    .connections {
+      grid-column: 2;
+      grid-row: 2 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .conn-label {
+      text-align: center;
+      padding: 0.5rem;
+    }
+
+    .conn-arrow {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    /* Detail Panel */
+    .detail-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .detail-panel.show {
+      display: block;
+    }
+
+    .detail-panel h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    .detail-panel .tools-list {
+      list-style: none;
+    }
+
+    .detail-panel .tools-list li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .detail-panel .tools-list li:last-child {
+      border: none;
+    }
+
+    .tool-fn {
+      color: var(--primary);
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .tool-desc {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      display: block;
+      margin-top: 0.25rem;
+    }
+
+    .rationale {
+      background: rgba(74, 155, 168, 0.08);
+      border: 1px solid rgba(74, 155, 168, 0.2);
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .rationale strong {
+      color: var(--accent);
+    }
+
+    /* Monolith vs Multi comparison */
+    .arch-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .arch-compare {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .arch-opt {
+      background: var(--surface);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .arch-opt.bad {
+      border-left: 3px solid var(--danger);
+    }
+
+    .arch-opt.good {
+      border-left: 3px solid var(--success);
+    }
+
+    .arch-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .arch-opt.bad .arch-label {
+      color: var(--danger);
+    }
+
+    .arch-opt.good .arch-label {
+      color: var(--success);
+    }
+
+    .arch-item {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .arch-item::before {
+      content: '';
+      display: inline-block;
+      width: 1.2rem;
+      height: 1rem;
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .arch-opt.bad .arch-item::before {
+      content: '✕';
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .arch-opt.good .arch-item::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .comparison-note {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-nav">
+    <a href="week-3.html">Back to Week 3</a>
+    <span class="demo-nav-label">Interactive Demo</span>
+  </div>
+
+  <div class="demo-container">
+    <h1>Week 3: Multi-Server Architecture</h1>
+    <p class="subtitle">Click each component to explore its responsibilities, tools, and why it's separated.</p>
+
+    <div class="arch-diagram">
+      <!-- AI Client -->
+      <div class="ai-client" onclick="showDetail('client')">
+        <div class="icon"></div>
+        <div class="name">Claude Desktop</div>
+        <div class="desc">Connects to all servers simultaneously</div>
+      </div>
+
+      <!-- Servers -->
+      <div class="server srv-signal" onclick="showDetail('signal')">
+        <div class="s-icon"></div>
+        <div class="s-name">Signal Server</div>
+        <span class="s-mode mode-read">Read-Only</span>
+        <div class="s-tools">Regime detection, technicals, trade plans, pattern analysis</div>
+      </div>
+
+      <div class="connections">
+        <div class="conn-label">
+          <div class="conn-arrow">⬍</div>
+          <div>MCP Protocol</div>
+          <div style="font-size:0.7rem;margin-top:0.25rem;">stdio (local) or<br>streamable-http (cloud)</div>
+        </div>
+      </div>
+
+      <div class="server srv-risk" onclick="showDetail('risk')">
+        <div class="s-icon"></div>
+        <div class="s-name">Risk Server</div>
+        <span class="s-mode mode-read">Read-Only</span>
+        <div class="s-tools">Position limits, sector exposure, drawdown monitoring, sizing</div>
+      </div>
+
+      <div class="server srv-research" onclick="showDetail('research')">
+        <div class="s-icon"></div>
+        <div class="s-name">Research / RAG Server</div>
+        <span class="s-mode mode-both">Read + Index</span>
+        <div class="s-tools">SEC filing search, document Q&A, citation generation</div>
+      </div>
+
+      <div class="server srv-execution" onclick="showDetail('execution')">
+        <div class="s-icon"></div>
+        <div class="s-name">Execution Server</div>
+        <span class="s-mode mode-write">Write-Only</span>
+        <div class="s-tools">Order submission, fill tracking, trade journal, notifications</div>
+      </div>
+
+      <!-- Shared Library -->
+      <div class="shared-lib" onclick="showDetail('shared')">
+        <div class="sl-name">Shared Library (trading-core)</div>
+        <div class="sl-modules">
+          <span class="sl-mod">brokers/</span>
+          <span class="sl-mod">data/</span>
+          <span class="sl-mod">risk/</span>
+          <span class="sl-mod">auth/</span>
+          <span class="sl-mod">transport.py</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detail-panel"></div>
+
+    <!-- Monolith vs Multi -->
+    <h2>Why Separate Servers?</h2>
+    <p class="comparison-note">The same code, two architectures. The difference is operational resilience.</p>
+
+    <div class="arch-compare">
+      <div class="arch-opt bad">
+        <div class="arch-label">Monolithic Server</div>
+        <div class="arch-item">Deploy risk fix → break signal computation</div>
+        <div class="arch-item">Research intern → gets trade execution tools</div>
+        <div class="arch-item">Signal needs real-time → research only needs daily</div>
+        <div class="arch-item">One crash → everything down</div>
+      </div>
+      <div class="arch-opt good">
+        <div class="arch-label">Multi-Server</div>
+        <div class="arch-item">Deploy independently — risk fix doesn't touch signals</div>
+        <div class="arch-item">Permission per server — research gets RAG only</div>
+        <div class="arch-item">Scale independently — signal server gets more resources</div>
+        <div class="arch-item">Fault isolation — research crash doesn't affect trading</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DETAILS = {
+      client: {
+        title: "Claude Desktop — The AI Client",
+        tools: [],
+        rationale: "Claude connects to all MCP servers simultaneously. When you ask 'what should I do today?', it calls the signal server for the regime, the risk server for exposure limits, the research server for filing insights, and synthesizes a coherent recommendation. The AI is the integration layer — no custom glue code needed."
+      },
+      signal: {
+        title: "Signal Server (Read-Only)",
+        tools: [
+          { fn: "get_current_signal()", desc: "Today's regime color, signal tier, and target exposure" },
+          { fn: "get_es_levels()", desc: "Native ES futures pivots, VWAP, overnight range, ATR" },
+          { fn: "get_trade_plan(direction)", desc: "Signal-calibrated entry/stop/target with R:R ratios" },
+          { fn: "get_directional_bias()", desc: "Composite signal combining long + short + technicals" },
+          { fn: "get_trade_briefing()", desc: "Pre-formatted markdown briefing (Python inserts all numbers)" },
+        ],
+        rationale: "Signal servers are strictly read-only. They return data and analysis but NEVER place orders. If the signal server has a bug, it returns bad data — but it can't execute trades. This limits the blast radius of any single component failure."
+      },
+      risk: {
+        title: "Risk Server (Read-Only)",
+        tools: [
+          { fn: "get_risk_report()", desc: "Current exposure, position sizes, risk posture" },
+          { fn: "get_position_size(symbol, stop)", desc: "Risk-based position sizing calculation" },
+          { fn: "check_risk_limits()", desc: "Verify positions against concentration and sector limits" },
+        ],
+        rationale: "Risk checking is separated from signal generation. The risk server enforces constraints independent of what the signal server recommends. This creates a natural check-and-balance: signals propose, risk validates."
+      },
+      research: {
+        title: "Research / RAG Server (Read + Index)",
+        tools: [
+          { fn: "search_with_citations(query)", desc: "Search indexed SEC filings with doc_id + node_id citations" },
+          { fn: "get_document_overview(doc_id)", desc: "Table-of-contents view of a filing's structure" },
+          { fn: "get_document_section(doc_id, node)", desc: "Full raw text of a specific filing section" },
+          { fn: "fetch_company_filings(ticker)", desc: "Download and index new filings from EDGAR" },
+        ],
+        rationale: "Research uses different data (documents vs. market prices), different update cadence (daily vs. real-time), and different access patterns (batch indexing vs. streaming quotes). Separating it means you can rebuild the search index without affecting live trading."
+      },
+      execution: {
+        title: "Execution Server (Write-Only)",
+        tools: [
+          { fn: "submit_order(symbol, side, qty)", desc: "Send order to broker — requires prior approval" },
+          { fn: "get_fill_status(order_id)", desc: "Check if an order has been filled" },
+          { fn: "cancel_order(order_id)", desc: "Cancel a pending order" },
+          { fn: "log_trade(details)", desc: "Record trade to the audit journal" },
+        ],
+        rationale: "The execution layer is write-only and has the strictest access controls. It NEVER computes signals — it only acts on approved proposals. Separating execution means the most dangerous capability (placing real orders) is isolated behind its own authentication and approval gates."
+      },
+      shared: {
+        title: "Shared Library (trading-core)",
+        tools: [
+          { fn: "brokers/", desc: "Data provider clients (tastytrade, yfinance) — shared connection management" },
+          { fn: "data/", desc: "CSV I/O, bar merging, staleness detection — consistent across all servers" },
+          { fn: "risk/", desc: "Position sizing formulas — same math everywhere" },
+          { fn: "auth/", desc: "OAuth provider, user management — one auth system for all servers" },
+          { fn: "transport.py", desc: "MCP server configuration (stdio vs HTTP) — standardized startup" },
+        ],
+        rationale: "Separate servers doesn't mean duplicated code. The shared library provides common infrastructure. When you fix a bug in the data layer, all servers benefit. When you add a new signal type, only the signal server changes. This is the DRY principle applied to an AI tool ecosystem."
+      },
+    };
+
+    function showDetail(key) {
+      const d = DETAILS[key];
+      const panel = document.getElementById('detail-panel');
+      document.querySelectorAll('.server, .ai-client, .shared-lib').forEach(el => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      let html = `<h2>${d.title}</h2>`;
+      if (d.tools.length) {
+        html += '<ul class="tools-list">';
+        d.tools.forEach(t => {
+          html += `<li><span class="tool-fn">${t.fn}</span><span class="tool-desc">${t.desc}</span></li>`;
+        });
+        html += '</ul>';
+      }
+      html += `<div class="rationale"><strong>Why this design:</strong> ${d.rationale}</div>`;
+      panel.innerHTML = html;
+      panel.classList.add('show');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+</body>
+</html>

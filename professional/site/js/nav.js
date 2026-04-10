@@ -13,6 +13,7 @@
     { id: "week-2",        href: "week-2.html",         label: "Week 2" },
     { id: "week-3",        href: "week-3.html",         label: "Week 3" },
     { id: "week-4",        href: "week-4.html",         label: "Week 4" },
+    { id: "bonus",         href: "bonus.html",          label: "Bonus" },
     { id: "conclusion",    href: "conclusion.html",     label: "Conclusion" },
   ];
 

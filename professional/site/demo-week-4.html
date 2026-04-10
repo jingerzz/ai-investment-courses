@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 Interactive Demo - Agent Loop Explorer</title>
+    <link rel="stylesheet" href="css/course.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #FFFFFF;
+            color: #1A1A2E;
+            line-height: 1.6;
+        }
+
+        .demo-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #E2E4E9;
+            background: #F5F6F8;
+        }
+
+        .demo-nav a {
+            color: #4A9BA8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .demo-nav a:hover {
+            color: #2D4A7A;
+        }
+
+        .demo-nav-label {
+            font-size: 0.85rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .demo-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1B2A4A;
+        }
+
+        .subtitle {
+            color: #6B7280;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Tabs */
+        .demo-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #E2E4E9;
+        }
+
+        .demo-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6B7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            background: transparent;
+            border: none;
+        }
+
+        .demo-tab:hover {
+            color: #1B2A4A;
+        }
+
+        .demo-tab.active {
+            color: #4A9BA8;
+            border-bottom-color: #4A9BA8;
+        }
+
+        /* Tab content */
+        .demo-tab-content {
+            display: none;
+        }
+
+        .demo-tab-content.active {
+            display: block;
+        }
+
+        /* Agent Loop Tab */
+        .agent-loop-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .agent-loop-step-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .step-circle {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #E2E4E9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #FFFFFF;
+            position: relative;
+        }
+
+        .step-circle:hover {
+            border-color: #4A9BA8;
+            background: #F5F6F8;
+        }
+
+        .step-circle.active {
+            border-color: #4A9BA8;
+            background: #F5F6F8;
+            box-shadow: 0 0 12px rgba(74, 155, 168, 0.2);
+        }
+
+        .step-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1B2A4A;
+        }
+
+        .step-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-top: 0.15rem;
+            color: #1A1A2E;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .step-arrow {
+            color: #E2E4E9;
+            font-size: 1.2rem;
+            margin: 0 0.25rem;
+            font-weight: 700;
+        }
+
+        .step-repeat {
+            color: #E2E4E9;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Detail panel */
+        .detail-panel {
+            background: #F5F6F8;
+            border: 1px solid #E2E4E9;
+            padding: 1.75rem;
+            margin-top: 1.5rem;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .detail-panel.active {
+            display: block;
+        }
+
+        .detail-step-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #4A9BA8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1B2A4A;
+        }
+
+        .detail-description {
+            color: #6B7280;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-example {
+            background: #1E293B;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #94A3B8;
+            overflow-x: auto;
+        }
+
+        .empty-prompt {
+            text-align: center;
+            color: #9CA3AF;
+            padding: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Autonomy Levels Tab */
+        .autonomy-intro {
+            color: #6B7280;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .autonomy-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .autonomy-level {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .autonomy-label {
+            width: 80px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1B2A4A;
+            flex-shrink: 0;
+        }
+
+        .autonomy-bar-container {
+            flex: 1;
+            height: 36px;
+            background: #F5F6F8;
+            border: 1px solid #E2E4E9;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 0.75rem;
+        }
+
+        .autonomy-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(74, 155, 168, 0.15);
+            transition: width 0.3s ease;
+        }
+
+        .autonomy-bar-text {
+            position: relative;
+            font-size: 0.82rem;
+            color: #1A1A2E;
+            font-weight: 500;
+        }
+
+        .autonomy-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding: 0 0 0 96px;
+            font-size: 0.75rem;
+            color: #9CA3AF;
+        }
+
+        .autonomy-warning {
+            background: rgba(196, 39, 46, 0.08);
+            border: 1px solid rgba(196, 39, 46, 0.2);
+            padding: 1rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #1A1A2E;
+        }
+
+        .autonomy-warning strong {
+            color: #C4272E;
+            font-weight: 600;
+        }
+
+        /* Approval Rules Tab */
+        .approval-intro {
+            color: #6B7280;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .approval-rules {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .approval-rule {
+            background: #F5F6F8;
+            border: 1px solid #E2E4E9;
+            padding: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .approval-level-badge {
+            padding: 0.3rem 0.75rem;
+            border-radius: 0;
+            font-weight: 700;
+            font-size: 0.78rem;
+            min-width: 80px;
+            text-align: center;
+            flex-shrink: 0;
+            background: #F5F6F8;
+            border: 1px solid #E2E4E9;
+        }
+
+        .approval-level-badge.notify {
+            background: rgba(107, 114, 128, 0.1);
+            border-color: rgba(107, 114, 128, 0.3);
+            color: #4B5563;
+        }
+
+        .approval-level-badge.approve {
+            background: rgba(13, 124, 95, 0.1);
+            border-color: rgba(13, 124, 95, 0.3);
+            color: #0D7C5F;
+        }
+
+        .approval-level-badge.confirm {
+            background: rgba(217, 119, 6, 0.1);
+            border-color: rgba(217, 119, 6, 0.3);
+            color: #D97706;
+        }
+
+        .approval-level-badge.blocked {
+            background: rgba(196, 39, 46, 0.1);
+            border-color: rgba(196, 39, 46, 0.3);
+            color: #C4272E;
+        }
+
+        .approval-rule-content {
+            flex: 1;
+        }
+
+        .approval-action {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1B2A4A;
+            margin-bottom: 0.25rem;
+        }
+
+        .approval-desc {
+            color: #6B7280;
+            font-size: 0.85rem;
+        }
+
+        /* Mock Telegram UI */
+        .telegram-label {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+        }
+
+        .telegram-mock {
+            background: #FFFFFF;
+            border: 1px solid #E2E4E9;
+            padding: 1.5rem;
+            max-width: 400px;
+        }
+
+        .telegram-header {
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #1B2A4A;
+        }
+
+        .telegram-header span {
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .telegram-content {
+            font-size: 0.85rem;
+            color: #6B7280;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .telegram-content div {
+            margin-bottom: 0.35rem;
+        }
+
+        .telegram-content strong {
+            color: #1B2A4A;
+            font-weight: 600;
+        }
+
+        .telegram-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .telegram-btn {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #E2E4E9;
+            background: #F5F6F8;
+            color: #1A1A2E;
+            transition: all 0.2s ease;
+        }
+
+        .telegram-btn:hover {
+            background: #E2E4E9;
+        }
+
+        .telegram-btn.approve {
+            background: rgba(13, 124, 95, 0.1);
+            border-color: rgba(13, 124, 95, 0.3);
+            color: #0D7C5F;
+        }
+
+        .telegram-btn.approve:hover {
+            background: rgba(13, 124, 95, 0.15);
+        }
+
+        .telegram-btn.reject {
+            background: rgba(196, 39, 46, 0.1);
+            border-color: rgba(196, 39, 46, 0.3);
+            color: #C4272E;
+        }
+
+        .telegram-btn.reject:hover {
+            background: rgba(196, 39, 46, 0.15);
+        }
+
+        .telegram-btn.modify {
+            background: rgba(217, 119, 6, 0.1);
+            border-color: rgba(217, 119, 6, 0.3);
+            color: #D97706;
+        }
+
+        .telegram-btn.modify:hover {
+            background: rgba(217, 119, 6, 0.15);
+        }
+
+        .telegram-expiry {
+            font-size: 0.7rem;
+            color: #9CA3AF;
+            margin-top: 0.75rem;
+            text-align: center;
+        }
+
+        .telegram-response {
+            font-size: 0.75rem;
+            color: #0D7C5F;
+            margin-top: 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .telegram-response.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-nav">
+        <a href="week-4.html">← Back to Week 4</a>
+        <span class="demo-nav-label">Interactive Demo</span>
+    </div>
+
+    <div class="demo-container">
+        <h1>Week 4: Autonomous Agents</h1>
+        <p class="subtitle">AI that monitors, reasons, and proposes — with humans in control of every consequential decision.</p>
+
+        <!-- Tabs -->
+        <div class="demo-tabs">
+            <button class="demo-tab active" onclick="switchTab('loop')">Agent Loop</button>
+            <button class="demo-tab" onclick="switchTab('autonomy')">Autonomy Levels</button>
+            <button class="demo-tab" onclick="switchTab('approval')">Approval Rules</button>
+        </div>
+
+        <!-- AGENT LOOP TAB -->
+        <div id="loop" class="demo-tab-content active">
+            <!-- Circular visual with steps -->
+            <div class="agent-loop-steps" id="stepsContainer">
+                <!-- Dynamically generated -->
+            </div>
+
+            <!-- Detail panel -->
+            <div id="detailPanel" class="detail-panel">
+                <div class="detail-step-label" id="detailStepLabel"></div>
+                <div class="detail-title" id="detailTitle"></div>
+                <p class="detail-description" id="detailDescription"></p>
+                <pre class="detail-example" id="detailExample"></pre>
+            </div>
+
+            <div class="empty-prompt" id="emptyPrompt">
+                Click any step in the loop above to explore it
+            </div>
+        </div>
+
+        <!-- AUTONOMY LEVELS TAB -->
+        <div id="autonomy" class="demo-tab-content">
+            <p class="autonomy-intro">
+                Start conservative. Expand autonomy as trust builds. Each level is explicitly documented and approved by stakeholders.
+            </p>
+            <div class="autonomy-levels" id="autonomyContainer">
+                <!-- Dynamically generated -->
+            </div>
+            <div class="autonomy-scale">
+                <span>← More human oversight</span>
+                <span>More AI autonomy →</span>
+            </div>
+            <div class="autonomy-warning">
+                <strong>Level 5 (Full Autonomy) is NOT recommended for finance.</strong> Most jurisdictions require human oversight of algorithmic trading decisions. MiFID II, SEC Rule 15c3-5, and similar regulations mandate human involvement in consequential financial decisions.
+            </div>
+        </div>
+
+        <!-- APPROVAL RULES TAB -->
+        <div id="approval" class="demo-tab-content">
+            <p class="approval-intro">
+                Not all proposals are equal. Configure different approval requirements based on the action's risk level.
+            </p>
+            <div class="approval-rules" id="rulesContainer">
+                <!-- Dynamically generated -->
+            </div>
+
+            <!-- Mock Telegram UI -->
+            <div style="margin-top: 2rem;">
+                <div class="telegram-label">What the PM sees on Telegram:</div>
+                <div class="telegram-mock">
+                    <div class="telegram-header">
+                        <span>[BELL]</span> Trade Proposal
+                    </div>
+                    <div class="telegram-content">
+                        <div><strong>Signal:</strong> T2_STRONG_BLUE (Tier 2)</div>
+                        <div><strong>Action:</strong> BUY 2 MES @ 5385</div>
+                        <div><strong>Stop:</strong> 5340 (45 pts, $225 risk)</div>
+                        <div><strong>Target:</strong> 5420 (35 pts, $175 reward)</div>
+                        <div><strong>R:R:</strong> 1:0.78</div>
+                        <div><strong>Account risk:</strong> 0.45%</div>
+                    </div>
+                    <div class="telegram-buttons">
+                        <button class="telegram-btn approve" onclick="handleApproval('approve')">Approve</button>
+                        <button class="telegram-btn reject" onclick="handleApproval('reject')">Reject</button>
+                        <button class="telegram-btn modify" onclick="handleApproval('modify')">Modify</button>
+                    </div>
+                    <div class="telegram-response" id="telegramResponse"></div>
+                    <div class="telegram-expiry">Expires in 15 minutes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const STEPS = [
+            {
+                id: "gather",
+                label: "GATHER",
+                number: 1,
+                title: "Call MCP tools for current state",
+                detail: "The agent connects to your signal, risk, and research servers — the same ones you built in Weeks 1-3. It's an MCP client, just like Claude Desktop.",
+                example: `get_current_signal() → Blue, T2_STRONG_BLUE, 1.5x
+get_es_levels()      → pivot 5420, S1 5385, last 5398
+get_risk_report()    → HEDGED, 0.85% risk used`,
+            },
+            {
+                id: "reason",
+                label: "REASON",
+                number: 2,
+                title: "AI synthesizes across tool results",
+                detail: "The AI cross-references all data points: regime signal + price vs. support + available risk capacity. This is the same synthesis from Week 2, but running autonomously.",
+                example: `"Blue regime + ES near S1 (5385) + risk below limits
+→ Mean-reversion buying opportunity aligned with signal.
+   Bond hedge is working (TLT up in Blue regime).
+   Available risk capacity: 1.15% of account."`,
+            },
+            {
+                id: "propose",
+                label: "PROPOSE",
+                number: 3,
+                title: "Generate action with reasoning",
+                detail: "The agent formats a specific, fully-sized proposal. Every number is pre-computed by Python. The proposal includes everything the PM needs to make a decision in 10 seconds.",
+                example: `[BELL] Trade Proposal
+   Signal: T2_STRONG_BLUE (Tier 2)
+   Action: BUY 2 MES @ 5385
+   Stop: 5340 (45 pts, $225 risk)
+   Target: 5420 (35 pts, $175 reward)
+   R:R = 1:0.78
+   Account risk: 0.45%`,
+            },
+            {
+                id: "approve",
+                label: "APPROVE",
+                number: 4,
+                title: "Human reviews and approves/rejects",
+                detail: "The proposal arrives on Telegram/Slack with one-tap buttons. The agent does NOT proceed without explicit human approval. Proposals expire after 15 minutes.",
+                example: `[APPROVE]  [REJECT]  [MODIFY]
+
+PM taps APPROVE at 9:42 AM ET
+→ Approval logged with timestamp and user ID`,
+            },
+            {
+                id: "execute",
+                label: "EXECUTE",
+                number: 5,
+                title: "Send order to broker (if approved)",
+                detail: "Only after approval, the agent calls the execution server. Remember: signal servers are read-only, execution is write-only. The most dangerous capability is isolated.",
+                example: `submit_order("MES", "BUY", 2, limit=5385)
+→ Order ID: MES-20260307-001
+→ Status: FILLED @ 5384.75 (2 contracts)`,
+            },
+            {
+                id: "log",
+                label: "LOG",
+                number: 6,
+                title: "Record everything to audit trail",
+                detail: "Every step gets logged: what the AI saw, what it reasoned, what it proposed, who approved, and what happened. Your compliance team can audit any decision.",
+                example: `INSERT INTO trade_journal:
+  signal_name: T2_STRONG_BLUE
+  ai_reasoning: "Blue regime + ES near S1..."
+  proposed: BUY 2 MES @ 5385
+  approved_by: PM_Smith
+  fill_price: 5384.75
+  dollar_risk: $225`,
+            },
+        ];
+
+        const AUTONOMY_LEVELS = [
+            { day: "Day 1", rules: "Everything requires explicit approval", width: "100%" },
+            { day: "Week 2", rules: "Data refresh and signal checks run automatically", width: "85%" },
+            { day: "Month 1", rules: "Position closes auto-approved (with notification)", width: "65%" },
+            { day: "Month 3", rules: "Small positions (< 0.5% risk) auto-approved", width: "40%" },
+            { day: "Month 6", rules: "Standard positions auto-approved; only large/unusual escalated", width: "20%" },
+        ];
+
+        const APPROVAL_RULES = [
+            { action: "Close existing position", level: "NOTIFY", levelClass: "notify", desc: "Auto-approve after 5 min if no rejection" },
+            { action: "Open new position", level: "APPROVE", levelClass: "approve", desc: "Requires explicit approval" },
+            { action: "Increase position size", level: "CONFIRM", levelClass: "confirm", desc: "Requires approval + confirmation" },
+            { action: "Override risk limit", level: "BLOCKED", levelClass: "blocked", desc: "Agent cannot propose this" },
+        ];
+
+        let activeStep = null;
+
+        // Initialize
+        function init() {
+            renderSteps();
+            renderAutonomy();
+            renderApprovalRules();
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            let html = '';
+
+            STEPS.forEach((step, index) => {
+                html += `
+                    <div class="agent-loop-step-container">
+                        <div class="step-circle" id="step-${index}" onclick="selectStep(${index})">
+                            <div class="step-number">${step.number}</div>
+                            <div class="step-label">${step.label}</div>
+                        </div>
+                `;
+                if (index < STEPS.length - 1) {
+                    html += `<div class="step-arrow">→</div>`;
+                }
+                html += `</div>`;
+            });
+
+            html += `<div class="agent-loop-step-container"><div class="step-repeat">repeat ↩</div></div>`;
+
+            container.innerHTML = html;
+        }
+
+        function selectStep(index) {
+            const detailPanel = document.getElementById('detailPanel');
+            const emptyPrompt = document.getElementById('emptyPrompt');
+            const allSteps = document.querySelectorAll('.step-circle');
+
+            allSteps.forEach(el => el.classList.remove('active'));
+
+            if (activeStep === index) {
+                activeStep = null;
+                detailPanel.classList.remove('active');
+                emptyPrompt.style.display = 'block';
+            } else {
+                activeStep = index;
+                const step = STEPS[index];
+
+                document.getElementById('detailStepLabel').textContent = `Step ${step.number}: ${step.label}`;
+                document.getElementById('detailTitle').textContent = step.title;
+                document.getElementById('detailDescription').textContent = step.detail;
+                document.getElementById('detailExample').textContent = step.example;
+
+                document.getElementById(`step-${index}`).classList.add('active');
+                detailPanel.classList.add('active');
+                emptyPrompt.style.display = 'none';
+            }
+        }
+
+        function renderAutonomy() {
+            const container = document.getElementById('autonomyContainer');
+            let html = '';
+
+            AUTONOMY_LEVELS.forEach(level => {
+                html += `
+                    <div class="autonomy-level">
+                        <div class="autonomy-label">${level.day}</div>
+                        <div class="autonomy-bar-container">
+                            <div class="autonomy-bar-fill" style="width: ${level.width}"></div>
+                            <span class="autonomy-bar-text">${level.rules}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderApprovalRules() {
+            const container = document.getElementById('rulesContainer');
+            let html = '';
+
+            APPROVAL_RULES.forEach(rule => {
+                html += `
+                    <div class="approval-rule">
+                        <div class="approval-level-badge ${rule.levelClass}">${rule.level}</div>
+                        <div class="approval-rule-content">
+                            <div class="approval-action">${rule.action}</div>
+                            <div class="approval-desc">${rule.desc}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function switchTab(tabId) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.demo-tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.demo-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+        }
+
+        function handleApproval(action) {
+            const responseEl = document.getElementById('telegramResponse');
+
+            if (action === 'approve') {
+                responseEl.textContent = '[CHECK] PM_Smith approved at 9:42 AM ET';
+                responseEl.style.color = '#0D7C5F';
+            } else if (action === 'reject') {
+                responseEl.textContent = '[X] PM_Smith rejected at 9:42 AM ET';
+                responseEl.style.color = '#C4272E';
+            } else if (action === 'modify') {
+                responseEl.textContent = '[EDIT] PM_Smith modified proposal at 9:42 AM ET';
+                responseEl.style.color = '#D97706';
+            }
+
+            responseEl.classList.add('show');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

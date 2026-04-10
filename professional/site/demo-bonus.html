@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bonus Interactive Demo - RAG Comparison Tool</title>
+  <link rel="stylesheet" href="css/course.css">
+  <style>
+    /* Demo page overrides and custom styles */
+    body {
+      background: var(--surface);
+    }
+
+    .demo-nav {
+      background: var(--primary);
+      padding: 0 var(--page-padding);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .demo-nav-inner {
+      max-width: var(--wide-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 48px;
+    }
+
+    .demo-nav .back-link {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .demo-nav .back-link:hover {
+      color: white;
+    }
+
+    .demo-nav .demo-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .demo-container {
+      max-width: var(--wide-width);
+      margin: 0 auto;
+      padding: var(--xl) var(--page-padding);
+      flex: 1;
+    }
+
+    .demo-header {
+      margin-bottom: var(--xl);
+    }
+
+    .demo-header h1 {
+      margin: 0 0 var(--xs) 0;
+    }
+
+    .demo-header .demo-tagline {
+      color: var(--text-muted);
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    /* Tab Navigation */
+    .demo-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: var(--lg);
+      margin-top: var(--md);
+    }
+
+    .demo-tab {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      background: none;
+      border: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .demo-tab:hover {
+      color: var(--text);
+    }
+
+    .demo-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--secondary);
+      font-weight: 600;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Approach Selector */
+    .approach-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: var(--xl);
+    }
+
+    .approach-btn {
+      padding: 1.25rem;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .approach-btn:hover {
+      border-color: var(--secondary);
+    }
+
+    .approach-btn.active {
+      border-color: var(--secondary);
+      background: var(--surface-alt);
+    }
+
+    .approach-btn .approach-icon {
+      font-size: 1.5rem;
+      margin-bottom: var(--xs);
+      display: block;
+    }
+
+    .approach-btn .approach-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary);
+      margin-bottom: var(--xs);
+    }
+
+    .approach-btn .approach-tagline {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Flow Diagram */
+    .flow-diagram {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: var(--lg);
+      margin-bottom: var(--xl);
+      overflow-x: auto;
+    }
+
+    .flow-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: var(--md);
+    }
+
+    .flow-steps {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .flow-step {
+      min-width: 130px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      text-align: center;
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .flow-step:hover {
+      border-color: var(--secondary);
+      background: var(--surface-alt);
+    }
+
+    .flow-step .step-icon {
+      font-size: 1.3rem;
+      margin-bottom: var(--xs);
+      display: block;
+    }
+
+    .flow-step .step-label {
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: var(--primary);
+      margin-bottom: var(--xs);
+      display: block;
+    }
+
+    .flow-step .step-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: var(--xs);
+      display: block;
+    }
+
+    .flow-step .step-detail {
+      font-size: 0.72rem;
+      color: var(--secondary);
+      font-style: italic;
+      display: none;
+    }
+
+    .flow-step.hovered .step-detail {
+      display: block;
+    }
+
+    .flow-arrow {
+      color: var(--secondary);
+      font-size: 1.2rem;
+      margin: 0 0.15rem;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    /* Pros/Cons Grid */
+    .pros-cons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--md);
+      margin-bottom: var(--xl);
+    }
+
+    .pros-cons-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: var(--lg);
+    }
+
+    .pros-cons-title {
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      margin-bottom: var(--md);
+    }
+
+    .pros-title {
+      color: var(--success);
+    }
+
+    .cons-title {
+      color: var(--danger);
+    }
+
+    .pros-cons-item {
+      font-size: 0.88rem;
+      color: var(--text);
+      margin-bottom: var(--sm);
+      display: flex;
+      gap: var(--xs);
+    }
+
+    .pros-cons-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .pros-cons-check {
+      color: var(--success);
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .pros-cons-x {
+      color: var(--danger);
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    /* Best For Box */
+    .best-for-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--secondary);
+      padding: var(--md);
+      font-size: 0.9rem;
+    }
+
+    .best-for-label {
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    .best-for-text {
+      color: var(--text);
+    }
+
+    /* RAM Calculator */
+    .ram-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: var(--xl);
+    }
+
+    .ram-btn {
+      padding: 1.25rem;
+      text-align: center;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .ram-btn.active {
+      border-color: var(--secondary);
+      background: var(--surface-alt);
+    }
+
+    .ram-recommended {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+    }
+
+    .ram-size {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: var(--xs);
+    }
+
+    .ram-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .ram-intro {
+      color: var(--text-muted);
+      margin-bottom: var(--xl);
+      font-size: 0.9rem;
+    }
+
+    .ram-intro code {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 0.15rem 0.4rem;
+      font-size: 0.85rem;
+    }
+
+    .ram-detail {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: var(--lg);
+      margin-bottom: var(--xl);
+    }
+
+    .ram-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--xl);
+    }
+
+    .ram-header-left .ram-label-upper {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: var(--xs);
+    }
+
+    .ram-header-left .ram-machine {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: var(--xs);
+    }
+
+    .quality-badge {
+      background: var(--surface);
+      color: var(--primary);
+      padding: 0.35rem 1rem;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .model-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: var(--lg);
+      margin-bottom: var(--lg);
+    }
+
+    .model-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: var(--md);
+    }
+
+    .model-specs {
+      display: flex;
+      gap: var(--xl);
+    }
+
+    .model-spec {
+      flex: 1;
+    }
+
+    .model-spec-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .model-spec-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: var(--xs);
+    }
+
+    .quality-bar-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: var(--xs);
+    }
+
+    .quality-bar-container {
+      height: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: var(--lg);
+      overflow: hidden;
+    }
+
+    .quality-bar-fill {
+      height: 100%;
+      background: var(--secondary);
+      transition: width 0.5s;
+    }
+
+    .ram-notes {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: var(--lg);
+    }
+
+    .ram-allocation-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: var(--sm);
+    }
+
+    .ram-allocation {
+      display: flex;
+      height: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .ram-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: white;
+      min-width: 40px;
+    }
+
+    .ram-model {
+      background: var(--secondary);
+    }
+
+    .ram-embed {
+      background: rgba(74, 155, 168, 0.4);
+    }
+
+    .ram-os {
+      background: rgba(107, 114, 128, 0.4);
+    }
+
+    /* Hybrid Pattern */
+    .hybrid-layers {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sm);
+      margin-bottom: var(--xl);
+    }
+
+    .hybrid-layer {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--secondary);
+      padding: var(--lg);
+      display: flex;
+      align-items: center;
+      gap: var(--lg);
+    }
+
+    .layer-tool {
+      background: var(--surface);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.82rem;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .layer-info {
+      flex: 1;
+    }
+
+    .layer-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary);
+      margin-bottom: var(--xs);
+    }
+
+    .layer-reason {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Flow Example */
+    .flow-example {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: var(--lg);
+      margin-bottom: var(--xl);
+    }
+
+    .flow-example-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: var(--lg);
+    }
+
+    .flow-items {
+      display: flex;
+      flex-direction: column;
+      gap: var(--md);
+    }
+
+    .flow-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--md);
+    }
+
+    .flow-item-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .flow-item-content {
+      flex: 1;
+    }
+
+    .flow-item-label {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--primary);
+    }
+
+    .flow-item-sep {
+      color: var(--text-muted);
+      margin: 0 var(--xs);
+    }
+
+    .flow-item-desc {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .flow-result {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--secondary);
+      padding: var(--lg);
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: var(--lg);
+    }
+
+    .flow-result-label {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .flow-result-text {
+      margin-top: var(--sm);
+    }
+
+    .flow-result-footer {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: var(--sm);
+      padding-top: var(--sm);
+      border-top: 1px solid var(--border);
+    }
+
+    /* Sweet Spot Insight */
+    .sweet-spot {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--secondary);
+      padding: var(--lg);
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .sweet-spot-label {
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .approach-selector {
+        grid-template-columns: 1fr;
+      }
+
+      .pros-cons-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ram-selector {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-tabs {
+        overflow-x: auto;
+      }
+
+      .model-specs {
+        flex-direction: column;
+        gap: var(--md);
+      }
+
+      .hybrid-layer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-nav">
+    <div class="demo-nav-inner">
+      <a href="bonus.html" class="back-link">Back to Bonus Module</a>
+      <span class="demo-title">Interactive Demo</span>
+    </div>
+  </div>
+
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>Bonus: RAG Approaches Compared</h1>
+      <p class="demo-tagline">Three ways to give AI access to your documents — each with different privacy, cost, and quality trade-offs.</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="demo-tabs">
+      <button class="demo-tab active" data-tab="compare">Compare Approaches</button>
+      <button class="demo-tab" data-tab="ram">RAM Calculator</button>
+      <button class="demo-tab" data-tab="hybrid">Hybrid Pattern</button>
+    </div>
+
+    <!-- COMPARE TAB -->
+    <div id="compare" class="tab-content active">
+      <!-- Approach Selector -->
+      <div class="approach-selector">
+        <button class="approach-btn active" data-approach="cloud">
+          <span class="approach-icon">☁️</span>
+          <span class="approach-label">Cloud RAG</span>
+          <span class="approach-tagline">Send documents to cloud AI for processing</span>
+        </button>
+        <button class="approach-btn" data-approach="local">
+          <span class="approach-icon">💻</span>
+          <span class="approach-label">Local RAG</span>
+          <span class="approach-tagline">Run everything on your own machine with Ollama</span>
+        </button>
+        <button class="approach-btn" data-approach="structure">
+          <span class="approach-icon">🏗️</span>
+          <span class="approach-label">Structure-First RAG</span>
+          <span class="approach-tagline">Preserve document hierarchy — citations you can trust</span>
+        </button>
+      </div>
+
+      <!-- Flow Diagram -->
+      <div class="flow-diagram">
+        <div class="flow-label" id="flow-title">How Cloud RAG processes a 10-K filing</div>
+        <div class="flow-steps" id="flow-steps"></div>
+      </div>
+
+      <!-- Pros / Cons Grid -->
+      <div class="pros-cons-grid">
+        <div class="pros-cons-card">
+          <div class="pros-cons-title pros-title">Strengths</div>
+          <div id="pros-list"></div>
+        </div>
+        <div class="pros-cons-card">
+          <div class="pros-cons-title cons-title">Trade-offs</div>
+          <div id="cons-list"></div>
+        </div>
+      </div>
+
+      <!-- Best For Box -->
+      <div class="best-for-box">
+        <span class="best-for-label">Best for:</span>
+        <span class="best-for-text" id="best-for"></span>
+      </div>
+    </div>
+
+    <!-- RAM CALCULATOR TAB -->
+    <div id="ram" class="tab-content">
+      <p class="ram-intro">
+        Pick your machine's RAM to see which local model fits. All setups use <code>nomic-embed-text</code> (~300MB) for embeddings.
+      </p>
+
+      <!-- RAM Selector -->
+      <div class="ram-selector" id="ram-selector"></div>
+
+      <!-- RAM Detail -->
+      <div id="ram-detail"></div>
+    </div>
+
+    <!-- HYBRID PATTERN TAB -->
+    <div id="hybrid" class="tab-content">
+      <p style="color: var(--text-muted); margin-bottom: var(--xl); font-size: 0.9rem;">
+        The production pattern: use each approach where it's strongest. Local for privacy, cloud for reasoning, structure-first for accuracy.
+      </p>
+
+      <!-- Hybrid Layers -->
+      <div class="hybrid-layers" id="hybrid-layers"></div>
+
+      <!-- Hybrid Flow Example -->
+      <div class="flow-example">
+        <div class="flow-example-title">Example: "What are Apple's main risk factors?"</div>
+        <div class="flow-items" id="flow-items"></div>
+        <div class="flow-result">
+          <span class="flow-result-label">Result:</span>
+          <div class="flow-result-text">
+            "According to Item 1A (Risk Factors) of Apple's 10-K filing, the company identifies supply chain concentration, regulatory changes in key markets, and foreign exchange volatility as primary risk factors..."
+          </div>
+          <div class="flow-result-footer">
+            Citation-grade answer • Private data stayed local • Cloud AI did the reasoning
+          </div>
+        </div>
+      </div>
+
+      <!-- Sweet Spot -->
+      <div class="sweet-spot">
+        <span class="sweet-spot-label">The sweet spot:</span>
+        <span>Use local models for document search and retrieval, cloud models for complex reasoning. Your MCP server uses Ollama to find the right passages, then Claude Desktop interprets them. Privacy where it matters, quality where it counts.</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data
+    const RAG_APPROACHES = {
+      cloud: {
+        label: "Cloud RAG",
+        tagline: "Send documents to cloud AI for processing",
+        pros: ["Best reasoning quality", "No local hardware requirements", "Easiest setup"],
+        cons: ["Data leaves your machine", "API costs per query", "Not suitable for proprietary docs"],
+        flow: [
+          { step: "Upload", desc: "10-K filing → cloud API", icon: "📤", detail: "Document sent to provider" },
+          { step: "Chunk", desc: "Split into ~500 token pieces", icon: "✂️", detail: "Blind splitting, no structure awareness" },
+          { step: "Embed", desc: "Cloud embedding model → vectors", icon: "🔢", detail: "Stored in cloud vector DB" },
+          { step: "Query", desc: "Question → cloud embedding → similarity search", icon: "🔍", detail: "Returns top-k similar chunks" },
+          { step: "Answer", desc: "Cloud LLM synthesizes from chunks", icon: "🧠", detail: "Claude / GPT-4 quality reasoning" },
+        ],
+        bestFor: "Public SEC filings, market data analysis, complex multi-step research",
+      },
+      local: {
+        label: "Local RAG",
+        tagline: "Run everything on your own machine with Ollama",
+        pros: ["Data never leaves your machine", "No API costs", "Regulatory compliance"],
+        cons: ["Requires decent hardware", "Lower reasoning quality", "Slower processing"],
+        flow: [
+          { step: "Load", desc: "10-K filing stays on your machine", icon: "📁", detail: "Nothing uploaded anywhere" },
+          { step: "Chunk", desc: "Split into ~500 token pieces", icon: "✂️", detail: "Same blind splitting approach" },
+          { step: "Embed", desc: "Ollama nomic-embed-text → vectors", icon: "🔢", detail: "Stored in local file" },
+          { step: "Query", desc: "Question → local embedding → cosine similarity", icon: "🔍", detail: "All computation on-device" },
+          { step: "Answer", desc: "Ollama text model synthesizes", icon: "🧠", detail: "qwen3.5 — good but not cloud-tier" },
+        ],
+        bestFor: "Proprietary research notes, client reports, compliance docs, high-volume search",
+      },
+      structure: {
+        label: "Structure-First RAG",
+        tagline: "Preserve document hierarchy — citations you can trust",
+        pros: ["Citation-grade answers", "Section-aware search", "98.7% accuracy on FinanceBench"],
+        cons: ["More complex indexing", "Requires document parsing", "Best with structured docs"],
+        flow: [
+          { step: "Parse", desc: "10-K → Item 1, 1A, 7, 8...", icon: "📑", detail: "Preserve section hierarchy" },
+          { step: "Summarize", desc: "AI summarizes each section node", icon: "📝", detail: "Summaries for navigation only" },
+          { step: "Index", desc: "Build tree of sections + summaries", icon: "🌳", detail: "Hierarchy, not flat chunks" },
+          { step: "Navigate", desc: "AI reads summaries → finds right section", icon: "🧭", detail: "Like a table of contents" },
+          { step: "Read Raw", desc: "Get FULL TEXT of target section", icon: "📄", detail: "Answers from raw text, not summaries" },
+        ],
+        bestFor: "SEC filings, legal docs, any document where section identity matters for citations",
+      },
+    };
+
+    const RAM_TIERS = [
+      {
+        ram: "8 GB",
+        model: "qwen3.5:0.8b",
+        disk: "~1 GB",
+        modelRam: "~1 GB",
+        quality: "Good",
+        qualityWidth: "40%",
+        notes: "Basic Q&A and summaries. Pair with Claude for complex reasoning.",
+      },
+      {
+        ram: "16 GB",
+        model: "qwen3.5:4b",
+        disk: "~3.4 GB",
+        modelRam: "~3-4 GB",
+        quality: "Great",
+        qualityWidth: "70%",
+        notes: "Strong reasoning, accurate citations. Recommended for most users.",
+        recommended: true,
+      },
+      {
+        ram: "32+ GB",
+        model: "qwen3.5:9b",
+        disk: "~7 GB",
+        modelRam: "~6-7 GB",
+        quality: "Excellent",
+        qualityWidth: "95%",
+        notes: "Near cloud-quality for local use. Can run 4B + 9B side by side.",
+      },
+    ];
+
+    const HYBRID_PATTERN = [
+      { layer: "Search & Retrieval", tool: "Local Ollama", reason: "Data stays private, no API cost" },
+      { layer: "Complex Reasoning", tool: "Cloud Claude", reason: "Best synthesis quality" },
+      { layer: "Document Structure", tool: "Structure-First", reason: "Citation-grade accuracy" },
+    ];
+
+    const FLOW_EXAMPLE = [
+      { step: "1", label: "Parse 10-K", desc: "Structure-first indexing preserves Item 1A section", icon: "🏗️" },
+      { step: "2", label: "Embed locally", desc: "Ollama creates searchable vectors — data stays private", icon: "💻" },
+      { step: "3", label: "Search locally", desc: "Find Item 1A: Risk Factors via semantic match", icon: "🔍" },
+      { step: "4", label: "Read full section", desc: "Get raw text of Risk Factors (not just a summary)", icon: "📄" },
+      { step: "5", label: "Claude reasons", desc: "Cloud AI synthesizes a cited answer from the raw text", icon: "🧠" },
+    ];
+
+    let currentApproach = "cloud";
+    let currentRamTier = 1;
+
+    // Initialize
+    function init() {
+      renderCompareTab();
+      renderRamTab();
+      renderHybridTab();
+      setupTabButtons();
+      setupApproachButtons();
+      setupRamButtons();
+    }
+
+    // Tab Navigation
+    function setupTabButtons() {
+      document.querySelectorAll(".demo-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tabName = btn.dataset.tab;
+          document.querySelectorAll(".demo-tab").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(tabName).classList.add("active");
+        });
+      });
+    }
+
+    // Compare Tab
+    function setupApproachButtons() {
+      document.querySelectorAll(".approach-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          currentApproach = btn.dataset.approach;
+          document.querySelectorAll(".approach-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderApproachDetails();
+        });
+      });
+    }
+
+    function renderCompareTab() {
+      renderApproachDetails();
+    }
+
+    function renderApproachDetails() {
+      const approach = RAG_APPROACHES[currentApproach];
+
+      // Flow title
+      document.getElementById("flow-title").textContent = `How ${approach.label} processes a 10-K filing`;
+
+      // Flow steps
+      const flowStepsHtml = approach.flow.map((step, i) => {
+        return `
+          <div class="flow-step" data-index="${i}">
+            <span class="step-icon">${step.icon}</span>
+            <span class="step-label">${step.step}</span>
+            <span class="step-desc">${step.desc}</span>
+            <span class="step-detail">${step.detail}</span>
+          </div>
+          ${i < approach.flow.length - 1 ? '<div class="flow-arrow">→</div>' : ''}
+        `;
+      }).join("");
+      document.getElementById("flow-steps").innerHTML = flowStepsHtml;
+
+      // Add hover interaction to flow steps
+      document.querySelectorAll(".flow-step").forEach(step => {
+        step.addEventListener("mouseenter", () => step.classList.add("hovered"));
+        step.addEventListener("mouseleave", () => step.classList.remove("hovered"));
+      });
+
+      // Pros
+      const prosHtml = approach.pros.map(p => `
+        <div class="pros-cons-item">
+          <span class="pros-cons-check">✓</span>
+          <span>${p}</span>
+        </div>
+      `).join("");
+      document.getElementById("pros-list").innerHTML = prosHtml;
+
+      // Cons
+      const consHtml = approach.cons.map(c => `
+        <div class="pros-cons-item">
+          <span class="pros-cons-x">✗</span>
+          <span>${c}</span>
+        </div>
+      `).join("");
+      document.getElementById("cons-list").innerHTML = consHtml;
+
+      // Best for
+      document.getElementById("best-for").textContent = approach.bestFor;
+    }
+
+    // RAM Tab
+    function setupRamButtons() {
+      document.querySelectorAll(".ram-btn").forEach((btn, i) => {
+        btn.addEventListener("click", () => {
+          currentRamTier = i;
+          document.querySelectorAll(".ram-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderRamDetail();
+        });
+      });
+    }
+
+    function renderRamTab() {
+      // RAM selector buttons
+      const ramSelectorHtml = RAM_TIERS.map((tier, i) => {
+        const recommended = tier.recommended ? '<div class="ram-recommended">RECOMMENDED</div>' : '';
+        const activeClass = i === currentRamTier ? "active" : "";
+        return `
+          <button class="ram-btn ${activeClass}" data-index="${i}">
+            ${recommended}
+            <div class="ram-size">${tier.ram}</div>
+            <div class="ram-label">RAM</div>
+          </button>
+        `;
+      }).join("");
+      document.getElementById("ram-selector").innerHTML = ramSelectorHtml;
+      setupRamButtons();
+
+      renderRamDetail();
+    }
+
+    function renderRamDetail() {
+      const tier = RAM_TIERS[currentRamTier];
+      const ramNum = parseInt(tier.ram);
+      const modelRamNum = parseInt(tier.modelRam);
+      const osRam = ramNum - modelRamNum - 1;
+
+      const detailHtml = `
+        <div class="ram-header">
+          <div class="ram-header-left">
+            <div class="ram-label-upper">Your Setup</div>
+            <div class="ram-machine">${tier.ram} Machine</div>
+          </div>
+          <div class="quality-badge">${tier.quality}</div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-name">${tier.model}</div>
+          <div class="model-specs">
+            <div class="model-spec">
+              <div class="model-spec-label">Disk</div>
+              <div class="model-spec-value">${tier.disk}</div>
+            </div>
+            <div class="model-spec">
+              <div class="model-spec-label">RAM Usage</div>
+              <div class="model-spec-value">${tier.modelRam}</div>
+            </div>
+            <div class="model-spec">
+              <div class="model-spec-label">Embedding Model</div>
+              <div class="model-spec-value">nomic-embed-text (~300MB)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quality-bar-label">Answer Quality</div>
+        <div class="quality-bar-container">
+          <div class="quality-bar-fill" style="width: ${tier.qualityWidth}; background: var(--secondary);"></div>
+        </div>
+
+        <p class="ram-notes">${tier.notes}</p>
+
+        <div class="ram-allocation-label">RAM Allocation</div>
+        <div class="ram-allocation">
+          <div class="ram-segment ram-model" style="flex: ${modelRamNum};">Model</div>
+          <div class="ram-segment ram-embed" style="flex: 1;">Embed</div>
+          <div class="ram-segment ram-os" style="flex: ${osRam};">OS + Apps</div>
+        </div>
+      `;
+      document.getElementById("ram-detail").innerHTML = detailHtml;
+    }
+
+    // Hybrid Tab
+    function renderHybridTab() {
+      // Hybrid layers
+      const layersHtml = HYBRID_PATTERN.map(layer => `
+        <div class="hybrid-layer">
+          <div class="layer-tool">${layer.tool}</div>
+          <div class="layer-info">
+            <div class="layer-name">${layer.layer}</div>
+            <div class="layer-reason">${layer.reason}</div>
+          </div>
+        </div>
+      `).join("");
+      document.getElementById("hybrid-layers").innerHTML = layersHtml;
+
+      // Flow example
+      const flowHtml = FLOW_EXAMPLE.map((item, i) => `
+        <div class="flow-item">
+          <div class="flow-item-num">${item.step}</div>
+          <div class="flow-item-content">
+            <span class="flow-item-label">${item.label}</span>
+            <span class="flow-item-sep">—</span>
+            <span class="flow-item-desc">${item.desc}</span>
+          </div>
+        </div>
+      `).join("");
+      document.getElementById("flow-items").innerHTML = flowHtml;
+    }
+
+    init();
+  </script>
+</body>
+</html>

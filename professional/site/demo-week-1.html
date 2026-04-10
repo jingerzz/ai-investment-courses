@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1 Interactive Demo - AI Tool-Use Pattern</title>
+    <link rel="stylesheet" href="css/course.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: #FFFFFF;
+            color: #1A1A2E;
+        }
+
+        /* Navigation Bar */
+        .demo-nav {
+            background-color: #1B2A4A;
+            color: #FFFFFF;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #E2E4E9;
+        }
+
+        .demo-nav a {
+            color: #4A9BA8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .demo-nav a:hover {
+            color: #2D4A7A;
+        }
+
+        .demo-nav-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #A0AEC0;
+        }
+
+        /* Main Content */
+        .demo-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section A: Interactive Flow */
+        .section-a {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            color: #1B2A4A;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: #6B7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+        }
+
+        .play-button {
+            background-color: #4A9BA8;
+            color: #FFFFFF;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+        }
+
+        .play-button:hover {
+            background-color: #2D4A7A;
+        }
+
+        /* Step Flow */
+        .step-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step {
+            border: 1px solid #E2E4E9;
+            background-color: #FFFFFF;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .step:not(:last-child) {
+            border-bottom: none;
+        }
+
+        .step.active {
+            background-color: #F5F6F8;
+            border-left: 4px solid #4A9BA8;
+            border-top: 1px solid #E2E4E9;
+            border-right: 1px solid #E2E4E9;
+            border-bottom: 1px solid #E2E4E9;
+            padding-left: 1.5rem;
+        }
+
+        .step.completed {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E4E9;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-number {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #4A9BA8;
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .step-status {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #0D7C5F;
+            font-weight: bold;
+        }
+
+        .step.active .step-status {
+            color: transparent;
+        }
+
+        .step.completed .step-status::after {
+            content: "\u2713";
+            color: #0D7C5F;
+        }
+
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .step.active .step-content {
+            max-height: 500px;
+        }
+
+        .step-text {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.9rem;
+            color: #1A1A2E;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .step-detail {
+            font-style: italic;
+            color: #6B7280;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            font-family: "Inter", sans-serif;
+        }
+
+        .code-block {
+            background-color: #1E293B;
+            color: #E2E8F0;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        /* Section B: Comparison */
+        .section-b {
+            margin-bottom: 3rem;
+        }
+
+        .comparison-toggle {
+            background-color: #4A9BA8;
+            color: #FFFFFF;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .comparison-toggle:hover {
+            background-color: #2D4A7A;
+        }
+
+        .comparison-hidden {
+            display: none;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .comparison-column {
+            border: 1px solid #E2E4E9;
+            padding: 1.5rem;
+        }
+
+        .comparison-column.traditional {
+            border-left: 4px solid #C4272E;
+        }
+
+        .comparison-column.tooluse {
+            border-left: 4px solid #0D7C5F;
+        }
+
+        .comparison-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .comparison-title.traditional {
+            color: #C4272E;
+        }
+
+        .comparison-title.tooluse {
+            color: #0D7C5F;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .flow-icon {
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .flow-step.traditional .flow-icon {
+            color: #C4272E;
+        }
+
+        .flow-step.tooluse .flow-icon {
+            color: #0D7C5F;
+        }
+
+        .tags {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-radius: 0;
+            width: fit-content;
+        }
+
+        .tag.traditional {
+            background-color: #F5F6F8;
+            color: #C4272E;
+            border: 1px solid #C4272E;
+        }
+
+        .tag.tooluse {
+            background-color: #F5F6F8;
+            color: #0D7C5F;
+            border: 1px solid #0D7C5F;
+        }
+
+        /* Bottom Callout */
+        .callout {
+            background-color: #F5F6F8;
+            border: 1px solid #4A9BA8;
+            border-left: 4px solid #4A9BA8;
+            padding: 1.5rem;
+        }
+
+        .callout-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1B2A4A;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.9rem;
+        }
+
+        .callout-text {
+            font-size: 0.95rem;
+            color: #1A1A2E;
+            line-height: 1.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-container {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="demo-nav">
+        <a href="week-1.html">← Back to Week 1</a>
+        <span class="demo-nav-label">Interactive Demo</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="demo-container">
+        <!-- Section A: Interactive Flow -->
+        <section class="section-a">
+            <h1 class="section-title">The Tool-Use Pattern</h1>
+            <p class="section-subtitle">How AI connects to your data through structured tools — not data dumps.</p>
+
+            <div class="controls">
+                <button class="play-button" id="playBtn">Play Animation</button>
+            </div>
+
+            <div class="step-flow" id="stepFlow">
+                <!-- Step 1: User Asks -->
+                <div class="step active" data-step="0">
+                    <div class="step-header">
+                        <span class="step-number">Step 1</span>
+                        <span class="step-status"></span>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-text">User Asks</div>
+                        <div class="step-detail">"How is AAPL performing in my portfolio?"</div>
+                    </div>
+                </div>
+
+                <!-- Step 2: AI Reads Tools -->
+                <div class="step" data-step="1">
+                    <div class="step-header">
+                        <span class="step-number">Step 2</span>
+                        <span class="step-status"></span>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-text">AI Reads Tools</div>
+                        <div class="step-detail">get_position_summary(ticker: str) → Position details including P&L, weight, risk</div>
+                    </div>
+                </div>
+
+                <!-- Step 3: AI Decides -->
+                <div class="step" data-step="2">
+                    <div class="step-header">
+                        <span class="step-number">Step 3</span>
+                        <span class="step-status"></span>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-text">AI Decides</div>
+                        <div class="step-detail">I need position data for AAPL → call get_position_summary("AAPL")</div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Tool Executes -->
+                <div class="step" data-step="3">
+                    <div class="step-header">
+                        <span class="step-number">Step 4</span>
+                        <span class="step-status"></span>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-text">Tool Executes</div>
+                        <div class="code-block">{
+  "ticker": "AAPL",
+  "shares": 150,
+  "avg_cost": 142.5,
+  "current_price": 178.32,
+  "unrealized_pnl": 5373.0,
+  "return_pct": 25.13,
+  "portfolio_weight_pct": 12.4,
+  "data_source": "live_feed",
+  "as_of": "2026-03-07T16:00:00Z"
+}</div>
+                    </div>
+                </div>
+
+                <!-- Step 5: AI Synthesizes -->
+                <div class="step" data-step="4">
+                    <div class="step-header">
+                        <span class="step-number">Step 5</span>
+                        <span class="step-status"></span>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-text">AI Synthesizes</div>
+                        <div class="step-detail">AAPL is your largest position at 12.4% of the portfolio. You're up $5,373 (+25.1%) on 150 shares. This concentration warrants monitoring given current market conditions.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section B: Comparison -->
+        <section class="section-b">
+            <h2 class="section-title">Why This Beats Data Dumps</h2>
+            <button class="comparison-toggle" id="comparisonToggle">Show Comparison</button>
+
+            <div class="comparison-grid comparison-hidden" id="comparisonGrid">
+                <!-- Traditional Column -->
+                <div class="comparison-column traditional">
+                    <div class="comparison-title traditional">X Traditional: Dump Everything</div>
+
+                    <div class="flow-step traditional">
+                        <span class="flow-icon">X</span>
+                        <span>AI receives entire database export (50,000+ rows)</span>
+                    </div>
+                    <div class="flow-step traditional">
+                        <span class="flow-icon">X</span>
+                        <span>AI searches through noise for relevant data</span>
+                    </div>
+                    <div class="flow-step traditional">
+                        <span class="flow-icon">X</span>
+                        <span>Context window consumed by irrelevant information</span>
+                    </div>
+                    <div class="flow-step traditional">
+                        <span class="flow-icon">X</span>
+                        <span>High latency, context limits, poor synthesis</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag traditional">Inefficient</span>
+                        <span class="tag traditional">Context waste</span>
+                        <span class="tag traditional">Slow</span>
+                        <span class="tag traditional">Error-prone</span>
+                    </div>
+                </div>
+
+                <!-- Tool-Use Column -->
+                <div class="comparison-column tooluse">
+                    <div class="comparison-title tooluse">✓ Tool-Use: Structured Calls</div>
+
+                    <div class="flow-step tooluse">
+                        <span class="flow-icon">✓</span>
+                        <span>AI identifies the right function for the task</span>
+                    </div>
+                    <div class="flow-step tooluse">
+                        <span class="flow-icon">✓</span>
+                        <span>Calls get_position_summary("AAPL")</span>
+                    </div>
+                    <div class="flow-step tooluse">
+                        <span class="flow-icon">✓</span>
+                        <span>Receives only the data needed (5 key fields)</span>
+                    </div>
+                    <div class="flow-step tooluse">
+                        <span class="flow-icon">✓</span>
+                        <span>Fast, focused, accurate synthesis</span>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag tooluse">Efficient</span>
+                        <span class="tag tooluse">Focused</span>
+                        <span class="tag tooluse">Fast</span>
+                        <span class="tag tooluse">Reliable</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Callout -->
+        <section class="callout">
+            <div class="callout-title">The Mental Model</div>
+            <p class="callout-text">Think of AI as a new analyst who just joined your desk. They're smart — but they need access to your systems. MCP tools are the equivalent of giving them a login to your terminals.</p>
+        </section>
+    </div>
+
+    <script>
+        const steps = document.querySelectorAll('.step');
+        const stepFlow = document.getElementById('stepFlow');
+        const playBtn = document.getElementById('playBtn');
+        const comparisonToggle = document.getElementById('comparisonToggle');
+        const comparisonGrid = document.getElementById('comparisonGrid');
+
+        let currentStep = 0;
+        let isAutoPlaying = false;
+        let autoPlayInterval = null;
+
+        // Initialize first step as active
+        function setActiveStep(stepIndex) {
+            steps.forEach((step, index) => {
+                step.classList.remove('active');
+                if (index < stepIndex) {
+                    step.classList.add('completed');
+                } else {
+                    step.classList.remove('completed');
+                }
+            });
+
+            if (stepIndex < steps.length) {
+                steps[stepIndex].classList.add('active');
+                currentStep = stepIndex;
+            }
+        }
+
+        // Auto-play functionality
+        function startAutoPlay() {
+            if (isAutoPlaying) return;
+
+            isAutoPlaying = true;
+            playBtn.textContent = 'Stop Animation';
+
+            currentStep = 0;
+            setActiveStep(0);
+
+            autoPlayInterval = setInterval(() => {
+                currentStep++;
+                if (currentStep >= steps.length) {
+                    stopAutoPlay();
+                } else {
+                    setActiveStep(currentStep);
+                }
+            }, 2000);
+        }
+
+        function stopAutoPlay() {
+            isAutoPlaying = false;
+            playBtn.textContent = 'Play Animation';
+
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        // Play button listener
+        playBtn.addEventListener('click', () => {
+            if (isAutoPlaying) {
+                stopAutoPlay();
+            } else {
+                startAutoPlay();
+            }
+        });
+
+        // Step click listeners
+        steps.forEach((step, index) => {
+            step.addEventListener('click', () => {
+                if (isAutoPlaying) {
+                    stopAutoPlay();
+                }
+                setActiveStep(index);
+            });
+        });
+
+        // Comparison toggle
+        comparisonToggle.addEventListener('click', () => {
+            comparisonGrid.classList.toggle('comparison-hidden');
+            comparisonToggle.textContent = comparisonGrid.classList.contains('comparison-hidden')
+                ? 'Show Comparison'
+                : 'Hide Comparison';
+        });
+
+        // Initialize
+        setActiveStep(0);
+    </script>
+</body>
+</html>
