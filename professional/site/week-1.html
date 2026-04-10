@@ -467,6 +467,23 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
 
           <!-- Step 1 -->
           <div class="step" data-step="1">
+            <h3>Download the Course Materials</h3>
+            <p><strong>Time: 2 minutes</strong></p>
+
+            <p>The course servers and data files are in a public GitHub repository. Open your terminal and run:</p>
+
+            <pre class="code-block">git clone https://github.com/jingerzz/ai-investment-courses.git</pre>
+
+            <p>This creates a folder called <code>ai-investment-courses</code> in your current directory (usually your home folder). You should see progress messages as it downloads.</p>
+
+            <div class="callout">
+              <div class="callout-title">Don't have git?</div>
+              <p><a href="https://github.com/jingerzz/ai-investment-courses/archive/refs/heads/main.zip">Download the ZIP file instead</a>. Unzip it, rename the folder from <code>ai-investment-courses-main</code> to <code>ai-investment-courses</code>, and move it to your home folder (<code>~</code> on Mac, <code>C:\Users\YourName</code> on Windows).</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step" data-step="2">
             <h3>Install the Package Manager</h3>
             <p><strong>Time: 3 minutes</strong></p>
 
@@ -484,27 +501,24 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p>You should see a version number like <code>uv 0.7.x</code>. If you get "command not found", try opening a new terminal window.</p>
           </div>
 
-          <!-- Step 2 -->
-          <div class="step" data-step="2">
-            <h3>Download the Course Server</h3>
+          <!-- Step 3 -->
+          <div class="step" data-step="3">
+            <h3>Install the Server</h3>
             <p><strong>Time: 3 minutes</strong></p>
 
-            <p>The SPY/TLT Course Edition server is included in your course materials. Navigate to it:</p>
+            <p>Navigate to the SPY/TLT server inside the course materials you just downloaded:</p>
             <pre class="code-block">cd ~/ai-investment-courses/professional/servers/spy-tlt-course</pre>
 
             <p>Install the server and its dependencies:</p>
             <pre class="code-block">uv sync</pre>
 
-            <p>This downloads Python (if needed) and installs four packages: <code>mcp</code>, <code>numpy</code>, <code>yfinance</code>, and <code>pandas</code>. Takes about 30 seconds.</p>
+            <p>This downloads Python (if needed) and installs four packages: <code>mcp</code>, <code>numpy</code>, <code>yfinance</code>, and <code>pandas</code>. Takes about 30 seconds. When it finishes, you should see a message like <code>Resolved X packages</code> with no errors.</p>
 
-            <p>Verify the server works:</p>
-            <pre class="code-block">uv run spy-tlt-server &</pre>
-
-            <p>You should see the server start without errors. Press <code>Ctrl+C</code> to stop it (or close the terminal).</p>
+            <p>You don't need to start the server manually — Claude Desktop will launch it automatically once you connect it in the next step.</p>
           </div>
 
-          <!-- Step 3 -->
-          <div class="step" data-step="3">
+          <!-- Step 4 -->
+          <div class="step" data-step="4">
             <h3>Connect to Claude Desktop</h3>
             <p><strong>Time: 5 minutes</strong></p>
 
@@ -568,8 +582,8 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p><strong>If you don't see tools after restarting,</strong> the most common cause is a wrong path. Double-check that the <code>--directory</code> path matches the output from the <code>ls</code> command above.</p>
           </div>
 
-          <!-- Step 4 -->
-          <div class="step" data-step="4">
+          <!-- Step 5 -->
+          <div class="step" data-step="5">
             <h3>Your First Conversation</h3>
             <p><strong>Time: 5 minutes</strong></p>
 
@@ -600,8 +614,8 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p>Claude calls <code>get_trade_briefing()</code> and presents a pre-formatted markdown section with pivot levels, support/resistance, and a trade plan. Notice: every number was computed by Python. Claude is presenting it, not calculating it.</p>
           </div>
 
-          <!-- Step 5 -->
-          <div class="step" data-step="5">
+          <!-- Step 6 -->
+          <div class="step" data-step="6">
             <h3>Explore the Design Principles</h3>
             <p><strong>Time: 7 minutes</strong></p>
 
@@ -636,8 +650,8 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p>Claude calls <code>get_strategy_guide(topic="workflow")</code> and returns the exact sequence: refresh, briefing, present verbatim.</p>
           </div>
 
-          <!-- Step 6 -->
-          <div class="step" data-step="6">
+          <!-- Step 7 -->
+          <div class="step" data-step="7">
             <h3>Try Real Analysis</h3>
             <p><strong>Time: 7 minutes</strong></p>
 
@@ -710,6 +724,25 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
 
           <!-- Step 1 -->
           <div class="step" data-step="1">
+            <h3>Download the Course Materials</h3>
+            <p><strong>Time: 2 minutes</strong></p>
+
+            <p>The course servers and data files are in a public GitHub repository. Open your terminal and run:</p>
+
+            <pre class="code-block">git clone https://github.com/jingerzz/ai-investment-courses.git</pre>
+
+            <p>This creates a folder called <code>ai-investment-courses</code> in your current directory (usually your home folder). You should see progress messages as it downloads.</p>
+
+            <p>If you already downloaded the course materials for the other track, skip this step — you already have everything you need.</p>
+
+            <div class="callout">
+              <div class="callout-title">Don't have git?</div>
+              <p><a href="https://github.com/jingerzz/ai-investment-courses/archive/refs/heads/main.zip">Download the ZIP file instead</a>. Unzip it, rename the folder from <code>ai-investment-courses-main</code> to <code>ai-investment-courses</code>, and move it to your home folder (<code>~</code> on Mac, <code>C:\Users\YourName</code> on Windows).</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step" data-step="2">
             <h3>Install the Package Manager</h3>
             <p><strong>Time: 3 minutes</strong></p>
 
@@ -724,30 +757,27 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p>Close and reopen your terminal after installing. Verify it works:</p>
             <pre class="code-block">uv --version</pre>
 
-            <p>You should see a version number like <code>uv 0.7.x</code>. If you get "command not found", try opening a new terminal window.</p>
+            <p>You should see a version number like <code>uv 0.7.x</code>. If you get "command not found", try opening a new terminal window. If you already installed <code>uv</code> for the other track, skip this step.</p>
           </div>
 
-          <!-- Step 2 -->
-          <div class="step" data-step="2">
-            <h3>Download the Course Server</h3>
+          <!-- Step 3 -->
+          <div class="step" data-step="3">
+            <h3>Install the Server</h3>
             <p><strong>Time: 3 minutes</strong></p>
 
-            <p>The Page-Index RAG Course Edition server is included in your course materials. Navigate to it:</p>
+            <p>Navigate to the document analysis server inside the course materials you downloaded:</p>
             <pre class="code-block">cd ~/ai-investment-courses/professional/servers/page-index-rag-course</pre>
 
             <p>Install the server and its dependencies:</p>
             <pre class="code-block">uv sync</pre>
 
-            <p>This downloads Python (if needed) and installs the required packages including <code>mcp</code>, <code>beautifulsoup4</code>, and the PageIndex engine. Takes about 30 seconds.</p>
+            <p>This downloads Python (if needed) and installs the required packages including <code>mcp</code>, <code>beautifulsoup4</code>, and the PageIndex engine. Takes about 30 seconds. When it finishes, you should see a message like <code>Resolved X packages</code> with no errors.</p>
 
-            <p>Verify the server works:</p>
-            <pre class="code-block">uv run rag-server &</pre>
-
-            <p>You should see the server start without errors. Press <code>Ctrl+C</code> to stop it (or close the terminal).</p>
+            <p>You don't need to start the server manually — Claude Desktop will launch it automatically once you connect it in the next step.</p>
           </div>
 
-          <!-- Step 3 -->
-          <div class="step" data-step="3">
+          <!-- Step 4 -->
+          <div class="step" data-step="4">
             <h3>Connect to Claude Desktop</h3>
             <p><strong>Time: 5 minutes</strong></p>
 
@@ -811,8 +841,8 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p><strong>If you don't see tools after restarting,</strong> the most common cause is a wrong path. Double-check that the <code>--directory</code> path matches the output from the <code>ls</code> command above.</p>
           </div>
 
-          <!-- Step 4 -->
-          <div class="step" data-step="4">
+          <!-- Step 5 -->
+          <div class="step" data-step="5">
             <h3>Your First Conversation</h3>
             <p><strong>Time: 5 minutes</strong></p>
 
@@ -840,8 +870,8 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p>Claude calls <code>search_with_citations()</code> targeting the BLK 10-K. It will return specific passages from the Risk Factors section with citations you can verify. Notice: every claim comes from the actual filing, not from Claude's training data.</p>
           </div>
 
-          <!-- Step 5 -->
-          <div class="step" data-step="5">
+          <!-- Step 6 -->
+          <div class="step" data-step="6">
             <h3>Explore the Design Principles</h3>
             <p><strong>Time: 7 minutes</strong></p>
 
@@ -876,8 +906,8 @@ analyze_pattern()       -> "What happened the last 66 times we saw Blue->Red->Bl
             <p>Claude calls <code>get_rag_guide()</code> and returns the recommended sequence: check if indexed, fetch filings, wait for indexing, search and analyze.</p>
           </div>
 
-          <!-- Step 6 -->
-          <div class="step" data-step="6">
+          <!-- Step 7 -->
+          <div class="step" data-step="7">
             <h3>Try Real Analysis</h3>
             <p><strong>Time: 7 minutes</strong></p>
 
