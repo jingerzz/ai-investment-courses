@@ -24,13 +24,14 @@ For curious 8th-10th graders interested in investing and AI. No assumed knowledg
 
 ## What You'll Build
 
-| Week | Professional | Junior | Core Pattern |
-|------|-------------|--------|-------------|
-| 1 | Stock watchlist MCP server | Stock tracker for brands you know | AI calls tools for real data |
-| 2 | Morning briefing with guardrails | Daily report with safety checks | AI presents pre-computed numbers honestly |
-| 3 | Multi-server architecture design | School stock club system | Separate concerns, connect with Claude |
-| 4 | Agent workflow with audit trail | Stock monitor with alert levels | AI watches and suggests, humans decide |
-| Bonus | Private SEC filing Q&A (Ollama) | Private document reader (Ollama) | Local AI, no data leaves your machine |
+| Module | Professional | Core Pattern |
+|--------|-------------|-------------|
+| Foundations 1 | Understanding Claude — LLMs, tokens, prompting | How AI works and where it fails |
+| Foundations 2 | Desktop and Mobile workspace setup | Cross-device projects and attachments |
+| Week 1 | Install a pre-built SPY/TLT or SEC filing server | AI calls tools for real data |
+| Week 2 | Build your own MCP server with Claude Code | AI presents pre-computed numbers honestly |
+| Week 3 | Multi-server architecture design | Separate concerns, connect with Claude |
+| Week 4 | Agent workflow with audit trail | AI watches and suggests, humans decide |
 
 Every tool uses real market data from Yahoo Finance and SEC EDGAR. No toy examples. The tools keep working after the course ends.
 
@@ -127,6 +128,12 @@ The two courses teach the same technology with different voices. See [SYNC_GUIDE
 - **[Claude Desktop](https://claude.ai/download)** — where you use the tools in conversation
 - **[Ollama](https://ollama.com/)** — local AI model runner (bonus module only)
 - **[yfinance](https://github.com/ranaroussi/yfinance)** — free stock market data
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed history of course updates, fixes, and new content.
 
 ---
 
