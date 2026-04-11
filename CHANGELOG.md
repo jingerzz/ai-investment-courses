@@ -2,6 +2,57 @@
 
 All notable changes to the AI Investment Academy course materials.
 
+## [2.3.0] — 2026-04-11
+
+### Added
+- **Juniors Foundations 1**: Written from scratch (was TODO stub). Covers
+  LLMs, 5 AI failure modes with teen-relevant examples (Tesla stale price,
+  Nike wrong CEO, Disney/Netflix fake acquisition), context windows, custom
+  instructions, projects, artifacts, and prompting basics.
+- **Juniors Foundations 2**: Written from scratch (was TODO stub). Covers
+  Claude Desktop installation, interface tour, Developer menu, attachments,
+  mobile app, and workspace setup with student-oriented project templates.
+- **Juniors Week 1**: "Let Claude Code Handle Setup" one-prompt path —
+  students paste a single prompt that creates the project, installs
+  dependencies, and configures Claude Desktop automatically.
+- **Juniors Weeks 2-4**: AI limitations awareness threaded through all
+  modules — verification checks in Week 2, staleness as architecture
+  principle in Week 3, Foundations 1 failure mode callbacks in Week 4.
+- **Juniors Week 2**: ETF explainer before sector ETFs are introduced.
+- **Juniors glossary**: ETF definition.
+- **Juniors conclusion**: Verification discipline tied back to Foundations 1.
+- **Website update instructions**: `WEBSITE_UPDATE_INSTRUCTIONS.md` — full
+  spec for Zo agent to build shared landing page (choose Professional or
+  Juniors), juniors course site with its own CSS/design, and staging/
+  production deployment flow.
+
+### Changed
+- **Juniors prerequisites**: Replaced Node.js + npm install with native
+  Claude Code installer (`curl | bash` / `irm | iex`). Dropped Node.js as
+  a prerequisite entirely. Added progressive disclosure (Foundations =
+  browser only, Week 1 = Desktop + Claude Code + uv).
+- **Juniors setup.md**: Native installer, Windows now opens PowerShell
+  instead of cmd (required for install script).
+- **Juniors README**: Added Foundations modules to course progression table
+  and file structure section.
+- **Juniors COURSE_BRIEF**: Added Foundations chapters to book mapping table.
+- **ZO_DEPLOY_BRIEF**: Added staging route and juniors course reference.
+
+### Fixed
+- **Sync-check CI**: Excluded `*-track-research.md` files from the file
+  structure check — these are professional-only (SEC filing RAG with
+  BLK/HOOD) and intentionally have no juniors equivalent.
+- **Juniors COURSE_BRIEF / README**: Removed stale references to deleted
+  `bonus-local-rag/` directory.
+- **Juniors F1 checklist**: Fixed "session" to "every conversation" for
+  custom instructions scope.
+- **Juniors F1 conversation guide**: Rewrote "What's your source?" prompt
+  to avoid triggering fabricated citations from Claude.
+- **Juniors F2 conversation guide**: Replaced Microsoft with Nike (not in
+  approved stock list).
+- **Juniors F2 reading**: Changed "Starred or bookmarked conversations" to
+  "Favorited conversations" (accurate UI terminology).
+
 ## [2.1.0] — 2026-04-10
 
 ### Fixed
