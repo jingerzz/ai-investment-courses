@@ -26,7 +26,6 @@ jobs:
           find_md() {
             find . -type f -name '*.md' \
               ! -name 'CLAUDE.md' \
-              ! -name 'WEBSITE_UPDATE_INSTRUCTIONS.md' \
               ! -name '*-track-research.md' \
               | sort
           }
