@@ -11,6 +11,26 @@ home page to support both courses.
 
 ---
 
+## CRITICAL: No Navigation in HTML Files
+
+The zo.space shell provides its own navigation bar for all pages. **Do NOT
+add any navigation to the HTML files you create or deploy.** This means:
+
+- **No `<nav>` elements** in any HTML file
+- **No `nav.js`** or any JavaScript that creates navigation
+- **No `<header>` with navigation links**
+- **No `.site-nav` CSS class** (it has been removed from course.css)
+- **No script tags that inject navigation into the DOM**
+
+The HTML files should start directly with their content (hero section,
+course cards, module content, etc.). The zo.space shell handles all
+page-to-page navigation automatically.
+
+**This mistake has recurred three times.** If you are generating HTML and
+think "this page needs a nav bar," the answer is NO — zo.space provides it.
+
+---
+
 ## Overview of Changes
 
 The site currently serves only the professional course. This update:
@@ -235,7 +255,13 @@ These constraints still apply:
 
 - **Deploy ONLY files explicitly listed.** Do NOT modify files beyond what is specified.
 - **Do NOT change the pricing section or navigation shell on zo.space.**
-- **Known pitfall --- double nav bar:** The zo.space shell provides navigation. HTML files must NOT include their own nav scripts.
+- **CRITICAL --- double nav bar:** The zo.space shell already provides page navigation (the dark bar at the top). HTML files must NOT include their own navigation. Specifically:
+  - Do NOT create `nav.js` or any navigation JavaScript file
+  - Do NOT inject `<nav>`, `<header>`, or any element with class `site-nav` into HTML
+  - Do NOT add `<script>` tags that generate navigation bars
+  - The `.site-nav` CSS has been intentionally removed from course.css --- do NOT re-add it
+  - If HTML source files do not contain a `<nav>` element, do NOT add one during deployment
+  - This mistake has happened three times already. If you are unsure, do NOT add navigation.
 - **Known pitfall --- unicode escapes:** Use literal unicode characters (e.g., checkmark), not CSS escape sequences.
 - **Known pitfall --- stale cache:** Test with `?v=TIMESTAMP` query string after CSS changes.
 

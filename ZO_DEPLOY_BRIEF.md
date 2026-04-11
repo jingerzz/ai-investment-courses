@@ -36,7 +36,12 @@ These apply to ALL deployments:
 - **Do NOT change the pricing section, navigation shell, or any route.**
 - **Do NOT modify CSS or JavaScript files** unless explicitly listed.
 - **Do NOT add, remove, or edit content** beyond what is already in the files at the GitHub URL.
-- **Known pitfall — double nav bar:** The zo.space shell provides navigation. HTML files must NOT include their own nav scripts. Never add `nav.js` or similar.
+- **Known pitfall — double nav bar:** The zo.space shell provides navigation. HTML files must NOT include their own nav elements or scripts. Specifically:
+  - Do NOT create or deploy `nav.js` or any navigation script
+  - Do NOT inject `<nav>`, `<header>`, or any element with class `site-nav` into HTML files
+  - Do NOT add `<script>` tags that generate navigation
+  - The `.site-nav` CSS has been intentionally removed from course.css — do NOT re-add it
+  - If HTML files in the repo do not contain a `<nav>` element, do NOT add one during deployment
 - **Known pitfall — unicode escapes:** Use literal unicode characters (e.g., `✓`), not CSS escape sequences (e.g., `\u2713`), which get stripped during deployment.
 - **Known pitfall — stale cache:** zo.space caches CSS aggressively. Test with `?v=TIMESTAMP` query string after CSS changes.
 

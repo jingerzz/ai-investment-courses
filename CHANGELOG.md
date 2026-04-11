@@ -52,6 +52,12 @@ All notable changes to the AI Investment Academy course materials.
   approved stock list).
 - **Juniors F2 reading**: Changed "Starred or bookmarked conversations" to
   "Favorited conversations" (accurate UI terminology).
+- **Double nav bar (root cause)**: Removed all `.site-nav` CSS from
+  `professional/site/css/course.css`. The Zo agent was reading these
+  styles and generating `nav.js` + injecting `<nav class="site-nav">`
+  during deployment, duplicating the zo.space shell navigation. Added
+  explicit "no navigation" constraints to `WEBSITE_UPDATE_INSTRUCTIONS.md`
+  and `ZO_DEPLOY_BRIEF.md`.
 
 ## [2.1.0] — 2026-04-10
 

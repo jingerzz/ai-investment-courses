@@ -101,63 +101,13 @@ strong { font-weight: 600; }
   word-wrap: break-word;
 }
 
-/* --- Top Navigation --- */
-.site-nav {
-  background: var(--primary);
-  color: white;
-  padding: 0 var(--page-padding);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.site-nav-inner {
-  max-width: var(--wide-width);
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-}
-
-.site-nav .brand {
-  font-weight: 700;
-  font-size: 0.9rem;
-  letter-spacing: 0.02em;
-  color: white;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.site-nav .nav-links {
-  display: flex;
-  gap: 0;
-  align-items: center;
-  list-style: none;
-  overflow-x: auto;
-  padding-right: var(--sm);
-}
-
-.site-nav .nav-links a {
-  display: block;
-  padding: var(--sm) var(--sm);
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: rgba(255,255,255,0.7);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.2s;
-}
-
-.site-nav .nav-links a:hover,
-.site-nav .nav-links a.active {
-  color: white;
-}
-
-.site-nav .nav-links a.active {
-  border-bottom: 2px solid var(--secondary);
-}
+/*
+ * DO NOT ADD site-nav styles here.
+ * Navigation is provided by the zo.space shell.
+ * Adding .site-nav CSS causes the Zo agent to create a nav.js script
+ * that injects a duplicate navigation bar.
+ * See ZO_DEPLOY_BRIEF.md "Known pitfall — double nav bar".
+ */
 
 /* --- Chapter Header --- */
 .chapter-header {
@@ -700,9 +650,6 @@ td.negative { color: var(--danger); }
   h1 { font-size: 1.75rem; overflow-wrap: break-word; }
   h2 { font-size: 1.375rem; }
   .hero h1 { font-size: 2rem; }
-
-  .site-nav-inner { height: 48px; }
-  .site-nav .nav-links a { padding: var(--sm) var(--xs); font-size: 0.75rem; }
 
   .demo-card { flex-direction: column; align-items: flex-start; }
   .page-nav { flex-direction: column; }
