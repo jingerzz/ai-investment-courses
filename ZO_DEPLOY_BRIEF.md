@@ -15,7 +15,7 @@ and are pushed to GitHub before deployment.
 
 ## Upcoming: Juniors Course + Shared Landing Page
 
-See `WEBSITE_UPDATE_INSTRUCTIONS.md` for the full spec. Summary:
+See `docs/WEBSITE_UPDATE_INSTRUCTIONS.md` for the full spec. Summary:
 - New shared landing page at the route root (choose Professional or Juniors)
 - Existing professional course moves under `/professional/` sub-path
 - New juniors course site under `/juniors/` sub-path
