@@ -21,7 +21,7 @@ All notable changes to the AI Investment Academy course materials.
 - **Juniors Week 2**: ETF explainer before sector ETFs are introduced.
 - **Juniors glossary**: ETF definition.
 - **Juniors conclusion**: Verification discipline tied back to Foundations 1.
-- **Website update instructions**: `WEBSITE_UPDATE_INSTRUCTIONS.md` — full
+- **Website update instructions**: `docs/WEBSITE_UPDATE_INSTRUCTIONS.md` — full
   spec for Zo agent to build shared landing page (choose Professional or
   Juniors), juniors course site with its own CSS/design, and staging/
   production deployment flow.
@@ -56,7 +56,7 @@ All notable changes to the AI Investment Academy course materials.
   `professional/site/css/course.css`. The Zo agent was reading these
   styles and generating `nav.js` + injecting `<nav class="site-nav">`
   during deployment, duplicating the zo.space shell navigation. Added
-  explicit "no navigation" constraints to `WEBSITE_UPDATE_INSTRUCTIONS.md`
+  explicit "no navigation" constraints to `docs/WEBSITE_UPDATE_INSTRUCTIONS.md`
   and `ZO_DEPLOY_BRIEF.md`.
 
 ## [2.1.0] — 2026-04-10
