@@ -9,8 +9,18 @@ and are pushed to GitHub before deployment.
 ## Current State
 
 **Latest deployed commit:** `bff88ef`
-**Route:** `/course` serves `/course-content/v2/`
+**Route:** `/course` serves `/course-content/v2/` (professional course only)
+**Route (staging):** `/course-v2` will serve `/course-content/v2-staging/` (both courses)
 **Files managed:** HTML files in `professional/site/` deploy to `/course-content/v2/`
+
+## Upcoming: Juniors Course + Shared Landing Page
+
+See `WEBSITE_UPDATE_INSTRUCTIONS.md` for the full spec. Summary:
+- New shared landing page at the route root (choose Professional or Juniors)
+- Existing professional course moves under `/professional/` sub-path
+- New juniors course site under `/juniors/` sub-path
+- Juniors pages are built from markdown in `juniors/` using `brand/juniors.md` design
+- Staging at `/course-v2`, production at `/course` once verified
 
 ## Deployment Pattern
 

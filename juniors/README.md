@@ -8,8 +8,8 @@ don't need to know how to code. You'll describe what you want in plain
 English, and Claude will build it for you.
 
 **Audience:** High school students (8th-10th grade) interested in investing and AI
-**Format:** 30 min reading + 30 min hands-on with Claude per week (4 weeks)
-**Prerequisites:** Claude Desktop and Claude Code installed (see `prerequisites.md`)
+**Format:** 2 Foundations modules + 4 weekly modules (30 min reading + 30 min exercise each)
+**Prerequisites:** A Claude account to start; Claude Desktop and Claude Code added for Week 1 (see `prerequisites.md`)
 
 ## What You'll Learn
 
@@ -23,19 +23,23 @@ You'll also pick up some investing basics along the way — like what stock
 prices mean, how to compare companies, and why you shouldn't trust AI
 to do math.
 
-## Weekly Progression
+## Course Progression
 
-| Week | Focus | What You'll Build |
-|------|-------|-------------------|
-| 1 | Getting started with Claude Code | A tool that gives Claude access to stock data for companies you care about |
-| 2 | Teaching AI not to make mistakes | A daily stock report with safety checks that keep the AI honest |
-| **Bonus** | **Running AI on your own computer (optional)** | **A private Q&A system that can answer questions about company documents** |
-| 3 | Designing bigger systems | A plan for connecting multiple AI tools together |
-| 4 | AI that watches and alerts you | An AI assistant that monitors stocks and tells you when something important happens |
+| Module | Focus | What You'll Do |
+|--------|-------|----------------|
+| **Foundations 1** | Understanding Claude | Learn what AI can and can't do, set up projects and custom instructions |
+| **Foundations 2** | Setting up your workspace | Install Claude Desktop, learn attachments, find the Developer menu |
+| **Week 1** | Getting started with Claude Code | Build a tool that gives Claude access to real stock data |
+| **Week 2** | Teaching AI not to make mistakes | Add safety checks that keep the AI honest |
+| **Bonus** | **Running AI on your computer (optional)** | **A private Q&A system for company documents** |
+| **Week 3** | Designing bigger systems | Plan how to connect multiple AI tools together |
+| **Week 4** | AI that watches and alerts you | Build a monitor that watches stocks and alerts you |
 
-The bonus module is optional and recommended after Week 2. It works on
-any Mac or PC — we'll tell you which AI model to download based on how
-much memory your computer has.
+Start with Foundations 1 --- it requires only a Claude account and a
+web browser. The Foundations modules build your understanding before
+you start building tools in Week 1.
+
+The bonus module is optional and recommended after Week 2.
 
 ## Prerequisites
 
@@ -54,15 +58,15 @@ This course uses free data — no paid subscriptions:
 
 ## Structure
 
-Each week contains:
+Each module contains:
 ```
-week-N/
+foundations-N/ or week-N/
 ├── reading.md                      # Concepts (30 min read)
 └── exercise/
     ├── README.md                   # Step-by-step exercise guide
-    ├── conversation_guide.md       # Example prompts for Claude Code
+    ├── conversation_guide.md       # Example prompts
     ├── checklist.md                # How to check your work
-    └── reference_solution.md       # What a good result looks like
+    └── reference_solution.md       # What a good result looks like (Weeks 1-4)
 ```
 
 Special files:
@@ -72,4 +76,3 @@ Special files:
 - `glossary.md` — Every technical term explained in plain language
 - `COURSE_BRIEF.md` — Metadata and design direction for book production
 - `week-1/exercise/setup.md` — First-time installation guide
-- `bonus-local-rag/exercise/ollama_quickstart.md` — Ollama setup guide

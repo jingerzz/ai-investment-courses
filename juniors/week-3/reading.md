@@ -126,8 +126,13 @@ If Yahoo Finance stops working, your tools should:
 2. If that fails too, return a clear error message
 3. Never return old data pretending it's current
 
-This is the same stale data warning pattern from Week 2 — but now
-applied at the system level.
+This is the same stale data warning pattern from Week 2 --- but now
+applied at the system level. Remember from Foundations 1: AI presents
+wrong information with the same confidence as correct information. A
+tool that silently serves stale data creates exactly the kind of
+"plausible but wrong" situation that's hardest to catch. Every tool
+in every server should include `data_source` and `as_of` fields so
+you always know where the numbers came from and when.
 
 ---
 

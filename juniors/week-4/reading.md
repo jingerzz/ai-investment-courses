@@ -40,10 +40,14 @@ real money:
 
 **Reason 1: AI makes confident mistakes.**
 
-AI doesn't say "I'm not sure about this." When it's wrong, it's
-wrong with the same confidence as when it's right. If an AI monitoring
-system misreads a normal price dip as a crash and sells everything,
-you've lost money on a mistake the AI was totally confident about.
+Remember the five failure modes from Foundations 1? They all apply here,
+but with higher stakes. AI doesn't say "I'm not sure about this." When
+it's wrong, it's wrong with the same confidence as when it's right. If
+an AI monitoring system misreads a normal price dip as a crash and sells
+everything, you've lost money on a mistake the AI was totally confident
+about. A hallucinated reasoning chain --- like "Since Apple just lost a
+major lawsuit..." (when no lawsuit happened) --- could trigger a sell
+recommendation that sounds perfectly logical but is based on nothing real.
 
 **Reason 2: AI can't understand context.**
 

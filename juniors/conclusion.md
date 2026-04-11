@@ -81,10 +81,15 @@ you designed how multiple tools work together, how they share data, and
 how to add new capabilities over time. That's systems thinking, and it
 applies to way more than stocks.
 
-**You learned to be skeptical.** Week 2's whole lesson was "AI makes
-mistakes, and here's how to catch them." In a world where most people
-blindly trust AI output, knowing how to verify and add safety checks
-is a superpower.
+**You learned to be skeptical.** Starting in Foundations 1, you learned
+that AI presents hallucinated facts with the same confidence as correct
+ones --- stale prices, made-up acquisitions, plausible-but-wrong numbers.
+In Week 2, you built engineering guardrails to catch these problems, and
+you learned three quick verification checks: Is the number in the right
+ballpark? Where did it come from? Is the data current? In a world where
+most people blindly trust AI output, this verification habit is a
+superpower. The guardrails are your first line of defense. You are the
+second.
 
 **You learned that AI works best with humans.** The most powerful thing
 you built wasn't any single tool — it was the pattern where AI does the

@@ -27,6 +27,7 @@ jobs:
             find . -type f -name '*.md' \
               ! -name 'CLAUDE.md' \
               ! -name 'WEBSITE_UPDATE_INSTRUCTIONS.md' \
+              ! -name '*-track-research.md' \
               | sort
           }
           pro_files=$(cd professional && find_md)

@@ -140,17 +140,24 @@ exactly as the code built it.
 ## 2.5 Connecting the Dots: Cross-Referencing
 
 Here's where AI really shines. Your tools provide different pieces of
-data — individual stock prices, overall market direction, which
+data --- individual stock prices, overall market direction, which
 industries are doing well or poorly. The AI's job is to connect these
 pieces into a story.
+
+**Quick note: What's an ETF?** An ETF (Exchange-Traded Fund) is a
+basket of stocks you can buy as one unit. For example, SPY holds all
+500 stocks in the S&P 500 index --- it tells you how the overall market
+is doing. XLK holds technology stocks, XLF holds financial stocks, and
+XLE holds energy stocks. Sector ETFs let you see if a whole industry is
+moving, not just one company.
 
 For example, say:
 - Disney (DIS) is down 1.82% today
 - The Communication Services sector is down 2.1% today
-- The overall market is slightly down
+- The overall market (SPY) is slightly down
 
 The AI can connect these: "Disney is down today, but this looks like a
-sector-wide thing — Communication Services is the weakest sector. DIS
+sector-wide thing --- Communication Services is the weakest sector. DIS
 is actually doing better than its sector average."
 
 This is something a dashboard can't do. A dashboard shows you three
@@ -182,6 +189,35 @@ of stale data warnings). And the analysis connects everything together
 
 ---
 
+## 2.7 Checking AI's Work: Three Quick Tests
+
+Even with guardrails, you should always double-check what AI tells you.
+Here are three simple tests you can run in your head:
+
+**Test 1: Is the number in the right ballpark?**
+If the AI says Apple's stock is $19.52, that's obviously wrong --- it
+should be closer to $200. If the AI says Nike's market cap is $4 trillion,
+that's also wrong --- only a handful of companies are worth that much.
+You don't need to know the exact number. You just need to know if the
+number is wildly off.
+
+**Test 2: Where did the number come from?**
+Check the `data_source` field in the tool's return. Does it say "yfinance"?
+Good --- that's real data. Does it say nothing? Then the AI might be
+guessing from its training data. Always ask: "Is this a fact from a
+tool, or is the AI making this up?"
+
+**Test 3: Is the data current?**
+Check the `as_of` timestamp. If the data is from three days ago and
+there's no stale data warning, something is wrong. If the market was
+open today but the data says "as of Friday", something is wrong.
+Timestamps are your friend.
+
+These three checks take seconds, and they catch most problems. Make
+them a habit.
+
+---
+
 ## Key Takeaways
 
 1. **AI makes three types of mistakes** with financial data: bad math,
@@ -193,5 +229,7 @@ of stale data warnings). And the analysis connects everything together
 4. **Guardrail #3: Pre-formatted sections.** Build tables and summaries
    in code. Tell the AI to present them exactly as-is.
 5. **Cross-referencing is where AI adds real value.** Connecting stock
-   moves to sector trends to market conditions — that's what AI does
+   moves to sector trends to market conditions --- that's what AI does
    better than any dashboard.
+6. **Always check AI's work.** Three quick tests: Is the number in the
+   right ballpark? Where did it come from? Is the data current?

@@ -36,6 +36,13 @@ Money a company pays to its shareholders, usually every three months.
 Not all companies pay dividends. It's like getting a small paycheck
 just for owning the stock.
 
+**ETF (Exchange-Traded Fund)**
+A basket of stocks bundled together that you can buy as one unit, just
+like buying a single stock. SPY is an ETF that holds all 500 companies
+in the S&P 500 --- buying one share of SPY is like buying a tiny piece
+of every big company in the US. Sector ETFs like XLK (technology) or
+XLF (financials) let you track how a whole industry is doing.
+
 **Volume**
 How many shares of a stock were bought and sold in a day. High volume
 means lots of people are trading it. Unusually high volume can signal

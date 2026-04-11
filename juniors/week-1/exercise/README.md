@@ -19,7 +19,33 @@ its training.
 
 - Claude Code installed and working (see `setup.md`)
 - Claude Desktop installed
-- No subscriptions needed — all data is free
+- No subscriptions needed --- all data is free
+
+---
+
+## Recommended: Let Claude Code Handle Setup
+
+If you have Claude Code installed, you can paste one prompt and let it
+do everything for you. Open your terminal, start Claude Code, and paste:
+
+```
+Help me set up a stock tracker project. Here's what I need:
+1. Create a folder at ~/ai-stock-tools (skip if it exists)
+2. Install uv (https://astral.sh/uv/) if I don't have it
+3. Initialize a new uv project in that folder with fastmcp and
+   yfinance as dependencies (run uv init, then uv add fastmcp yfinance)
+4. Create a starter server.py file with a FastMCP server called
+   "stock-tracker" that has one placeholder tool called get_strategy_guide
+   that returns a description of the server
+5. Add this server to my Claude Desktop MCP config
+   (claude_desktop_config.json) so it runs via uv
+6. Verify everything works, then tell me to restart Claude Desktop
+```
+
+When Claude Code finishes, restart Claude Desktop and skip to
+**Step 2: Describe What You Want**.
+
+**If you prefer to set things up manually**, continue with Step 1 below.
 
 ---
 

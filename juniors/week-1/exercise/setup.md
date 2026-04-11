@@ -12,11 +12,11 @@ but it's powerful.
 **On Mac:**
 - Press `Cmd + Space` to open Spotlight Search
 - Type `Terminal` and press Enter
-- A window with a text prompt will appear — this is your terminal
+- A window with a text prompt will appear --- this is your terminal
 
 **On Windows:**
-- Press `Win + R`, type `cmd`, and press Enter
-- Or search for "Command Prompt" in the Start menu
+- Search for "PowerShell" in the Start menu and open it
+- (You need PowerShell, not Command Prompt, for the install commands below)
 
 You'll see something like:
 ```
@@ -28,15 +28,18 @@ This is the command line. You type commands here and press Enter to run them.
 
 Copy and paste this command into your terminal, then press Enter:
 
+**Mac / Linux:**
 ```bash
-npm install -g @anthropic-ai/claude-code
+curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-If you see an error about `npm` not being found, you need to install Node.js
-first. Go to [nodejs.org](https://nodejs.org), download the LTS version,
-install it, close and reopen your terminal, then try the command again.
+**Windows (PowerShell):**
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
 
-To verify it worked, type:
+Close and reopen your terminal after the installer finishes, then verify
+it worked:
 ```bash
 claude --version
 ```
@@ -83,7 +86,7 @@ claude
 ```
 
 Claude Code will start up. You'll see a prompt where you can type messages
-to Claude, just like in Claude Desktop — but this version can create files,
+to Claude, just like in Claude Desktop --- but this version can create files,
 run commands, and build software on your computer.
 
 Try a test message:
@@ -102,10 +105,10 @@ tools Claude Code builds to Claude Desktop.
 ## You're Ready
 
 Your setup is complete. You have:
-- **Terminal** — where you run commands and use Claude Code
-- **Claude Code** — the AI that builds tools for you
-- **Claude Desktop** — the AI that uses the tools you build
-- **uv** — a behind-the-scenes tool manager
+- **Terminal** --- where you run commands and use Claude Code
+- **Claude Code** --- the AI that builds tools for you
+- **Claude Desktop** --- the AI that uses the tools you build
+- **uv** --- a behind-the-scenes tool manager
 
 Continue to `README.md` for the Week 1 exercise.
 
