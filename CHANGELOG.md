@@ -2,6 +2,66 @@
 
 All notable changes to the AI Investment Academy course materials.
 
+## [2.4.0] — 2026-04-30
+
+### Added
+- **Platform↔course drift workflow**: `scripts/check_drift.py` produces
+  `docs/drift-report.md` (status: IDENTICAL / MINOR ≤30 line diff / MAJOR /
+  COURSE-ONLY / PLATFORM-ONLY). Run before any course release or ad-hoc
+  when you suspect drift. See `SYNC_GUIDE.md` "Platform ↔ Course Drift".
+- **Intentional divergence registry**: `docs/intentional_divergence.md` —
+  files where course differs from platform by design (broker-free
+  data layer, monolithic `server.py`, verbose teaching guides). Drift
+  on these is expected; do NOT port.
+
+### Changed (page-index-rag-course)
+- **`llm.py`**: Added LLM backend selection (Ollama or Anthropic), env-var
+  precedence for `LLM_BACKEND`, `ANTHROPIC_MODEL`, `SUMMARY_MODEL`,
+  `SUMMARY_CONCURRENCY`, `OLLAMA_KEEP_ALIVE`. Added `_get_extractive_threshold()`
+  for 3-tier summarization (raw / extractive / LLM).
+  Why: Lets students with no Ollama install use Claude API directly; lets
+  any single deploy tune concurrency without bumping `config.json`.
+- **`pageindex/utils.py`**: Added `extractive_summary()` — zero-dependency
+  TF-IDF sentence extraction. Truncates LLM-summary input to ~3000 tokens.
+  Caps `max_tokens=256` for summary calls.
+  Why: Reduces indexing time substantially on student hardware; medium
+  nodes get fast extractive summaries instead of slow LLM calls.
+- **`pageindex/page_index_md.py`**: 3-tier summary policy (raw under
+  extractive_threshold, extractive between thresholds, LLM only above
+  summary_token_threshold).
+  Why: Same perf rationale; preserves quality where it matters (large nodes).
+- **`pageindex/config.yaml`**: Added (was platform-only file).
+- **`server.py`**: Imported `trading_core.security` with import-fallback
+  shim so course stays standalone. Added optional `passphrase` kwarg to
+  write tools (`fetch_company_filings`, `fetch_company_filings_enhanced`,
+  `ingest_drop_folder`, `remove_document`, `embed_documents`); enforced
+  via `MCP_TOOL_PASSPHRASE` env var when set. Switched error-string
+  formatting from `str(e)` to `sanitize_error(e, context)`.
+  Why: Lets a hosted course server (e.g. Fly.io demo) be passphrase-
+  protected without changing the standalone path. Sanitized errors
+  keep stack-trace fragments out of student-visible output.
+- **`config.json`**: Added `ollama_keep_alive: "10m"` and
+  `extractive_threshold: 2000` to match the new `llm.py` knobs.
+- **`pyproject.toml`**: Added `anthropic>=0.40.0` so `LLM_BACKEND=anthropic`
+  works without an extra `uv add`.
+
+### spy-tlt-course (audited, no ports)
+The drift report's MAJOR diff on `advisor.py` is mostly platform CLI
+scaffolding (`print_*`, `parse_args`, `main`) and ES/MES futures support
+(intentionally excluded — course is yfinance-only). Spot-checked
+`compute_trading_levels`, `compute_trade_plan`, `_find_pattern_matches`:
+no algorithmic bug fixes worth porting. The platform's
+`analyze_pattern(start_date, end_date, regime)` filters are a real
+educational improvement but a feature addition, not a bug fix; deferred.
+
+### How to verify
+```bash
+cd /path/to/ai-investment-courses
+python3 scripts/check_drift.py --out docs/drift-report.md
+# Read the report; the only remaining MAJOR/PLATFORM-ONLY entries
+# should match docs/intentional_divergence.md.
+```
+
 ## [2.3.0] — 2026-04-11
 
 ### Added

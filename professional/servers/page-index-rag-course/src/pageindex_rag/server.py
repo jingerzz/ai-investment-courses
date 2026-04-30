@@ -19,6 +19,16 @@ from .parsers import PARSERS
 from . import sec_fetcher
 from . import enhanced_sec_fetcher
 
+try:
+    from trading_core.security import check_passphrase, sanitize_error
+except ImportError:
+    # Fallback if trading_core not available (standalone mode — the course default)
+    def check_passphrase(passphrase: str) -> str | None:  # type: ignore[misc]
+        return None
+
+    def sanitize_error(e: Exception, context: str = "") -> str:  # type: ignore[misc]
+        return f"Operation failed: {context or 'unknown'}. {e}"
+
 # All logging to stderr (stdout is MCP protocol channel)
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 logger = logging.getLogger("pageindex-rag")
@@ -158,8 +168,8 @@ def _index_file_background(job: _IndexingJob):
 
     except Exception as e:
         job.status = "failed"
-        job.error = str(e)
-        logger.error(f"Background indexing failed for {job.filename}: {e}")
+        job.error = sanitize_error(e, f"indexing {job.filename}")
+        logger.error("Background indexing failed for %s: %s", job.filename, e)
     finally:
         job.finished_at = time.time()
 
@@ -546,7 +556,8 @@ def fetch_company_filings(
     ticker: str,
     forms: str = "",
     max_filings: int = 5,
-    auto_index: bool = True
+    auto_index: bool = True,
+    passphrase: str = "",
 ) -> str:
     """Fetch SEC filings for a company from EDGAR and index them for analysis.
 
@@ -555,6 +566,8 @@ def fetch_company_filings(
 
     Downloads filings from SEC EDGAR. Indexing runs in the BACKGROUND to
     avoid timeouts — this tool returns immediately after downloading.
+
+    Requires passphrase when server is configured with MCP_TOOL_PASSPHRASE.
 
     AFTER CALLING THIS: Call check_indexing_status() to monitor progress.
     Once indexing is complete, all analysis tools work on the new filings.
@@ -571,6 +584,7 @@ def fetch_company_filings(
                      focused analysis, 5 for historical coverage.
         auto_index: Whether to start indexing automatically (default true).
                     Set false to only download without indexing.
+        passphrase: Required for write operations when passphrase protection is enabled.
 
     Returns:
         Confirmation of download with a batch_id for tracking indexing progress.
@@ -583,6 +597,9 @@ def fetch_company_filings(
         3. check_indexing_status()
            -> "2/2 done. Ready for analysis."
     """
+    if err := check_passphrase(passphrase):
+        return err
+
     form_list = [f.strip() for f in forms.split(",") if f.strip()] if forms else None
 
     result = sec_fetcher.fetch_company_filings(ticker, form_list, max_filings)
@@ -665,7 +682,8 @@ def fetch_company_filings_enhanced(
     ticker: str,
     forms: str = "",
     batch_size: int = 10,
-    auto_index: bool = True
+    auto_index: bool = True,
+    passphrase: str = "",
 ) -> str:
     """Fetch SEC filings with pagination and smart rate limit handling.
     
@@ -698,6 +716,8 @@ def fetch_company_filings_enhanced(
         fetch_company_filings_enhanced("CRWV", batch_size=5)
         # Returns complete summary with all downloaded files
     """
+    if err := check_passphrase(passphrase):
+        return err
     fetcher = enhanced_sec_fetcher.EnhancedSECFetcher()
     form_list = [f.strip() for f in forms.split(",") if f.strip()] if forms else None
 
@@ -796,7 +816,7 @@ def list_documents() -> str:
 
 
 @mcp.tool()
-def ingest_drop_folder() -> str:
+def ingest_drop_folder(passphrase: str = "") -> str:
     """Process and index any supported files in the data/drop/ folder.
 
     USE WHEN: Files have been manually placed in data/drop/ and need indexing.
@@ -805,12 +825,19 @@ def ingest_drop_folder() -> str:
     Supported file types: HTML, PDF, CSV, TXT, Markdown.
     Indexing runs in the BACKGROUND to avoid timeouts.
 
+    Requires passphrase when server is configured with MCP_TOOL_PASSPHRASE.
+
     AFTER CALLING THIS: Call check_indexing_status() to monitor progress.
     Files are moved to data/processed/ after successful indexing.
+
+    Args:
+        passphrase: Required for write operations when passphrase protection is enabled.
 
     Returns:
         Confirmation with batch_id for tracking, or message if no files found.
     """
+    if err := check_passphrase(passphrase):
+        return err
     DROP_DIR.mkdir(parents=True, exist_ok=True)
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -932,7 +959,7 @@ def _format_batch_status(status: dict) -> str:
 
 
 @mcp.tool()
-def remove_document(doc_id: str) -> str:
+def remove_document(doc_id: str, passphrase: str = "") -> str:
     """Remove an indexed document from the database.
 
     USE WHEN: The user wants to clean up, you need to re-index a filing,
@@ -941,12 +968,17 @@ def remove_document(doc_id: str) -> str:
     This is permanent — the document must be re-fetched and re-indexed
     to restore it.
 
+    Requires passphrase when server is configured with MCP_TOOL_PASSPHRASE.
+
     Args:
         doc_id: The document ID to remove (e.g. "CAT_10-K_20240216_d03268e6").
+        passphrase: Required for write operations when passphrase protection is enabled.
 
     Returns:
         Confirmation of removal, or error if document not found.
     """
+    if err := check_passphrase(passphrase):
+        return err
     deleted = tree_store.delete_tree(doc_id)
     if deleted:
         return f"Removed document '{doc_id}'."
@@ -954,7 +986,7 @@ def remove_document(doc_id: str) -> str:
 
 
 @mcp.tool()
-def embed_documents(doc_ids: str = "all") -> str:
+def embed_documents(doc_ids: str = "all", passphrase: str = "") -> str:
     """Generate semantic search embeddings for indexed documents.
 
     USE WHEN: Documents were indexed before semantic search was enabled,
@@ -965,9 +997,12 @@ def embed_documents(doc_ids: str = "all") -> str:
     Requires Ollama running with an embedding model (default: nomic-embed-text).
     Install it with: ollama pull nomic-embed-text
 
+    Requires passphrase when server is configured with MCP_TOOL_PASSPHRASE.
+
     Args:
         doc_ids: Comma-separated document IDs, or "all" to embed every
                  document that lacks embeddings.
+        passphrase: Required for write operations when passphrase protection is enabled.
 
     Returns:
         Status report showing which documents were embedded.
@@ -980,6 +1015,9 @@ def embed_documents(doc_ids: str = "all") -> str:
         from . import embeddings
     except ImportError:
         return "Embeddings module not available."
+
+    if err := check_passphrase(passphrase):
+        return err
 
     if not embeddings.is_enabled():
         return ("Semantic search is disabled in config.json.\n"
@@ -1015,7 +1053,7 @@ def embed_documents(doc_ids: str = "all") -> str:
             else:
                 results.append(f"  FAIL {doc_id} — no embeddings generated")
         except Exception as e:
-            results.append(f"  FAIL {doc_id} — {e}")
+            results.append(f"  FAIL {doc_id} — {sanitize_error(e, f'embedding {doc_id}')}")
 
     embedded_count = sum(1 for r in results if r.strip().startswith("OK"))
     header = f"**Embedded {embedded_count}/{len(targets)} document(s):**\n"

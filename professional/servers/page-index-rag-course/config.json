@@ -1,11 +1,13 @@
 {
   "ollama_base_url": "http://localhost:11434/v1",
   "ollama_model": "qwen3.5:0.8b",
+  "ollama_keep_alive": "10m",
   "max_tokens": 16384,
   "sec_user_agent": "PageIndex Research (research@pageindex.local)",
   "semantic_search": false,
   "summary_model": "qwen3.5:0.8b",
   "summary_concurrency": 5,
   "summary_token_threshold": 1500,
+  "extractive_threshold": 2000,
   "thinning_threshold": 500
 }

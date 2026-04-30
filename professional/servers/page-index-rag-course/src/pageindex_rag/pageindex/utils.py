@@ -550,17 +550,78 @@ def add_node_text_with_labels(node, pdf_pages):
     return
 
 
+def extractive_summary(text: str, num_sentences: int = 3) -> str:
+    """Extract the most important sentences using TF-IDF scoring.
+
+    Zero-dependency extractive summarizer: splits text into sentences,
+    scores each by TF-IDF weight, returns the top N in original order.
+    Runs in ~1ms for typical SEC filing sections.
+    """
+    import math
+    from collections import Counter
+
+    # Split into sentences (handle common abbreviations in SEC filings)
+    raw_sentences = re.split(r'(?<=[.!?])\s+(?=[A-Z"\(])', text.strip())
+    # Filter out tiny fragments and table rows
+    sentences = [s.strip() for s in raw_sentences
+                 if len(s.strip()) > 40 and not s.strip().startswith('|')]
+    if len(sentences) <= num_sentences:
+        return ' '.join(sentences)
+
+    # Tokenize words (lowercase, alphanumeric only)
+    def tokenize(s):
+        return re.findall(r'[a-z0-9]+', s.lower())
+
+    # Build document frequency
+    doc_freq = Counter()
+    sentence_tokens = []
+    for s in sentences:
+        tokens = tokenize(s)
+        sentence_tokens.append(tokens)
+        doc_freq.update(set(tokens))
+
+    n_docs = len(sentences)
+    # Score each sentence by sum of TF-IDF weights
+    scores = []
+    for i, tokens in enumerate(sentence_tokens):
+        if not tokens:
+            scores.append(0.0)
+            continue
+        tf = Counter(tokens)
+        score = sum(
+            (tf[w] / len(tokens)) * math.log(n_docs / (1 + doc_freq[w]))
+            for w in tf
+        )
+        # Boost first few sentences (lead bias — common in structured filings)
+        if i < 3:
+            score *= 1.5
+        scores.append(score)
+
+    # Select top N sentences, preserve original order
+    top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:num_sentences]
+    top_indices.sort()  # Restore document order
+    return ' '.join(sentences[i] for i in top_indices)
+
+
 async def generate_node_summary(node, model=None, semaphore=None):
     title = node.get('title', 'Untitled')
+    # Truncate to ~3000 tokens to avoid sending 18K-token sections through
+    # Ollama's prompt evaluation. First 3000 tokens contain headers + key content.
+    MAX_SUMMARY_INPUT_TOKENS = 3000
+    text = node['text']
+    if count_tokens(text) > MAX_SUMMARY_INPUT_TOKENS:
+        # ~4 chars/token is a safe approximation for English text
+        text = text[:MAX_SUMMARY_INPUT_TOKENS * 4]
     prompt = f"""Summarize this SEC filing section in 2-3 sentences. Include key topics, named entities, specific figures, and notable dates.
 
 Section title: {title}
 
 Section text:
-{node['text']}
+{text}
 
 Return only the summary, no preamble."""
-    response = await ChatGPT_API_async(model, prompt, semaphore=semaphore)
+    response = await ChatGPT_API_async(model, prompt, semaphore=semaphore,
+                                       max_tokens=256)
     return response
 
 

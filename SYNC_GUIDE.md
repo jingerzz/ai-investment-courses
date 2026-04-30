@@ -153,6 +153,75 @@ structure stays in sync.
 
 ---
 
+## Platform ↔ Course Drift
+
+In addition to keeping `professional/` and `juniors/` aligned, the
+course MCP servers in `professional/servers/` are downstream copies of
+production packages in the sister repo `AI-trading-platform`
+(`packages/spy-tlt-strat/`, `packages/sec-rag/`). The platform evolves
+faster than the course; periodic catch-up keeps the educational
+materials representative of the production stack we teach.
+
+### How to run
+
+```bash
+python3 scripts/check_drift.py --out docs/drift-report.md
+```
+
+By default, the script expects the platform repo at
+`~/AI-trading-platform`. Override with `--platform /custom/path`.
+
+### How to read the report
+
+Each file is categorised:
+
+- **IDENTICAL** — bit-identical, no work
+- **MINOR** (≤30 line diff) — scan for bug fixes worth porting
+- **MAJOR** (>30 line diff) — decide: port the substantive bits, OR
+  document the gap in `docs/intentional_divergence.md`
+- **COURSE-ONLY** — file exists in course but not platform
+- **PLATFORM-ONLY** — file exists in platform but not course
+
+Cross-reference `docs/intentional_divergence.md` first. Files listed
+there are expected to drift; the drift report will keep flagging them
+on every run, and that's correct behavior.
+
+### When to run
+
+- Before bumping the course version in `CHANGELOG.md`
+- When a major platform change ships (new MCP tool, bug fix in shared
+  algorithm, model migration, etc.)
+- Quarterly, as background hygiene
+- Any time a student reports behavior that contradicts the production
+  demo
+
+### What to do with findings
+
+1. Open the report (`docs/drift-report.md`) and read top-down: MAJOR
+   first, then MINOR, then PLATFORM-ONLY.
+2. For each entry, decide: port / partial port / mark as intentional.
+3. Port the chosen changes via Edit/Write — never blindly `cp` files,
+   because the course often has small intentional simplifications that
+   would be erased.
+4. Re-run the script and confirm only intentional-divergence entries
+   remain.
+5. Update `CHANGELOG.md` with what changed and why.
+6. Update `docs/intentional_divergence.md` with anything new you've
+   chosen to keep diverged (add a "Why" line so the next person knows).
+
+### Hard rules
+
+- **Never port broker-dependent code** to the course. Tastytrade,
+  trading-core internals, options chains via DXLink — none of it
+  belongs in a standalone teaching server.
+- **Never port without re-running the smoke import test:**
+  `cd professional/servers/<server> && uv run python -c 'from <pkg> import server'`.
+- **Never port platform's monolithic-to-modular refactors** (e.g. the
+  `mcp_server/tools/` split). Course's monolithic `server.py` is
+  pedagogically deliberate.
+
+---
+
 ## Brand File Updates
 
 The three brand files in `brand/` govern visual identity:
