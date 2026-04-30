@@ -2,19 +2,23 @@
 
 **Build AI-powered investment tools — no coding required.**
 
-Two parallel courses that teach you to direct Claude to build real financial tools using plain English. You describe what you want. Claude builds it. You connect it to real market data. Every week produces a working tool.
+Three course tracks teach you to build real financial tools using plain English. The new Zo-centric track leads with Zo Computer as the operating environment; the existing Claude-centric professional and junior tracks remain available.
 
 ---
 
-## Two Courses, One Approach
+## Course Tracks
 
-### [AI-Powered Investment Management](professional/) — for finance professionals
+### [AI-Powered Investment Management on Zo Computer](zo-professional/) — flagship Zo track
+
+For investment professionals, founders, executives, and independent capital allocators who want AI-native investment workflows on a personal cloud computer. Uses Zo for files, services, hosted pages, automations, and AI orchestration. Claude Code and Codex are optional supported tools, not the center of the workflow.
+
+### [AI-Powered Investment Management](professional/) — Claude-centric professional track
 
 For investment analysts, portfolio managers, and IT managers at investment firms. Assumes deep finance knowledge. Teaches AI tool-building patterns used in production trading systems.
 
 > "The AI received pre-computed risk metrics from your tool. It didn't calculate portfolio VaR — Python did. The AI's contribution was connecting the risk posture to the current regime and explaining why the hedge is working."
 
-### [AI-Powered Investing for Juniors](juniors/) — for high school students
+### [AI-Powered Investing for Juniors](juniors/) — junior track
 
 For curious 8th-10th graders interested in investing and AI. No assumed knowledge of finance or programming. Same technology, same patterns — adapted language and relatable examples.
 
@@ -26,11 +30,11 @@ For curious 8th-10th graders interested in investing and AI. No assumed knowledg
 
 | Module | Professional | Core Pattern |
 |--------|-------------|-------------|
-| Foundations 1 | Understanding Claude — LLMs, tokens, prompting | How AI works and where it fails |
-| Foundations 2 | Desktop and Mobile workspace setup | Cross-device projects and attachments |
-| Week 1 | Install a pre-built SPY/TLT or SEC filing server | AI calls tools for real data |
-| Week 2 | Build your own MCP server with Claude Code | AI presents pre-computed numbers honestly |
-| Week 3 | Multi-server architecture design | Separate concerns, connect with Claude |
+| Foundations 1 | Understanding the AI operating environment | How AI works with files, tools, and services |
+| Foundations 2 | Workspace setup | Projects, secrets, channels, terminal, hosting |
+| Week 1 | Use the SPY/TLT regime server | AI calls tools for real market data |
+| Week 2 | Use SEC filing RAG | AI answers from primary-source filings |
+| Week 3 | Multi-server architecture design | Separate concerns across services and datasets |
 | Week 4 | Agent workflow with audit trail | AI watches and suggests, humans decide |
 
 Every tool uses real market data from Yahoo Finance and SEC EDGAR. No toy examples. The tools keep working after the course ends.
@@ -39,9 +43,9 @@ Every tool uses real market data from Yahoo Finance and SEC EDGAR. No toy exampl
 
 ## The Approach
 
-**You will not write a single line of code.**
+**You do not need to write code by hand.**
 
-You use [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — Anthropic's CLI for Claude — to build everything. Your skill is knowing what to ask for, checking whether it's correct, and improving it through conversation.
+In the Zo-centric track, Zo Computer is the home base for files, services, dashboards, automations, and AI interaction. Strong coding assistants such as Claude Code or Codex are optional accelerators inside that workflow.
 
 What you learn:
 1. **Describe** workflows in plain English that produce working tools
@@ -58,11 +62,13 @@ These skills transfer to any domain. Finance is the vehicle.
 **Time commitment:** 30 min reading + 30 min hands-on per week, for 4 weeks.
 
 **Prerequisites:**
+- Zo-centric track: [Zo Computer](https://www.zo.computer/) account. Jing's referral link: https://zo-computer.cello.so/8dcc6g0vZVs
 - [Claude Desktop](https://claude.ai/download)
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)
 - A Mac or PC (model recommendations tiered by RAM for the bonus module)
 
 **Pick your course:**
+- Zo-first professional track? Start with [`zo-professional/introduction.md`](zo-professional/introduction.md)
 - Finance professional? Start with [`professional/introduction.md`](professional/introduction.md)
 - High school student? Start with [`juniors/introduction.md`](juniors/introduction.md)
 
@@ -106,6 +112,7 @@ course/
 
 ```
 ai-investment-courses/
+├── zo-professional/       # Zo-centric professional course
 ├── professional/          # Course for finance professionals
 ├── juniors/               # Course for high school students
 ├── brand/                 # Visual identity and design guidelines
