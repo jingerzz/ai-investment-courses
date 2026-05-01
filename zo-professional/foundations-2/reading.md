@@ -120,3 +120,12 @@ You will set up both in this module's exercise.
 - **Channels match outputs.** Telegram for alerts, email for digests, hosted pages for dashboards.
 - **Hosting turns workflows into durable tools.** Zo Space, Zo Sites, and User Services each have a niche.
 - **Your workspace is your prompt.** A short README and a decision log are how you brief the AI between sessions.
+
+## Zo Documentation
+
+For more detail on the features covered in this module:
+
+- [Services](https://docs.zocomputer.com/services) — running and publishing services on Zo
+- [Messaging Channels](https://docs.zocomputer.com/messaging-channels) — setting up Telegram, email, and other output channels
+- [Connect GitHub](https://docs.zocomputer.com/github) — linking your GitHub repos to Zo
+- [Hosting on Zo](https://docs.zocomputer.com/hosting) — the different hosting options (Sites, Spaces, Services)

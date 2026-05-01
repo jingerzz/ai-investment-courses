@@ -127,3 +127,13 @@ The good news: every one of these has a known fix. The course walks through each
 - **Investment work is a chain.** The longer the chain, the more important it is that each link is inspectable.
 - **The guardrail pattern is the whole course.** AI explains, code computes, sources substantiate, humans decide.
 - **Good workflows are boring.** Reproducible, cited, narrow, auditable, human-approved. The boring version is the durable one.
+
+## Zo Documentation
+
+The four layers discussed in this module map directly to Zo's core features. For reference:
+
+- [Introduction to Zo](https://docs.zocomputer.com/intro) — what Zo Computer is and how it works
+- [Files](https://docs.zocomputer.com/files) — managing files on your Zo Computer
+- [Tools](https://docs.zocomputer.com/tools) — how tools work and what's available
+- [Sites](https://docs.zocomputer.com/sites) — hosting pages and dashboards
+- [Automations](https://docs.zocomputer.com/automations) — scheduling jobs and event-driven workflows

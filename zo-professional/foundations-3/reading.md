@@ -106,3 +106,11 @@ In each case, memory is doing the same work a notebook does for an analyst: turn
 - **Save what a future you would want to read.** Skip what can be re-derived.
 - **Two capture modes.** Reactive on clear triggers; proactive offer when the conversation merits it.
 - **Memory does not change the guardrail pattern; it sharpens it.** Longer working horizon, no extra authority.
+
+## Zo Documentation
+
+For more detail on the features that support persistent context:
+
+- [Rules](https://docs.zocomputer.com/rules) — setting persistent instructions the AI follows every session
+- [Prompting](https://docs.zocomputer.com/prompting) — how to write effective prompts and system instructions on Zo
+- [Personas](https://docs.zocomputer.com/personas) — configuring AI behavior profiles for different workflows
