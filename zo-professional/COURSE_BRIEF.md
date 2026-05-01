@@ -6,14 +6,15 @@ AI-Powered Investment Management on Zo Computer
 
 ## Format
 
-Six modules:
+Seven modules:
 
 1. Foundations 1
 2. Foundations 2
-3. Week 1
-4. Week 2
-5. Week 3
-6. Week 4
+3. Foundations 3
+4. Week 1
+5. Week 2
+6. Week 3
+7. Week 4
 
 Each module contains a reading and a hands-on exercise. Expected time is 30 minutes reading plus 30 minutes hands-on.
 

@@ -38,12 +38,13 @@ The goal is not autonomy for its own sake. It is leverage with control. **AI pro
 
 ## How the Course Is Structured
 
-The course has six modules. Two foundations modules build the mental model. Four weekly modules walk through real investment workflows.
+The course has seven modules. Three foundations modules build the mental model. Four weekly modules walk through real investment workflows.
 
 | Module | What You Build | Pattern |
 | --- | --- | --- |
 | Foundations 1 | A mental model for Zo as the home | Files + tools + surfaces + scheduled jobs |
 | Foundations 2 | A clean workspace setup | Folders, secrets, channels, hosting |
+| Foundations 3 | Persistent context for investment AI | Memory files, USER.md, AGENTS.md, session continuity |
 | Week 1 | A market-context tool | AI calls a script that classifies the day |
 | Week 2 | A SEC filing reader | AI answers from indexed filings, with citations |
 | Week 3 | A multi-piece workflow | Several small tools coordinating one job |

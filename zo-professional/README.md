@@ -35,6 +35,7 @@ This track is for:
 | --- | --- | --- |
 | Foundations 1 | Mental model for Zo as an AI operating environment | Files + tools + models + hosted services |
 | Foundations 2 | Personal investment workspace setup | Workspace structure, secrets, channels, browser, terminal |
+| Foundations 3 | Persistent context for investment AI | Memory files, USER.md, AGENTS.md, session continuity |
 | Week 1 | SPY/TLT regime workflow on Zo | AI calls tools backed by real market data |
 | Week 2 | SEC filing RAG workflow on Zo | AI answers from indexed primary-source filings |
 | Week 3 | Multi-server investment architecture | Separate concerns across services, datasets, dashboards, and agents |
@@ -50,6 +51,9 @@ zo-professional/
 │   ├── reading.md
 │   └── exercise/README.md
 ├── foundations-2/
+│   ├── reading.md
+│   └── exercise/README.md
+├── foundations-3/
 │   ├── reading.md
 │   └── exercise/README.md
 ├── week-1/
