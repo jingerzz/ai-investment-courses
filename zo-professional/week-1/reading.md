@@ -10,7 +10,7 @@ The tool is the **SPY/TLT course server**, and it lives in the course repository
 professional/servers/spy-tlt-course
 ```
 
-It is a teaching version of a larger production system. The production version has 37 tools and is wired into Jing's actual investment workflow. The course version has 14 tools and is small enough that you can read its source code in an afternoon. Both follow the same architecture; the course version just stops earlier.
+It is a teaching version of a larger production system. The production version has 37 tools and is wired into [Jing's](/about) actual investment workflow. The course version has 14 tools and is small enough that you can read its source code in an afternoon. Both follow the same architecture; the course version just stops earlier.
 
 > **You do not need to read the source code to use the server.** The exercise this week walks you through running it. Reading the source is an optional bonus.
 

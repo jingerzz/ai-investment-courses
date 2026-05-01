@@ -6,7 +6,7 @@ You do not need to be a software engineer to take this course. You do need a Zo 
 
 ### 1. A Zo Computer account
 
-Sign up using Jing's referral link:
+Sign up using [Jing's](/about) referral link (includes $10 in free AI credits):
 
 > https://zo-computer.cello.so/8dcc6g0vZVs
 
