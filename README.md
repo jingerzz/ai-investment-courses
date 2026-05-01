@@ -4,6 +4,11 @@
 
 Three course tracks teach you to build real financial tools using plain English. The new Zo-centric track leads with Zo Computer as the operating environment; the existing Claude-centric professional and junior tracks remain available.
 
+> **Deploying changes?** This repo is the canonical source of course
+> content. The websites that publish it live in separate repos and
+> require an explicit sync step. See [`DEPLOYMENT.md`](DEPLOYMENT.md)
+> before pushing course updates.
+
 ---
 
 ## Course Tracks
