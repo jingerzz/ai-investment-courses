@@ -100,6 +100,7 @@ A useful AI investment workflow should pass each of these checks:
 - **Clear about sources.** Every claim about a filing has a citation.
 - **Narrow enough to audit.** A reviewer can read the output and the inputs in under five minutes.
 - **Designed for human approval.** Capital is never put at risk without an explicit human "go".
+- **Carries context across sessions.** The AI knows what was decided last week without you re-explaining. (Foundations 3 covers the memory layer that enables this.)
 
 You will be applying this checklist throughout the course. By Week 4, you should be able to look at any AI investment workflow — yours or someone else's — and say where it passes and where it fails.
 

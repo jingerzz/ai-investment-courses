@@ -85,7 +85,36 @@ This is not paranoia. It is what makes the workflow durable enough to trust with
 
 A simple convention: every run writes one markdown file under `Records/<agent-name>/YYYY-MM-DD.md` with all of the above. Even if the run is silent (nothing to send), the file gets written.
 
-## 4.5 The Human Decision Loop
+## 4.5 Giving Your Agent Memory
+
+The audit trail captures what happened in a single run. Memory captures what is happening across runs. They are complementary, and a serious agent needs both.
+
+If you completed Foundations 3, you already have a file-based memory system in your workspace: `USER.md`, `MEMORY.md`, the `memory/` folder, and the two Rules. A scheduled agent can — and should — read and write the same memory layer that interactive chats use. The shared layer is what turns a one-shot run into a thread.
+
+**What memory adds to an agent.**
+
+- **Continuity.** The agent that posted Friday's brief knows what Monday's brief said. It can lead with *"regime is unchanged from last week"* instead of restating the full color-day rationale every time.
+- **Thesis tracking.** The agent that re-evaluates an open position can read the original thesis from a project memory entry and report against it, instead of re-deriving the thesis from current price action.
+- **Drift detection.** The agent can read the prior daily note before producing the new one and flag when something has materially changed since the last run, instead of leaving that work to you.
+- **Quieter briefs.** When nothing has changed since the last run, the agent can say so in one line. The signal-to-noise improvement is real after a few weeks.
+
+**The pattern, in three rules.**
+
+- **Read first.** Before calling tools, the agent reads `USER.md`, `MEMORY.md`, and the most recent daily note for its own scope (`memory/daily/<date>.md` or `memory/projects/<name>.md`).
+- **Write last.** After the brief is produced and any external send is done, the agent writes a project entry update or a daily note describing the run in a few lines.
+- **Ask before adding new types.** A scheduled agent should not invent new memory folders on its own. If a run reveals a gap in the memory schema, the agent flags it and you decide.
+
+A useful concrete example: a Friday post-close brief agent. Its run sequence becomes *(1) read prior week's daily note → (2) refresh data via the regime tool → (3) compose a brief that explicitly compares to last Friday → (4) send the brief to your private Telegram → (5) write a new daily note capturing today's run and any thesis-level deltas.* The agent did not get smarter. It got context.
+
+**Pitfalls to avoid.**
+
+- **Letting an agent edit `USER.md`.** Profile drift is very hard to debug. Agents read `USER.md`; they do not change it.
+- **Letting an agent run without writing.** A silent agent run that produces a brief but writes nothing to memory is invisible to next week's run. Always write — even one line — before you treat the run as complete.
+- **Memory and audit logs duplicating each other.** The audit log is *what happened in this run* (every tool call, every output). Memory is *what we now believe about the world*. Same agent, two artifacts, two purposes.
+
+If you need only the audit log, skip the memory layer for that agent. If you need cross-run continuity — and most investment agents do — wire both in from the start.
+
+## 4.6 The Human Decision Loop
 
 The full pattern, end to end, is this:
 
@@ -98,7 +127,7 @@ The full pattern, end to end, is this:
 
 That loop is the whole investment-management philosophy of this course. The AI does the work it is good at — navigating, summarizing, comparing. Code does the work that needs to be exact. You do the work that requires judgment and accountability. None of the three is interchangeable.
 
-## 4.6 Failure Modes (Week 4 Edition)
+## 4.7 Failure Modes (Week 4 Edition)
 
 These are the agent-specific bugs. Watch for them in your own builds.
 
@@ -114,7 +143,7 @@ These are the agent-specific bugs. Watch for them in your own builds.
 
 **The forgotten audit log.** The agent runs, sends the brief, and writes nothing to disk. In six months you cannot reconstruct what happened. Fix: the audit log write happens *first*, before any external send. If the log fails, the send does not happen.
 
-## 4.7 What "Done" Looks Like
+## 4.8 What "Done" Looks Like
 
 You have an investment-grade agent when:
 
@@ -134,5 +163,6 @@ If any of those is rough, the agent is not ready to run on a schedule yet. Run i
 - **The spec is the contract.** Eight sections: purpose, schedule, allowed inputs, allowed tools, required output, approval points, audit log, stop conditions.
 - **Default to private and ask-for-approval.** Override on purpose, never by accident.
 - **The audit trail is part of the workflow, not extra.** Every run writes to disk before sending anything externally.
+- **Memory and audit are complementary.** The audit log captures *what happened*; memory captures *what we now believe*. A serious investment agent has both.
 - **The loop is: agent observes, tools compute, sources substantiate, AI summarizes, human decides, system records.**
 - **None of the three roles — code, AI, you — is interchangeable.** Each does what it is good at.
