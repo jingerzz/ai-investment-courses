@@ -8,7 +8,7 @@ Time: about 45 minutes the first time. Most of that is one-time setup.
 
 ## What You Will Use
 
-- **The course repository** — the GitHub repo that contains the SPY/TLT teaching server.
+- **The course repository** — [github.com/jingerzz/ai-investment-courses](https://github.com/jingerzz/ai-investment-courses), the GitHub repo that contains the SPY/TLT teaching server.
 - **Zo terminal** — the shell where you will install and run the server.
 - **Zo chat** — where you will ask questions and watch the AI call tools.
 

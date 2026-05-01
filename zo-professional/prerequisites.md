@@ -35,7 +35,7 @@ Open `Settings → AI` and pick a model. A free-tier model is fine for most read
 - **A Claude Sonnet-class coding model** for the build steps in Weeks 2–4. Faster and more accurate than the free tier when editing code.
 - **Claude Code or Codex** as optional coding assistants. Useful if you want to make deeper edits to a server. Skippable.
 - **Basic terminal comfort** — knowing what `cd`, `ls`, `python`, and `git` do, and being willing to read an error message instead of closing the window.
-- **A GitHub account** if you want to fork the course repository and make your own changes. Optional.
+- **A GitHub account** if you want to fork the [course repository](https://github.com/jingerzz/ai-investment-courses) and make your own changes. Optional.
 
 ## Not Required
 

@@ -8,7 +8,7 @@ Time: about 45 minutes the first time. Less once the server is registered.
 
 ## What You Will Use
 
-- **The course repository** — same repo as Week 1, but a different folder.
+- **The course repository** — same repo as Week 1 ([github.com/jingerzz/ai-investment-courses](https://github.com/jingerzz/ai-investment-courses)), but a different folder.
 - **Zo terminal** — to install and run the new server.
 - **Zo chat** — to ask questions and watch the AI navigate the filings.
 
