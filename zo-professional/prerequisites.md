@@ -30,6 +30,35 @@ If you are missing any of these, your account may not be fully provisioned yet. 
 
 Open `Settings → AI` and pick a model. A free-tier model is fine for most reading and Q&A. When the course asks you to build or modify a server, switch to a stronger coding-grade model (a Claude Sonnet or higher tier model is recommended). You can switch back and forth as needed.
 
+### 4. Run the one-line setup
+
+Open the Zo terminal and paste:
+
+```bash
+curl -fsSL https://www.clarionintelligencesystems.com/install/zo-course.sh | bash
+```
+
+This single command:
+
+- Clones the course repository to `/home/workspace/ai-investment-courses`
+- Installs `uv` and the two course MCP servers (SPY/TLT and PageIndex RAG)
+- Installs Ollama and pulls the `gemma4:e2b` model (the local LLM the RAG server uses for SEC filing summaries)
+- Symlinks the course skills (`course-setup`, `spy-tlt-course`, `pageindex-rag-course`) into your Zo skills directory
+- Runs a green/red verification check at the end
+
+It is idempotent — safe to re-run any time you want to refresh or repair the setup. Expect 5–15 minutes the first time, mostly waiting on the Ollama model download.
+
+When it finishes, it will print one final instruction: paste a short prompt into Zo chat to register the two MCP servers with your workspace. Do that, and you are ready for Week 1.
+
+**If anything goes wrong**, ask Zo: *"Use the course-setup skill to verify and repair my course setup."* The skill is installed by the one-liner and is the single source of truth for your environment.
+
+**Manual install (fallback)**, if you prefer not to run the one-liner:
+
+```bash
+git clone https://github.com/jingerzz/ai-investment-courses.git /home/workspace/ai-investment-courses
+bash /home/workspace/ai-investment-courses/zo-professional/skills/course-setup/scripts/bootstrap.sh
+```
+
 ## Recommended (but not required)
 
 - **A Claude Sonnet-class coding model** for the build steps in Weeks 2–4. Faster and more accurate than the free tier when editing code.
@@ -63,12 +92,13 @@ You will not need a Bloomberg terminal, a Refinitiv subscription, or a paid API 
 
 ## Folder Setup
 
-Before starting Foundations 1, create a single folder inside your Zo workspace where everything you do during the course will live:
+The one-line setup above creates `/home/workspace/ai-investment-courses` for the course source code (servers, exercise content, skills). You do not need to touch that folder — it is owned by the installer and is updated when you re-run it.
+
+For **your own work** during the course, create a single folder alongside it:
 
 ```
 AI-Investing-Course/
 ├── notes/         ← research notes, decisions, prompts you save
-├── servers/       ← copies of the course MCP servers
 ├── datasets/      ← any data files or DuckDB databases
 ├── dashboards/    ← page specs, screenshots, sketches
 └── agents/        ← scheduled-job specs and run logs

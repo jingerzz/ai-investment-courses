@@ -1,0 +1,84 @@
+---
+name: course-setup
+description: One-shot setup and verification for the AI Investing (Zo-professional) course. Invoke whenever the student says they want to "set up the course," "install the course servers," "get the AI Investing course running," "verify my course setup," or asks why the SPY/TLT or PageIndex RAG MCP servers are missing. Installs uv, syncs both course MCP servers, installs Ollama, pulls the gemma4:e2b model, points the RAG server's config at it, drops the consumer skills (spy-tlt-course, pageindex-rag-course) into the workspace Skills directory, and runs a green/red smoke test. Idempotent — safe to re-run.
+compatibility: Created for Zo Computer
+metadata:
+  author: jing.zo.computer
+  course: zo-professional
+---
+
+# course-setup
+
+Drives first-time installation (and ongoing verification) for the Zo-professional AI Investing course. Wraps two scripts shipped with this skill:
+
+- `scripts/bootstrap.sh` — installs everything, idempotent
+- `scripts/verify.sh` — green/red checklist; safe to run any time
+
+## When to invoke this skill
+
+- Student is opening the course for the first time on a fresh Zo workspace.
+- Student reports the SPY/TLT or PageIndex RAG MCP servers are missing, broken, or returning stale data.
+- Student asks "is my course setup OK?" or wants to confirm Ollama + `gemma4:e2b` are wired up.
+- The course release notes mention a new server version and the student wants to refresh.
+
+## What gets installed
+
+| Component | Where | Why |
+| --- | --- | --- |
+| `uv` (package manager) | `~/.local/bin/uv` | Used by both course servers; standard on Zo. |
+| `spy-tlt-course` Python deps | `professional/servers/spy-tlt-course/.venv` | Week 1 server; entry point `uv run spy-tlt-server`. |
+| `page-index-rag-course` Python deps | `professional/servers/page-index-rag-course/.venv` | Week 2 server; entry point `uv run rag-server`. |
+| Ollama | system | Local LLM runtime for the RAG server's section summaries. |
+| `gemma4:e2b` model | Ollama model store | The course-recommended summarization model — best quality/cost trade-off on a Zo box per our testing. |
+| Patched `config.json` | `professional/servers/page-index-rag-course/config.json` | Sets `ollama_model` and `summary_model` to `gemma4:e2b`. |
+| `spy-tlt-course` consumer skill | `/home/workspace/Skills/spy-tlt-course/` | Agent-facing guidance for the SPY/TLT MCP tools. |
+| `pageindex-rag-course` consumer skill | `/home/workspace/Skills/pageindex-rag-course/` | Agent-facing guidance for the PageIndex RAG MCP tools. BLK + HOOD ship pre-indexed so Week 2 works immediately; full SEC fetch is available from day one for any other ticker. |
+
+## Workflow
+
+When the student invokes this skill:
+
+1. **Locate the repo.** Default is `$ZO_COURSE_REPO` if set, otherwise `/home/workspace/AI-Investing-Course/repo` if it exists, otherwise `/home/workspace/ai-investment-courses` (the canonical clone path the one-liner installer uses).
+2. **Run bootstrap:**
+
+   ```bash
+   bash /home/workspace/Skills/course-setup/scripts/bootstrap.sh
+   ```
+
+   The script tells the student what it's doing at each step. It is safe to re-run — every step is a no-op when already satisfied.
+
+3. **Run verify:**
+
+   ```bash
+   bash /home/workspace/Skills/course-setup/scripts/verify.sh
+   ```
+
+   Green ✓ = ready. Red ✗ = read the failing line, run the suggested fix, re-run verify. Do not move on to the course exercises until verify is fully green.
+
+4. **Register the MCP servers with Zo.** The bootstrap cannot register MCP servers on the student's behalf — Zo handles that. After bootstrap finishes, instruct the student to paste this into Zo chat:
+
+   ```text
+   Register two MCP servers from this workspace:
+     1. spy-tlt-course — entry: `uv run spy-tlt-server` from
+        professional/servers/spy-tlt-course
+     2. page-index-rag-course — entry: `uv run rag-server` from
+        professional/servers/page-index-rag-course
+   After registering, list the tools each server exposes and confirm
+   the RAG server returns at least 7 indexed filings (BLK + HOOD).
+   ```
+
+5. **Confirm.** The student should now see the SPY/TLT and PageIndex RAG tools in their Zo chat. Point them to `zo-professional/week-1/exercise/README.md` to begin.
+
+## Re-running on an existing setup
+
+Both scripts are idempotent. If the student wants to:
+
+- **Update the model**: re-run `bootstrap.sh`. Pulls the latest `gemma4:e2b` if the local copy is stale, re-patches config.
+- **Diagnose a broken setup**: run `verify.sh`. Each red line names the component and the fix.
+- **Reset from scratch**: delete the venvs (`rm -rf professional/servers/*/.venv`) and re-run `bootstrap.sh`.
+
+## What this skill deliberately does NOT do
+
+- Does not register MCP servers with Zo (Zo handles that).
+- Does not configure paid model providers (Anthropic, OpenAI). The RAG server runs entirely on local Ollama + `gemma4:e2b`.
+- Does not modify the canonical course repo on disk except for the RAG `config.json` (which is the one file students legitimately need to change to point at their local Ollama).

@@ -4,7 +4,7 @@
 
 By the end of this exercise, the AI in your Zo workspace will be able to answer "what kind of day did the market just have?" by calling a real tool — not by guessing from training memory. You will see the tool's raw output, then watch the AI explain it.
 
-Time: about 45 minutes the first time. Most of that is one-time setup.
+Time: about 20–30 minutes. Server install is handled by the prerequisites; this exercise focuses on the tool-use pattern itself.
 
 ## What You Will Use
 
@@ -14,53 +14,25 @@ Time: about 45 minutes the first time. Most of that is one-time setup.
 
 ## Steps
 
-### 1. Get the course repo onto Zo
+### 1. Confirm your environment is ready
 
-If you have not already, clone the course repo into the `servers/` folder of your workspace. Ask Zo:
-
-```text
-Inside AI-Investing-Course/servers/, clone the course repository
-github.com/jingerzz/ai-investment-courses. After cloning, list the
-folder structure of professional/servers/spy-tlt-course so I can see
-what is inside.
-```
-
-Zo will run the clone and show you the folder. You should see:
-
-```
-spy-tlt-course/
-├── data/              ← cached SPY and TLT prices
-├── src/               ← the server source code
-├── pyproject.toml     ← dependencies and entry point
-└── uv.lock
-```
-
-### 2. Install the server
-
-The server is a small Python package. Install it with `uv`, the package manager already available on Zo. Ask:
+If you completed the [prerequisites](../../prerequisites.md), the SPY/TLT course server is already installed on your Zo and registered with your workspace. Confirm it in Zo chat:
 
 ```text
-Inside professional/servers/spy-tlt-course, run `uv sync` to install
-the server's dependencies. Tell me when it is ready and what the
-entry-point command is.
+List the MCP servers registered in this workspace and the tools each
+one exposes. I am specifically looking for the spy-tlt-course server
+and its 14 tools (get_strategy_guide, get_current_signal, etc.).
 ```
 
-The entry point is `spy-tlt-server`. That is the command that starts the server.
-
-### 3. Register the server with Zo
-
-Zo's chat AI talks to MCP servers through a registration. Ask:
+If the server is missing or the tool count is wrong, ask:
 
 ```text
-Register the SPY/TLT course server as an MCP service available to
-this workspace. The entry command is `uv run spy-tlt-server` from
-inside professional/servers/spy-tlt-course. After registering,
-confirm the server is listed and which tools it exposes.
+Use the course-setup skill to verify and repair my course setup.
 ```
 
-The AI should come back with the 14 tools from this week's reading (`get_strategy_guide`, `get_current_signal`, etc.). If the count is different, something went wrong — re-run the registration step.
+That re-runs the bootstrap and prints the registration prompt at the end. Do not move on until the server is registered and the tool count is 14.
 
-### 4. First contact: ask for the strategy guide
+### 2. First contact: ask for the strategy guide
 
 The reading mentioned that `get_strategy_guide` is the tool the AI should call first in any session. Try it:
 
@@ -71,7 +43,7 @@ this strategy is, in plain English, in under 200 words.
 
 The AI will call the tool, receive a structured object, and turn it into prose. Read the summary. If anything in it sounds vague or invented, push back — the source of truth is the tool's output.
 
-### 5. Get today's signal
+### 3. Get today's signal
 
 This is the centerpiece prompt for Week 1. Run it exactly:
 
@@ -89,7 +61,7 @@ A good response will:
 - Pass through the `stale_data_warning` field, even if `null`
 - Explain the regime in language a colleague could repeat
 
-### 6. Refresh and re-run
+### 4. Refresh and re-run
 
 The cached prices may be a day or two old. Force a refresh:
 
@@ -101,7 +73,7 @@ prices, or signal change?
 
 This is the moment where you confirm `refresh_data` actually does something. If the dates do not move, the server is not pulling fresh prices. Investigate before going further.
 
-### 7. Stress-test against the failure modes
+### 5. Stress-test against the failure modes
 
 Pick at least two of these and run them. They are designed to surface the failure modes from the reading.
 

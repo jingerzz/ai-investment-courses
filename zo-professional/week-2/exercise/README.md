@@ -4,7 +4,7 @@
 
 By the end of this exercise, you will have asked Zo a real research question about a real SEC filing — and gotten back an answer with a citation you can verify in 10 seconds. You will also have caught the AI in at least one citation slip and corrected it.
 
-Time: about 45 minutes the first time. Less once the server is registered.
+Time: about 25–35 minutes. Server install is handled by the prerequisites; this exercise focuses on the research-and-citation workflow itself.
 
 ## What You Will Use
 
@@ -14,49 +14,25 @@ Time: about 45 minutes the first time. Less once the server is registered.
 
 ## Steps
 
-### 1. Find the course server
+### 1. Confirm the PageIndex server is ready
 
-You already cloned the course repo in Week 1. The PageIndex server lives at:
-
-```
-professional/servers/page-index-rag-course
-```
-
-Ask Zo:
+If you completed the [prerequisites](../../prerequisites.md), the PageIndex RAG course server is already installed, registered, and pre-indexed with BLK and HOOD filings. Ollama is running locally with the `gemma4:e2b` model that powers the server's section summaries. Confirm in Zo chat:
 
 ```text
-List the contents of professional/servers/page-index-rag-course so I can
-see what is inside. I want to know whether there are pre-indexed filings
-shipped with the server.
+List the MCP servers registered in this workspace. Specifically confirm
+that page-index-rag-course is registered. Then call list_documents on
+it and tell me how many BLK and HOOD filings are indexed.
 ```
 
-You should see a `data/` folder (or similar) with BLK and HOOD pre-indexed filings. If you do not, you may have an older snapshot of the repo — pull the latest before going further.
-
-### 2. Install the server
-
-The PageIndex server is a Python package, just like the SPY/TLT server. Install it the same way:
+You should see at least 7 indexed filings (BLK 10-K + 2x 10-Q, HOOD 10-K + 3x 10-Q). If the server is missing, the tool count is wrong, or `list_documents` returns nothing, ask:
 
 ```text
-Inside professional/servers/page-index-rag-course, run `uv sync` to
-install the server's dependencies. Tell me when it is ready and what
-the entry-point command is.
+Use the course-setup skill to verify and repair my course setup.
 ```
 
-The entry point is documented in `pyproject.toml`. Zo will surface it for you.
+That re-runs the bootstrap (Ollama, model, server install) and prints the registration prompt at the end. Do not move on until `list_documents` returns the BLK and HOOD filings.
 
-### 3. Register the server with Zo
-
-Same pattern as Week 1, different server:
-
-```text
-Register the PageIndex RAG course server as an MCP service available to
-this workspace. After registering, list the tools the server exposes
-and confirm that BLK and HOOD filings are indexed and searchable.
-```
-
-If the registration succeeds, you should see tools like `list_documents`, `search`, `get_section`, and the indexing tools from this week's reading.
-
-### 4. Take inventory
+### 2. Take inventory
 
 Before asking a research question, see what is on the shelf:
 
@@ -67,7 +43,7 @@ give me the company, filing type, filing date, and doc_id in a table.
 
 Write the doc_ids down — you will use them in the next steps.
 
-### 5. Look at the structure of one filing
+### 3. Look at the structure of one filing
 
 A 10-K is a big document. Before searching, get the table of contents:
 
@@ -79,7 +55,7 @@ notable sub-sections. This is the map I will use to navigate.
 
 You should see familiar 10-K sections: business description, risk factors, MD&A, financial statements. The outline is structured the same way the SEC document is structured, because the indexer follows the document's own headings.
 
-### 6. Ask the centerpiece research question
+### 4. Ask the centerpiece research question
 
 Pick a real question. Here is a good first one:
 
@@ -106,7 +82,7 @@ A good response will:
 - Cite both the `doc_id` and `node_id`
 - Distinguish between what the filing literally says and what the AI infers
 
-### 7. Stress-test against the failure modes
+### 5. Stress-test against the failure modes
 
 Pick at least two of these. They are designed to catch the failure modes from the reading.
 
@@ -140,7 +116,7 @@ node_id, and a verbatim quote.
 
 This tests whether the AI scopes its searches by company. You should see two distinct citations, not a blended summary.
 
-### 8. (Optional) Index a new filing
+### 6. (Optional) Index a new filing
 
 If you have time, ask the server to fetch and index something fresh:
 
