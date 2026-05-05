@@ -102,6 +102,40 @@ check "rag launcher exists + executable"      test -x "$RAG_LAUNCHER"
 echo
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Service registration sanity check (informational — does NOT count toward fail)
+#
+# If supervisord-user.conf is readable, confirm that any registered entries
+# for our services point at the expected absolute wrapper paths. A mismatch
+# is the signature of Zo's update_user_service bug — the database says the
+# service was updated, but the on-disk config still points at the old command.
+# ─────────────────────────────────────────────────────────────────────────────
+SUPERVISOR_CONF="${ZO_SUPERVISOR_CONF:-/etc/zo/supervisord-user.conf}"
+if [[ -r "$SUPERVISOR_CONF" ]]; then
+  printf "${BOLD}Service registration (informational)${RESET}\n"
+  for svc_pair in "spy-tlt-course:$SPY_TLT_LAUNCHER" "page-index-rag-course:$RAG_LAUNCHER"; do
+    svc_name="${svc_pair%%:*}"
+    expected_cmd="${svc_pair#*:}"
+    actual_cmd=$(awk -v svc="[program:${svc_name}]" '
+      $0 == svc { found=1; next }
+      /^\[/ { found=0 }
+      found && /^command=/ { sub(/^command=/, ""); print; exit }
+    ' "$SUPERVISOR_CONF" 2>/dev/null)
+
+    if [[ -z "$actual_cmd" ]]; then
+      note "$svc_name not yet registered with supervisord — run the registration prompt printed by bootstrap"
+    elif [[ "$actual_cmd" == "$expected_cmd" ]]; then
+      printf "  ${GREEN}✓${RESET} %s registered with correct absolute wrapper path\n" "$svc_name"
+    else
+      printf "  ${YELLOW}⚠${RESET} %s command= mismatch (Zo update bug?):\n" "$svc_name"
+      printf "      expected: %s\n" "$expected_cmd"
+      printf "      actual:   %s\n" "$actual_cmd"
+      printf "      Fix: in Zo chat, unregister_user_service '%s' then register_user_service fresh.\n" "$svc_name"
+    fi
+  done
+  echo
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────────────────────────────────────
 TOTAL=$((PASS+FAIL))

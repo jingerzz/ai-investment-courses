@@ -265,21 +265,49 @@ cat <<EOF
   the absolute uv path.
 
   ─── Begin paste ───────────────────────────────────────────────────────
-  Register two MCP user services for this workspace using these exact
-  specs (use register_user_service with the Command verbatim):
+  Register two MCP user services for this workspace.
 
-    1. Service name: spy-tlt-course
-       Command:      $SPY_TLT_LAUNCHER_PUBLIC
-       Transport:    stdio MCP
+  CRITICAL: For each service below, follow this order exactly. Do NOT
+  use update_user_service — it has a known Zo bug where it updates
+  Zo's internal database WITHOUT rewriting /etc/zo/supervisord-user.conf,
+  which leaves supervisord running the previous (potentially broken)
+  entrypoint while the database reports success.
 
-    2. Service name: page-index-rag-course
-       Command:      $RAG_LAUNCHER_PUBLIC
-       Transport:    stdio MCP
+    For EACH of the two services:
+      1. Check whether the service is already registered
+         (list_user_services or equivalent).
+      2. If it exists, call unregister_user_service FIRST. This stops
+         the old process and removes the supervisord-user.conf entry.
+      3. Call register_user_service with the spec below verbatim.
 
-  After registering, confirm both services are RUNNING (not just
-  registered), then list the tools each exposes and confirm
-  page-index-rag-course's list_documents returns at least 7 indexed
-  filings (BLK + HOOD).
+  Service 1:
+    Name:      spy-tlt-course
+    Command:   $SPY_TLT_LAUNCHER_PUBLIC
+    Transport: stdio MCP
+
+  Service 2:
+    Name:      page-index-rag-course
+    Command:   $RAG_LAUNCHER_PUBLIC
+    Transport: stdio MCP
+
+  After registering, paste the output of these three checks back to me:
+
+    (a) Both services running:
+          supervisorctl -c /etc/zo/supervisord-user.conf status
+
+    (b) command= lines are absolute wrapper paths, nothing else:
+          grep -A 5 '^\[program:' /etc/zo/supervisord-user.conf | grep '^command='
+
+        Expected:
+          command=$SPY_TLT_LAUNCHER_PUBLIC
+          command=$RAG_LAUNCHER_PUBLIC
+
+    (c) page-index-rag-course's list_documents returns ≥ 7 filings.
+
+  If (b) shows anything different — bash wrappers, cd/&&/&, .venv/bin
+  paths, anything other than the two absolute wrapper paths above — the
+  update bug bit. Re-do the unregister + register cycle for that
+  service. Do NOT patch the conf file with sed.
   ─── End paste ─────────────────────────────────────────────────────────
 
   Then start Week 1: zo-professional/week-1/exercise/README.md
