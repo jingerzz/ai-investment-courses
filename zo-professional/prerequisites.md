@@ -35,8 +35,10 @@ Open `Settings → AI` and pick a model. A free-tier model is fine for most read
 Open the Zo terminal and paste:
 
 ```bash
-curl -fsSL https://www.clarionintelligencesystems.com/install/zo-course.sh | bash
+curl --retry 3 --retry-delay 5 -fsSL https://www.clarionintelligencesystems.com/install/zo-course.sh | bash
 ```
+
+The `--retry` flags handle a transient HTTP 521 you may see on the first hit if the site has been idle. If you see `Failed to connect` after all three retries, wait 30 seconds and try again.
 
 This single command:
 

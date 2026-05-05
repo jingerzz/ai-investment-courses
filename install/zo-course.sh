@@ -45,9 +45,13 @@ step "Fetching course repo"
 command -v git >/dev/null 2>&1 || fail "git not found — install git and retry"
 
 if [[ -d "$REPO_DIR/.git" ]]; then
-  warn "repo already at $REPO_DIR — pulling latest"
-  ( cd "$REPO_DIR" && git pull --ff-only )
-  ok "repo updated"
+  warn "repo already at $REPO_DIR — resetting to latest origin/main"
+  # `git reset --hard` guarantees the working tree matches the published commit no
+  # matter what state a previous failed run left behind. The course repo is
+  # canonical and read-only from a student's perspective; students who want to
+  # tinker should fork.
+  ( cd "$REPO_DIR" && git fetch origin main && git reset --hard origin/main )
+  ok "repo updated to $(cd "$REPO_DIR" && git rev-parse --short HEAD)"
 else
   if [[ -e "$REPO_DIR" ]]; then
     fail "$REPO_DIR exists but is not a git checkout — move it aside and retry"

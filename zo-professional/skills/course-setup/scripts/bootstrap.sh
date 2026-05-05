@@ -95,6 +95,17 @@ if command -v ollama >/dev/null 2>&1; then
   skip "ollama already installed ($(ollama --version 2>&1 | head -n1))"
 else
   warn "ollama not found — installing from ollama.com"
+  # Ollama's installer extracts a zstd-compressed tarball; ensure zstd is available first
+  if ! command -v zstd >/dev/null 2>&1; then
+    warn "  zstd not found — required by Ollama installer; installing"
+    if command -v apt-get >/dev/null 2>&1; then
+      sudo apt-get install -y zstd >/dev/null 2>&1 || \
+        fail "failed to install zstd. Run 'sudo apt-get install -y zstd' manually and retry."
+    else
+      fail "zstd is required to install Ollama but cannot be auto-installed on this system. Install zstd and retry."
+    fi
+    ok "  zstd installed"
+  fi
   curl -fsSL https://ollama.com/install.sh | sh || \
     fail "ollama install failed. If your Zo box restricts sudo, ask Zo support to enable Ollama, then re-run this script."
   ok "ollama installed"
