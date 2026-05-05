@@ -11,3 +11,8 @@ __pycache__/
 
 # Site build artifacts (included on v2-refresh for deployment)
 # professional/site/
+
+# Generated at install time by zo-professional/skills/course-setup/scripts/bootstrap.sh
+# (absolute-path wrapper scripts for supervisord-user)
+zo-professional/skills/course-setup/scripts/run-spy-tlt-server.sh
+zo-professional/skills/course-setup/scripts/run-rag-server.sh

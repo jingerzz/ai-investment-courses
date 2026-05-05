@@ -92,6 +92,16 @@ check "pageindex-rag-course skill present"  test -f "$SKILLS_DST/pageindex-rag-c
 echo
 
 # ─────────────────────────────────────────────────────────────────────────────
+# MCP launcher scripts (registered with supervisord-user)
+# ─────────────────────────────────────────────────────────────────────────────
+printf "${BOLD}MCP launchers${RESET}\n"
+SPY_TLT_LAUNCHER="$SKILLS_DST/course-setup/scripts/run-spy-tlt-server.sh"
+RAG_LAUNCHER="$SKILLS_DST/course-setup/scripts/run-rag-server.sh"
+check "spy-tlt launcher exists + executable"  test -x "$SPY_TLT_LAUNCHER"
+check "rag launcher exists + executable"      test -x "$RAG_LAUNCHER"
+echo
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────────────────────────────────────
 TOTAL=$((PASS+FAIL))
